@@ -25,11 +25,9 @@ a:hover {
 
 #preview-box {
     position: fixed;
-    left: 260px;
-    top: 50px;
-    width: 312px;
-    height: 440px;
-    pointer-events: none; /* IMPORTANT */
+    width: 30vh;
+    height: 42vh;
+    pointer-events: none;
     display: block;
     z-index: 9999;
     opacity: 0;
