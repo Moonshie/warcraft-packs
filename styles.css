@@ -76,6 +76,10 @@ a:hover {
     to { transform: rotate(360deg); }
 }
 
+.template {
+    display: none;
+}
+
 .header {
     margin: 0;
     height: 2rem;
@@ -88,16 +92,21 @@ a:hover {
     border-bottom: 1px solid #8d6934;
     box-sizing: border-box;
 }
-.menu-icon {
+.icon {
     height: 2rem;
 }
-.menu-icon:hover {
+.hover {
     cursor: pointer;
 }
-.menu-icon > * {
+.icon > * {
     padding: 0;
     width: 2rem;
     height: 2rem;
+}
+#info {
+    margin-top: 0.1rem;
+    width: 1.8rem;
+    height: 1.8rem;
 }
 
 .sidebar {
@@ -111,7 +120,8 @@ a:hover {
     z-index: 1000;
     transition: 0.3s ease;
     gap: 0.5rem;
-    border-right: 1px solid#8d6934
+    border-right: 1px solid#8d6934;
+    padding-top: 0.5rem;
 }
 
 .double {
@@ -149,9 +159,12 @@ button {
     transition: 0.1s;
     border: 2px solid transparent;
 }
-button:hover {
+button:not(:disabled):hover {
     cursor: pointer;
     border: 2px solid white;
+}
+button:disabled {
+    background-color: #202020;
 }
 
 .output-area {
@@ -243,7 +256,7 @@ button:hover {
     padding-right: calc(50vw - 15vh);
 
     scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.3) transparent;
+    scrollbar-color: #8d693430 transparent;
 
     mask-image: linear-gradient(
         to right,

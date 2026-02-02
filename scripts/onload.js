@@ -1,6 +1,4 @@
-randomBackgrounds(currentSet);
-
-const track = document.querySelector('.pack-track');
+// randomBackgrounds(currentSet);
 
 track.addEventListener('wheel', (e) => {
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {

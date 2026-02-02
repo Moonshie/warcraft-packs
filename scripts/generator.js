@@ -62,7 +62,6 @@ function sortPushBooster(booster, num) {
     const sorted = [...counts.entries()].sort(([nameA, dataA], [nameB, dataB]) => {
         // 1. Rarity (highest first)
         let diff = rarityRank[dataB.rarity] - rarityRank[dataA.rarity];
-        console.log(diff);
         if (diff !== 0) return diff;
 
         // 2. Type: Hero > Ability > Ally > Equipment > Quest

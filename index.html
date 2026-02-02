@@ -13,13 +13,15 @@
 <body>
 
     <div class="header">
-        <div class="menu-icon">
+        <div class="icon">
             <img src="./data/icon/menu.png" onclick="toggleMenu()">
         </div>
         <div>
             Warcraft Packs
         </div>
-        <div></div>
+        <div class="icon">
+            <img id="info" src="./data/icon/info.png">
+        </div>
     </div>
 
     <div class="sidebar">
@@ -38,7 +40,7 @@
             </select>
         </div>
         <div class="single">
-            <button>GENERATE</button>
+            <button id="generate" onclick="addPacks(6, currentSet, currentSealedType)">GENERATE</button>
         </div>
         <div class="single">
             <div>Card List</div>
@@ -46,54 +48,23 @@
     </div>
 
     <div class="pack-track">
-        <div class="pack">
-            <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
-                <div class="booster" id="1" onclick="generate(1, event)">
-                    <div class="output hidden" id="1output"></div>
-                </div>
-            </hover-tilt>
-        </div>
-        <div class="pack">
-            <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
-                <div class="booster" id="2" onclick="generate(2, event)">
-                    <div class="output hidden" id="2output"></div>
-                </div>
-            </hover-tilt>
-        </div>
-        <div class="pack">
-            <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
-                <div class="booster" id="3" onclick="generate(3, event)">
-                    <div class="output hidden" id="3output"></div>
-                </div>
-            </hover-tilt>
-        </div>
-        <div class="pack">
-            <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
-                <div class="booster" id="4" onclick="generate(4, event)">
-                    <div class="output hidden" id="4output"></div>
-                </div>
-            </hover-tilt>
-        </div>
-        <div class="pack">
-            <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
-                <div class="booster" id="5" onclick="generate(5, event)">
-                    <div class="output hidden" id="5output"></div>
-                </div>
-            </hover-tilt>
-        </div>
-        <div class="pack">
-            <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
-                <div class="booster" id="6" onclick="generate(6, event)">
-                    <div class="output hidden" id="6output"></div>
-                </div>
-            </hover-tilt>
-        </div>
     </div>
 
     <div id="preview-box">
         <div id="preview-loader"></div>
         <img id="preview-image" src="">
     </div>
+
+    <div class="template">
+        <div class="pack">
+            <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
+                <div class="booster" onclick="generate(id, event)">
+                    <div class="output hidden"></div>
+                </div>
+            </hover-tilt>
+        </div>
+    </div>
+    
 
     <script src="data/set/hoa.js"></script>
     <script src="scripts/variables.js"></script>
