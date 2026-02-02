@@ -17,27 +17,32 @@
             <img src="./data/icon/menu.png" onclick="toggleMenu()">
         </div>
         <div>
+            Warcraft Packs
+        </div>
+        <div></div>
+    </div>
+
+    <div class="sidebar">
+        <div class="double">
             <label for="set-select">Set</label>
             <select name="set" id="set-select" onchange="changeSet(event)">
                 <option value="hoa" selected>Heroes of Azeroth</option>
                 <option value="tdp">Through the Dark Portal</option>
             </select>
         </div>
-                <div>
+        <div class="double">
             <label for="type-select">Type</label>
             <select name="type" id="type-select" onchange="changeSealedType(event)">
                 <option value="classic" selected>Classic</option>
                 <option value="enhanced">Enhanced</option>
             </select>
         </div>
-        <div>
-            Warcraft Packs
+        <div class="single">
+            <button>GENERATE</button>
         </div>
-    </div>
-
-    <div class="sidebar">
-        <div class="sidebar-head">Card List</div>
-        <div class="card-list"></div>
+        <div class="single">
+            <div>Card List</div>
+        </div>
     </div>
 
     <div class="pack-track">
