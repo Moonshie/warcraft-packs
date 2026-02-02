@@ -1,0 +1,211 @@
+@font-face {
+    font-family: 'Morpheus';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Morpheus'), url('./data/Morpheus.TTF') format('woff');
+    }
+
+:root {
+    font-size: clamp(15px, 2vw, 19px);
+}
+
+body {
+    background-color: #202020;
+    color: #e6e6e6;
+}
+
+a {
+    all: unset;
+    cursor: pointer;
+    font-family: Geologica;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+#preview-box {
+    position: fixed;
+    left: 260px;
+    top: 50px;
+    width: 312px;
+    height: 440px;
+    pointer-events: none; /* IMPORTANT */
+    display: block;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+#preview-box.show {
+    opacity: 1;
+}
+
+#preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: none;
+}
+
+#preview-loader {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #666;
+    background: repeating-linear-gradient(
+      45deg,
+      #f0f0f0,
+      #f0f0f0 10px,
+      #e6e6e6 10px,
+      #e6e6e6 20px
+    );
+}
+
+#preview-loader::after {
+    content: "";
+    width: 24px;
+    height: 24px;
+    border: 3px solid #ccc;
+    border-top-color: #666;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+}
+
+.selectors {
+    display: flex;
+    justify-content: center;
+    gap: 20%;
+}
+
+.output-area {
+    margin: 2em;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: flex-end;
+    gap: 5em;
+}
+
+.booster {
+    width: 30vh;
+    height: 50vh;
+    display: grid;
+    background-size: cover;
+}
+.booster:not(.flip):hover {
+    cursor: pointer;
+}
+
+.flip {
+    animation: booster-flip 1s;
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: contain;
+    animation-fill-mode: forwards
+}
+@keyframes booster-flip {
+    0% {};
+    25% {transform: rotateY(90deg);}
+    50% {transform: rotateY(180deg); background-image: url(./data/img/0.webp);}
+    75% {transform: rotateY(90deg);}
+    100% {transform: rotateY(0deg); background-image: none;}
+}
+
+.output {
+    display: grid;
+    grid-template-columns: 1fr 10fr 1fr;
+    align-items: start;
+    align-self: baseline;
+}
+.output.hidden {
+    display: none;
+}
+
+.count {
+    justify-self: center;
+    font-family: Geologica;
+}
+
+.rarity {
+    font-weight: bold;
+    user-select: none;
+    justify-self: center;
+    font-family: Morpheus;
+    margin-top: -0.2rem;
+}
+.Common {
+    color: #ffffff;
+}
+.Uncommon {
+    color: #1eff00;
+}
+.Rare {
+    color: #0070dd;
+}
+.Epic {
+    color: #a335ee;
+}
+.Legendary {
+    color: #ff8000;
+}
+
+/*  */
+
+.pack-track {
+    display: flex;
+    gap: 5rem;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    padding-top: 10vh;
+    padding-bottom: 20vh;
+    scroll-snap-type: x mandatory;
+
+    padding-left: calc(50vw - 15vh);
+    padding-right: calc(50vw - 15vh);
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.3) transparent;
+
+    mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 5%,
+        black 95%,
+        transparent 100%
+    );
+}
+.pack-track::-webkit-scrollbar {
+    height: 6px;
+}
+.pack-track::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 3px;
+}
+.pack-track::-webkit-scrollbar-track {
+    background: transparent;
+}
+.pack-track:hover::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+/*  */
+
+.booster.hoa1 {
+    background-image: url(./data/img/hoa1.webp);
+}
+.booster.hoa2 {
+    background-image: url(./data/img/hoa2.webp);
+}

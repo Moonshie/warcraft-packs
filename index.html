@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Sealed</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/hover-tilt/dist/hover-tilt.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght,CRSV@100..900,0&family=Reddit+Sans:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="header">WoW TCG Sealed</div>
+    <div class="selectors">
+        <div>
+            <label for="set-select">Choose Set</label>
+            <select name="set" id="set-select" onchange="changeSet(event)">
+                <option value="hoa" selected>Heroes of Azeroth</option>
+                <option value="tdp">Through the Dark Portal</option>
+            </select>
+        </div>
+        <div>
+            <label for="type-select">Choose Type</label>
+            <select name="type" id="type-select" onchange="changeSealedType(event)">
+                <option value="classic" selected>Classic</option>
+                <option value="enhanced">Enhanced</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- <div class="output-area">
+        <hover-tilt shadow scale-factor="1.05" glare-intensity="0.7">
+            <div class="booster" id="1" onclick="generate(1, event)">
+                <div class="output hidden" id="1output"></div>
+            </div>
+        </hover-tilt>
+        <hover-tilt shadow scale-factor="1.05" glare-intensity="0.7">
+            <div class="booster" id="2" onclick="generate(2, event)">
+                <div class="output hidden" id="2output"></div>
+            </div>
+        </hover-tilt>
+        <hover-tilt shadow scale-factor="1.05" glare-intensity="0.7">
+            <div class="booster" id="3" onclick="generate(3, event)">
+                <div class="output hidden" id="3output"></div>
+            </div>
+        </hover-tilt>
+        <hover-tilt shadow scale-factor="1.05" glare-intensity="0.7">
+            <div class="booster" id="4" onclick="generate(4, event)">
+                <div class="output hidden" id="4output"></div>
+            </div>
+        </hover-tilt>
+        <hover-tilt shadow scale-factor="1.05" glare-intensity="0.7">
+            <div class="booster" id="5" onclick="generate(5, event)">
+                <div class="output hidden" id="5output"></div>
+            </div>
+        </hover-tilt>
+        <hover-tilt shadow scale-factor="1.05" glare-intensity="0.7">
+            <div class="booster" id="6" onclick="generate(6, event)">
+                <div class="output hidden" id="6output"></div>
+            </div>
+        </hover-tilt>
+    </div> -->
+
+    <div class="pack-track">
+        <div class="pack">
+            <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
+                <div class="booster" id="1" onclick="generate(1, event)">
+                    <div class="output hidden" id="1output"></div>
+                </div>
+            </hover-tilt>
+        </div>
+        <div class="pack">
+            <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
+                <div class="booster" id="2" onclick="generate(2, event)">
+                    <div class="output hidden" id="2output"></div>
+                </div>
+            </hover-tilt>
+        </div>
+        <div class="pack">
+            <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
+                <div class="booster" id="3" onclick="generate(3, event)">
+                    <div class="output hidden" id="3output"></div>
+                </div>
+            </hover-tilt>
+        </div>
+        <div class="pack">
+            <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
+                <div class="booster" id="4" onclick="generate(4, event)">
+                    <div class="output hidden" id="4output"></div>
+                </div>
+            </hover-tilt>
+        </div>
+        <div class="pack">
+            <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
+                <div class="booster" id="5" onclick="generate(5, event)">
+                    <div class="output hidden" id="5output"></div>
+                </div>
+            </hover-tilt>
+        </div>
+        <div class="pack">
+            <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
+                <div class="booster" id="6" onclick="generate(6, event)">
+                    <div class="output hidden" id="6output"></div>
+                </div>
+            </hover-tilt>
+        </div>
+    </div>
+
+    <div id="preview-box">
+        <div id="preview-loader"></div>
+        <img id="preview-image" src="">
+    </div>
+
+    <script src="data/set/hoa.js"></script>
+    <script src="scripts/variables.js"></script>
+    <script src="scripts/generator.js"></script>
+    <script src="scripts/gui.js"></script>
+    <script src="scripts/onload.js"></script>
+</body>
+</html>
