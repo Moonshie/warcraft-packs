@@ -12,6 +12,7 @@
 body {
     background-color: #202020;
     color: #e6e6e6;
+    margin: 0;
 }
 
 a {
@@ -76,14 +77,36 @@ a:hover {
 }
 
 .header {
+    margin: 0;
+    height: 2rem;
     display: flex;
-    justify-content: center;
+    background-color: #101010;
+    align-items: center;
+    gap: 5rem;
+    padding: 0 0.5rem 0 0.5rem;
+}
+.menu-icon {
+    height: 2rem;
+}
+.menu-icon:hover {
+    cursor: pointer;
+}
+.menu-icon > * {
+    padding: 0;
+    width: 2rem;
+    height: 2rem;
 }
 
-.selectors {
+.sidebar {
     display: flex;
-    justify-content: center;
-    gap: 20%;
+    overflow: hidden;
+    background-color: #101010;
+    height: 100%;
+    flex-direction: column;
+    position: fixed;
+    width: 30vh;
+    z-index: 1000;
+    transition: 0.3s ease;
 }
 
 .output-area {

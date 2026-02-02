@@ -11,3 +11,13 @@ function randomBackgrounds(set) {
         document.getElementById(index).classList.add(set+(Math.floor(Math.random() * 2)+1));
     }
 }
+
+function toggleMenu() {
+    if (menuOpen == true) {
+        menu.style.width = 0;
+        menuOpen = false;
+    } else {
+        menu.style.width = '30vh'
+        menuOpen = true;
+    }
+}

@@ -19,6 +19,7 @@ const typeRank = {
     "Quest": 1,
 };
 const imageCache = {};
+const menu = document.querySelector(".sidebar");
 const previewBox = document.getElementById("preview-box");
 const previewImage = document.getElementById("preview-image");
 const previewLoader = document.getElementById("preview-loader");

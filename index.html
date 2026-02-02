@@ -12,23 +12,32 @@
 </head>
 <body>
 
-    <div class="header">WoW TCG Sealed</div>
-
-    <div class="selectors">
+    <div class="header">
+        <div class="menu-icon">
+            <img src="./data/icon/menu.png" onclick="toggleMenu()">
+        </div>
         <div>
-            <label for="set-select">Choose Set</label>
+            <label for="set-select">Set</label>
             <select name="set" id="set-select" onchange="changeSet(event)">
                 <option value="hoa" selected>Heroes of Azeroth</option>
                 <option value="tdp">Through the Dark Portal</option>
             </select>
         </div>
-        <div>
-            <label for="type-select">Choose Type</label>
+                <div>
+            <label for="type-select">Type</label>
             <select name="type" id="type-select" onchange="changeSealedType(event)">
                 <option value="classic" selected>Classic</option>
                 <option value="enhanced">Enhanced</option>
             </select>
         </div>
+        <div>
+            Warcraft Packs
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div class="sidebar-head">Card List</div>
+        <div class="card-list"></div>
     </div>
 
     <div class="pack-track">
