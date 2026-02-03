@@ -8,7 +8,7 @@ function boosterContent(set, type) {
     const epics = setList.filter(card => card.rarity === "Epic");
     const legendaries = setList.filter(card => card.rarity === "Legendary");
 
-    let rates = boosterChances[type];
+    let rates = rarityCount[type];
 
     for (let index = 0; index < rates[0]; index++) {
         newBooster.push(commons[Math.floor(Math.random()*commons.length)]);
@@ -29,7 +29,6 @@ function boosterContent(set, type) {
             newBooster.push(rares[Math.floor(Math.random()*rares.length)]);
         }
     }
-    fullSealed.push.apply(fullSealed, newBooster);
     return newBooster;
 }
 

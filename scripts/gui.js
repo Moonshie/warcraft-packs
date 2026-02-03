@@ -70,10 +70,10 @@ function addPacks(num, set, type) {
         let clonedPack = pack.cloneNode(true);
         const clonedBooster = clonedPack.querySelector(".booster");
         clonedBooster.classList.add(set+(Math.floor(Math.random() * 2)+1), set, type);
-        packsOnScreen++;
-        clonedBooster.id = packsOnScreen;
+        itemsOnScreen++;
+        clonedBooster.id = itemsOnScreen;
         const clonedOutput = clonedBooster.querySelector('.output');
-        clonedOutput.id = `${packsOnScreen}output`;
+        clonedOutput.id = `${itemsOnScreen}output`;
         track.appendChild(clonedPack);
     }
 }
@@ -82,9 +82,9 @@ function addStarter(set) {
     let clonedBox = box.cloneNode(true);
     const clonedStarter = clonedBox.querySelector(".starter");
     clonedStarter.classList.add(set);
-    packsOnScreen++;
-    clonedStarter.id = packsOnScreen;
+    itemsOnScreen++;
+    clonedStarter.id = itemsOnScreen;
     const clonedOutput = clonedStarter.querySelector('.output');
-    clonedOutput.id = `${packsOnScreen}output`;
+    clonedOutput.id = `${itemsOnScreen}output`;
     track.appendChild(clonedBox);
 };

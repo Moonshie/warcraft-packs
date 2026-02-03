@@ -18,10 +18,28 @@ const typeRank = {
     "Equipment": 2,
     "Quest": 1,
 };
-const boosterChances = {
-    "classic": [11, 3, 1, 0, 0],
+const rarityCounts = {
+    classic: {
+        'Common': 11,
+        'Uncommon': 3,
+        'Rare': 1,
+        'Epic': 0,
+        'Legendary': 0,
+    },
+    enhancedAbility: {
+        'Common': 6,
+        'Uncommon': 5,
+        'Rare': 4,
+        'Epic': 0,
+        'Legendary': 0,
+    }
+}
+const upgradeChances = {
+    rareToEpic: 0.125,
 }
 const imageCache = {};
+const generatedItems = {};
+
 const genButton = document.getElementById("generate");
 const menu = document.querySelector(".sidebar");
 const track = document.querySelector('.pack-track');
@@ -33,6 +51,7 @@ const previewBox = document.getElementById("preview-box");
 const previewImage = document.getElementById("preview-image");
 const previewLoader = document.getElementById("preview-loader");
 const sealedTypes = ["classic", "enhanced", "starter"];
+
 const sets = {
     'hoa': hoa
 };
@@ -42,5 +61,4 @@ const starters = {
 
 let currentSealedType = '';
 let currentSet = '';
-let packsOnScreen = 0;
-let fullSealed = [];
+let itemsOnScreen = 0;
