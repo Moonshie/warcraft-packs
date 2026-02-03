@@ -181,6 +181,15 @@ button:disabled {
 .booster:not(.flip):hover {
     cursor: pointer;
 }
+.starter {
+    width: 52vh;
+    height: 75vh;
+    display: grid;
+    background-size: cover;
+}
+.starter:not(.flip):hover {
+    cursor: pointer;
+}
 
 .flip {
     animation: booster-flip 1s;
@@ -283,4 +292,7 @@ button:disabled {
 }
 .booster.hoa2 {
     background-image: url(./data/img/hoa2.webp);
+}
+.starter.hoa {
+    background-image: url(./data/img/hoaBox.webp);
 }

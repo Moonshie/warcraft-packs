@@ -26,6 +26,7 @@ const genButton = document.getElementById("generate");
 const menu = document.querySelector(".sidebar");
 const track = document.querySelector('.pack-track');
 const pack = document.querySelector(".pack");
+const box = document.querySelector(".box");
 const setSelect = document.querySelector("#set-select");
 const typeSelect = document.querySelector("#type-select");
 const previewBox = document.getElementById("preview-box");
@@ -33,8 +34,11 @@ const previewImage = document.getElementById("preview-image");
 const previewLoader = document.getElementById("preview-loader");
 const sealedTypes = ["classic", "enhanced", "starter"];
 const sets = {
-    hoa: hoa
+    'hoa': hoa
 };
+const starters = {
+    'hoa': hoaStarters
+}
 
 let currentSealedType = '';
 let currentSet = '';

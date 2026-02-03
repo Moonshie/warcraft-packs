@@ -12,3 +12,5 @@ document.querySelectorAll("hover-tilt").forEach(pack => {
 });
 
 menuOpen = true;
+
+console.log(hoaStarters)

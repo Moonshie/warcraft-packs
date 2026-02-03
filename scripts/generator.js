@@ -1,12 +1,12 @@
-function boosterContent(type) {
+function boosterContent(set, type) {
     let newBooster = [];
-    const set = sets[currentSet];
+    const setList = sets[set];
 
-    const commons = set.filter(card => card.rarity === "Common");
-    const uncommons = set.filter(card => card.rarity === "Uncommon");
-    const rares = set.filter(card => card.rarity === "Rare");
-    const epics = set.filter(card => card.rarity === "Epic");
-    const legendaries = set.filter(card => card.rarity === "Legendary");
+    const commons = setList.filter(card => card.rarity === "Common");
+    const uncommons = setList.filter(card => card.rarity === "Uncommon");
+    const rares = setList.filter(card => card.rarity === "Rare");
+    const epics = setList.filter(card => card.rarity === "Epic");
+    const legendaries = setList.filter(card => card.rarity === "Legendary");
 
     let rates = boosterChances[type];
 
@@ -170,7 +170,12 @@ function sortPushBooster(booster, num) {
 
 function openBooster(num, event) {
     boosterUI(event);
-    setTimeout(() => {boosterCards(num, event.target.classList[2]);}, 800);
+    setTimeout(() => {boosterCards(num, event.target.classList[2], event.target.classList[3]);}, 800);
+}
+
+function openStarter(num, event) {
+    boosterUI(event);
+    setTimeout(() => {starterCards(num, event.target.classList[1]);}, 800);
 }
 
 function boosterUI(event) {
@@ -183,7 +188,26 @@ function boosterUI(event) {
     tilt.removeAttribute('shadow');
 }
 
-function boosterCards(num, type) {
-    let booster = boosterContent(type);
+function boosterCards(num, set, type) {
+    let booster = boosterContent(set, type);
     sortPushBooster(booster, num);
+}
+
+function starterCards(num, set) {
+    let starter = starterContent(set);
+    sortPushBooster(starter, num);
+    addPacks(2, set, "classic");
+}
+
+function starterContent(set) {
+    let newStarter = [];
+    const setList = sets[set];
+    const starterDecks = starters[set];
+    const heroes = Object.keys(starterDecks);
+    const deckList = starterDecks[heroes[Math.floor(Math.random() * heroes.length)]]
+    for (let index = 0; index < deckList.length; index++) {
+        setNumber = deckList[index]-1;
+        newStarter.push(setList[setNumber]);
+    }
+    return newStarter;
 }

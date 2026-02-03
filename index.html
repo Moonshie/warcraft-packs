@@ -47,7 +47,7 @@
                 <option value="" selected disabled>--- Select Type ---</option>
                 <option value="classic">Classic Sealed</option>
                 <option value="enhanced" disabled>Enhanced Sealed</option>
-                <option value="starter" disabled>Starter Deck</option>
+                <option value="starter">Starter Deck</option>
                 <option value="single">Single Pack</option>                
             </select>
         </div>
@@ -60,6 +60,7 @@
     </div>
 
     <div class="pack-track">
+
     </div>
 
     <div id="preview-box">
@@ -71,6 +72,13 @@
         <div class="pack">
             <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
                 <div class="booster" onclick="openBooster(id, event)">
+                    <div class="output hidden"></div>
+                </div>
+            </hover-tilt>
+        </div>
+        <div class="box">
+            <hover-tilt shadow scale-factor="1.1" tilt-factor="0.3" glare-intensity="0.3">
+                <div class="starter" onclick="openStarter(id, event)">
                     <div class="output hidden"></div>
                 </div>
             </hover-tilt>

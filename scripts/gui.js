@@ -39,28 +39,37 @@ function selectControl() {
 
 function generate() {
     if (currentSealedType == 'classic') {
-        genClassic();
+        genClassic(currentSet);
+    }
+    if (currentSealedType == 'starter') {
+        genStarter(currentSet);
     }
     if (currentSealedType == 'single') {
-        genSingle();
+        genSingle(currentSet);
     }
 }
 
-function genClassic() {
+function genClassic(set) {
     selectControl();
     buttonControl(false);
-    addPacks (6, "classic");
+    addPacks (6, set, "classic");
 }
 
-function genSingle() {
-    addPacks (1, "classic");
+function genStarter(set) {
+    selectControl();
+    buttonControl(false);
+    addStarter(set);
 }
 
-function addPacks (num, type) {
+function genSingle(set) {
+    addPacks (1, set, "classic");
+}
+
+function addPacks(num, set, type) {
     for (let index = 1; index <= num; index++) {
         let clonedPack = pack.cloneNode(true);
         const clonedBooster = clonedPack.querySelector(".booster");
-        clonedBooster.classList.add(currentSet+(Math.floor(Math.random() * 2)+1), type);
+        clonedBooster.classList.add(set+(Math.floor(Math.random() * 2)+1), set, type);
         packsOnScreen++;
         clonedBooster.id = packsOnScreen;
         const clonedOutput = clonedBooster.querySelector('.output');
@@ -68,3 +77,14 @@ function addPacks (num, type) {
         track.appendChild(clonedPack);
     }
 }
+
+function addStarter(set) {
+    let clonedBox = box.cloneNode(true);
+    const clonedStarter = clonedBox.querySelector(".starter");
+    clonedStarter.classList.add(set);
+    packsOnScreen++;
+    clonedStarter.id = packsOnScreen;
+    const clonedOutput = clonedStarter.querySelector('.output');
+    clonedOutput.id = `${packsOnScreen}output`;
+    track.appendChild(clonedBox);
+};
