@@ -19,6 +19,7 @@ const typeRank = {
     "Quest": 1,
 };
 const imageCache = {};
+const genButton = document.getElementById("generate");
 const menu = document.querySelector(".sidebar");
 const track = document.querySelector('.pack-track');
 const pack = document.querySelector(".pack");
@@ -26,11 +27,10 @@ const previewBox = document.getElementById("preview-box");
 const previewImage = document.getElementById("preview-image");
 const previewLoader = document.getElementById("preview-loader");
 const sealedTypes = ["classic", "enhanced", "starter"];
-let currentSealedType = "classic";
 const sets = {
     hoa: hoa
 };
-let currentSet = "hoa";
 
-
+let currentSealedType = '';
+let currentSet = '';
 let fullSealed = [];

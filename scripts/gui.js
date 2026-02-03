@@ -1,14 +1,14 @@
 function changeSealedType(event){
     currentSealedType = event.target.value;
+    if (currentSealedType && currentSet) {
+        buttonControl(true);
+    }
 }
 
 function changeSet(event){
     currentSet = event.target.value;
-}
-
-function randomBackgrounds(set) {
-    for (let index = 1; index < 7; index++) {
-        document.getElementById(index).classList.add(set+(Math.floor(Math.random() * 2)+1));
+    if (currentSealedType && currentSet) {
+        buttonControl(false);
     }
 }
 
@@ -34,5 +34,13 @@ function addPacks(num, set, type) {
         clonedOutput.id = `${index}output`;
         track.appendChild(clonedPack);
     }
-    document.getElementById("generate").disabled = true;
+    genButton.disabled = true;
+}
+
+function buttonControl(e) {
+    if (e == true) {
+        genButton.disabled = false;
+    } else {
+        genButton.disabled = true;
+    }
 }

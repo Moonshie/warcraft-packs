@@ -27,20 +27,32 @@
     <div class="sidebar">
         <div class="double">
             <label for="set-select">Set</label>
-            <select name="set" id="set-select" onchange="changeSet(event)">
-                <option value="hoa" selected>Heroes of Azeroth</option>
-                <option value="tdp">Through the Dark Portal</option>
+            <select name="set" id="set-select" autocomplete="off" onchange="changeSet(event)">
+                <option value="" selected disabled>--- Select Set ---</option>
+                <optgroup label="Azertoth Block">
+                    <option value="hoa">Heroes of Azeroth</option>
+                    <option value="tdp" disabled>Through the Dark Portal</option>
+                    <option value="foo" disabled>Fires of Outland</option>
+                </optgroup>
+                <optgroup label="Burning Crusade Block">
+                    <option value="mol" disabled>March of the Legion</option>
+                    <option value="sob" disabled>Servants of the Betrayer</option>
+                    <option value="hfi" disabled>The Hunt for Illidan</option>
+                </optgroup>
             </select>
         </div>
         <div class="double">
             <label for="type-select">Type</label>
-            <select name="type" id="type-select" onchange="changeSealedType(event)">
-                <option value="classic" selected>Classic</option>
-                <option value="enhanced">Enhanced</option>
+            <select name="type" id="type-select" autocomplete="off" onchange="changeSealedType(event)">
+                <option value="" selected disabled>--- Select Type ---</option>
+                <option value="classic">Classic Sealed</option>
+                <option value="enhanced" disabled>Enhanced Sealed</option>
+                <option value="starter" disabled>Starter Deck</option>
+                <option value="single" disabled>Single Pack</option>                
             </select>
         </div>
         <div class="single">
-            <button id="generate" onclick="addPacks(6, currentSet, currentSealedType)">GENERATE</button>
+            <button id="generate" disabled autocomplete="off" onclick="addPacks(6, currentSet, currentSealedType)">GENERATE</button>
         </div>
         <div class="single">
             <div>Card List</div>
