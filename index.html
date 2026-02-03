@@ -48,11 +48,11 @@
                 <option value="classic">Classic Sealed</option>
                 <option value="enhanced" disabled>Enhanced Sealed</option>
                 <option value="starter" disabled>Starter Deck</option>
-                <option value="single" disabled>Single Pack</option>                
+                <option value="single">Single Pack</option>                
             </select>
         </div>
         <div class="single">
-            <button id="generate" disabled autocomplete="off" onclick="addPacks(6, currentSet, currentSealedType)">GENERATE</button>
+            <button id="generate" disabled autocomplete="off" onclick="generate()">GENERATE</button>
         </div>
         <div class="single">
             <div>Card List</div>
@@ -70,7 +70,7 @@
     <div class="template">
         <div class="pack">
             <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
-                <div class="booster" onclick="generate(id, event)">
+                <div class="booster" onclick="openBooster(id, event)">
                     <div class="output hidden"></div>
                 </div>
             </hover-tilt>

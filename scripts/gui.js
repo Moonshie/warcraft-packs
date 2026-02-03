@@ -8,7 +8,7 @@ function changeSealedType(event){
 function changeSet(event){
     currentSet = event.target.value;
     if (currentSealedType && currentSet) {
-        buttonControl(false);
+        buttonControl(true);
     }
 }
 
@@ -24,23 +24,47 @@ function toggleMenu() {
     }
 }
 
-function addPacks(num, set, type) {
-    for (let index = 1; index <= num; index++) {
-        let clonedPack = pack.cloneNode(true);
-        const clonedBooster = clonedPack.querySelector(".booster");
-        clonedBooster.classList.add(set+(Math.floor(Math.random() * 2)+1));
-        clonedBooster.id = index;
-        const clonedOutput = clonedBooster.querySelector('.output');
-        clonedOutput.id = `${index}output`;
-        track.appendChild(clonedPack);
-    }
-    genButton.disabled = true;
-}
-
 function buttonControl(e) {
     if (e == true) {
         genButton.disabled = false;
     } else {
         genButton.disabled = true;
+    }
+}
+
+function selectControl() {
+    setSelect.disabled = true;
+    typeSelect.disabled = true;
+}
+
+function generate() {
+    if (currentSealedType == 'classic') {
+        genClassic();
+    }
+    if (currentSealedType == 'single') {
+        genSingle();
+    }
+}
+
+function genClassic() {
+    selectControl();
+    buttonControl(false);
+    addPacks (6, "classic");
+}
+
+function genSingle() {
+    addPacks (1, "classic");
+}
+
+function addPacks (num, type) {
+    for (let index = 1; index <= num; index++) {
+        let clonedPack = pack.cloneNode(true);
+        const clonedBooster = clonedPack.querySelector(".booster");
+        clonedBooster.classList.add(currentSet+(Math.floor(Math.random() * 2)+1), type);
+        packsOnScreen++;
+        clonedBooster.id = packsOnScreen;
+        const clonedOutput = clonedBooster.querySelector('.output');
+        clonedOutput.id = `${packsOnScreen}output`;
+        track.appendChild(clonedPack);
     }
 }

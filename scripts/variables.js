@@ -18,11 +18,16 @@ const typeRank = {
     "Equipment": 2,
     "Quest": 1,
 };
+const boosterChances = {
+    "classic": [11, 3, 1, 0, 0],
+}
 const imageCache = {};
 const genButton = document.getElementById("generate");
 const menu = document.querySelector(".sidebar");
 const track = document.querySelector('.pack-track');
 const pack = document.querySelector(".pack");
+const setSelect = document.querySelector("#set-select");
+const typeSelect = document.querySelector("#type-select");
 const previewBox = document.getElementById("preview-box");
 const previewImage = document.getElementById("preview-image");
 const previewLoader = document.getElementById("preview-loader");
@@ -33,4 +38,5 @@ const sets = {
 
 let currentSealedType = '';
 let currentSet = '';
+let packsOnScreen = 0;
 let fullSealed = [];

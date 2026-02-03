@@ -1,4 +1,4 @@
-function newBooster() {
+function boosterContent(type) {
     let newBooster = [];
     const set = sets[currentSet];
 
@@ -8,23 +8,15 @@ function newBooster() {
     const epics = set.filter(card => card.rarity === "Epic");
     const legendaries = set.filter(card => card.rarity === "Legendary");
 
-    let boosterSize = [];
+    let rates = boosterChances[type];
 
-    if (currentSealedType == 'classic') {
-        boosterSize.push(11, 3, 1);
-    }
-    
-    if (currentSealedType == 'enhanced') {
-        boosterSize.push(6, 5, 4);
-    }
-
-    for (let index = 0; index < boosterSize[0]; index++) {
+    for (let index = 0; index < rates[0]; index++) {
         newBooster.push(commons[Math.floor(Math.random()*commons.length)]);
     }
-    for (let index = 0; index < boosterSize[1]; index++) {
+    for (let index = 0; index < rates[1]; index++) {
         newBooster.push(uncommons[Math.floor(Math.random()*uncommons.length)]);
     }
-    for (let index = 0; index < boosterSize[2]; index++) {
+    for (let index = 0; index < rates[2]; index++) {
         if (epics.length > 0) {
             if (Math.random() < 0.125) {
                 newBooster.push(epics[Math.floor(Math.random()*epics.length)]);
@@ -176,12 +168,12 @@ function sortPushBooster(booster, num) {
     }
 }
 
-function generate(num, event) {
-    genUI(event);
-    setTimeout(() => {genCards(num);}, 800);
+function openBooster(num, event) {
+    boosterUI(event);
+    setTimeout(() => {boosterCards(num, event.target.classList[2]);}, 800);
 }
 
-function genUI(event) {
+function boosterUI(event) {
     event.target.onclick = false;
     event.target.classList.add("flip");
     const tilt = event.target.parentElement;
@@ -191,7 +183,7 @@ function genUI(event) {
     tilt.removeAttribute('shadow');
 }
 
-function genCards(num) {
-    let booster = newBooster();
+function boosterCards(num, type) {
+    let booster = boosterContent(type);
     sortPushBooster(booster, num);
 }
