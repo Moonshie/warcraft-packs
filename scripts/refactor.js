@@ -1,19 +1,21 @@
-function generateContent(set, type, rarityCount, extra='') {
+function generateContent(set, type, slotCount, extraFilters) {
     if (type === 'booster') {
-        return generateBooster(sets[set], rarityCount, extra);
+        return generateBooster(sets[set], slotCount, extraFilters);
     } else if (type === 'starter') {
         return generateStarter(sets[set], starters[set]);
     }
 }
 
-function generateBooster(set, rarityCount, extra) {
+function generateBooster(set, slotCount, extraFilters) {
     let item = {
         type: "booster",
         contents: []
     };
-    Object.entries(rarityCount).forEach(([rarity, count]) => {
+    console.log(slotCount)
+    slotCount.forEach((count, filters) => {
+        Object.assign(filters, extraFilters);
         for (let i = 0; i < count; i++) {
-            let card = generateCard(set, 'rarity', rarity, extra);
+            let card = generateCard(set, filters);
             item.contents.push(card);
         }});
     return item;
@@ -33,27 +35,23 @@ function generateStarter(set, starters) {
     return item;
 }
 
-function generateCard(set, _rarity, rarityValue, extra) {
-    extraFilters = Object.entries(extra);
+function generateCard(set, filters) {
     let pool = set;
-    extraFilters.forEach(([key, value]) => {
-        pool = pool.filter(card => value.includes(card[key]));
+    let filterValues;
+    Object.entries(filters).forEach(([key, value]) => {
+        filterValues = Array.isArray(value) ? value : [value];
+        pool = pool.filter(card => filterValues.includes(card[key]));
     });
-    if (rarityValue === 'Rare' && Math.random() <= upgradeChances.rareToEpic) {
-        rarityValue = 'Epic';
+    if (pool.length === 0) {
+        throw new Error(`No cards found for filters: ${JSON.stringify(filters)}`);
     }
-    potentialPool = pool.filter(card => card.rarity === rarityValue);
-    if (potentialPool.length === 0) {
-        rarityValue = 'Rare';
-        pool = pool.filter(card => card.rarity === rarityValue);
-        return pool[Math.floor(Math.random() * pool.length)];
-    }
-    return potentialPool[Math.floor(Math.random() * potentialPool.length)];
+    upgradeChances.forEach((chance, pair) => {
+        if (pair.every(filterValue => filterValues.includes(filterValue)) && Math.random() < chance) {
+            console.log("Upgrading card rarity");
+            pool = pool.filter(card => card.rarity === pair[1]);
+        }
+    })
+    return pool[Math.floor(Math.random() * pool.length)];
 }
 
-const extra = {
-    "class": ["Druid"],
-    "type": ["Ability"]
-}
-
-console.log(generateContent('hoa', 'booster', rarityCounts['classic']));
+console.log(generateContent('hoa', 'booster', slotCounts['universal']));

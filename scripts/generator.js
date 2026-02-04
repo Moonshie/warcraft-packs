@@ -8,7 +8,7 @@ function boosterContent(set, type) {
     const epics = setList.filter(card => card.rarity === "Epic");
     const legendaries = setList.filter(card => card.rarity === "Legendary");
 
-    let rates = rarityCount[type];
+    let rates = slotCount[type];
 
     for (let index = 0; index < rates[0]; index++) {
         newBooster.push(commons[Math.floor(Math.random()*commons.length)]);
