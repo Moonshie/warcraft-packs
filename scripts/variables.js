@@ -9,7 +9,6 @@ const factionRank = {
     "Alliance": 3,
     "Horde": 2,
     "Neutral": 1,
-    undefined: 1, // safety for missing faction
 };
 const typeRank = {
     "Hero": 5,
@@ -72,10 +71,12 @@ const previewLoader = document.getElementById("preview-loader");
 const sealedTypes = ["classic", "enhanced", "starter"];
 
 const sets = {
-    'hoa': hoa
+    'Azeroth': Azeroth,
+    'DarkPortal': DarkPortal,
 };
 const starters = {
-    'hoa': hoaStarters
+    'Azeroth': AzerothStarters,
+    'DarkPortal': DarkPortalStarters
 }
 
 let currentSealedType = '';

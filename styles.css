@@ -287,12 +287,12 @@ button:disabled {
 
 /*  */
 
-.booster.hoa1 {
-    background-image: url(./data/img/hoa1.webp);
+.booster.Azeroth1 {
+    background-image: url(./data/img/Azeroth1.webp);
 }
-.booster.hoa2 {
-    background-image: url(./data/img/hoa2.webp);
+.booster.Azeroth2 {
+    background-image: url(./data/img/Azeroth2.webp);
 }
-.starter.hoa {
-    background-image: url(./data/img/hoaBox.webp);
+.starter.Azeroth {
+    background-image: url(./data/img/AzerothBox.webp);
 }

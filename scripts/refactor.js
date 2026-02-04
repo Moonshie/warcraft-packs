@@ -40,7 +40,11 @@ function generateCard(set, filters) {
     let filterValues;
     Object.entries(filters).forEach(([key, value]) => {
         filterValues = Array.isArray(value) ? value : [value];
-        pool = pool.filter(card => filterValues.includes(card[key]));
+        pool = pool.filter(card => {
+            const cardValue = card[key];
+            const cardValues = Array.isArray(cardValue) ? cardValue : [cardValue];
+            return cardValues.some(cv => filterValues.includes(cv));
+        });
     });
     if (pool.length === 0) {
         throw new Error(`No cards found for filters: ${JSON.stringify(filters)}`);
@@ -54,4 +58,4 @@ function generateCard(set, filters) {
     return pool[Math.floor(Math.random() * pool.length)];
 }
 
-console.log(generateContent('hoa', 'booster', slotCounts['universal']));
+console.log(generateContent('Azeroth', 'booster', slotCounts['classic']));

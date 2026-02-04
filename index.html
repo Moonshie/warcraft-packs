@@ -30,14 +30,40 @@
             <select name="set" id="set-select" autocomplete="off" onchange="changeSet(event)">
                 <option value="" selected disabled>--- Select Set ---</option>
                 <optgroup label="Azertoth Block">
-                    <option value="hoa">Heroes of Azeroth</option>
-                    <option value="tdp" disabled>Through the Dark Portal</option>
-                    <option value="foo" disabled>Fires of Outland</option>
+                    <option value="Azeroth">Heroes of Azeroth</option>
+                    <option value="DarkPortal" disabled>Through the Dark Portal</option>
+                    <option value="Outland" disabled>Fires of Outland</option>
                 </optgroup>
                 <optgroup label="Burning Crusade Block">
-                    <option value="mol" disabled>March of the Legion</option>
-                    <option value="sob" disabled>Servants of the Betrayer</option>
-                    <option value="hfi" disabled>The Hunt for Illidan</option>
+                    <option value="Legion" disabled>March of the Legion</option>
+                    <option value="Betrayer" disabled>Servants of the Betrayer</option>
+                    <option value="Illidan" disabled>The Hunt for Illidan</option>
+                </optgroup>
+                <optgroup label="Drums of War Block">
+                    <option value="Drums" disabled>Drums of War</option>
+                    <option value="Gladiators" disabled>Blood of Gladiators</option>
+                    <option value="Honor" disabled>Fields of Honor</option>
+                </optgroup>
+                <optgroup label="Scourgewar Block">
+                    <option value="Scourgewar" disabled>Scourgewar</option>
+                    <option value="Wrathgate" disabled>Wrathgate</option>
+                    <option value="Icecrown" disabled>Icecrown</option>
+                </optgroup>
+                <optgroup label="Worldbreaker Block">
+                    <option value="Worldbreaker" disabled>Worldbreaker</option>
+                    <option value="Elements" disabled>War of the Elements</option>
+                    <option value="Twilight" disabled>Twilight of the Dragons</option>
+                </optgroup>
+                <optgroup label="Aftermath Block">
+                    <option value="Throne" disabled>Throne of the Tides</option>
+                    <option value="Crown" disabled>Crown of the Heavens</option>
+                    <option value="Tomb" disabled>Tomb of the Forgotten</option>
+                </optgroup>
+                <optgroup label="Timewalkers Block">
+                    <option value="Timewalkers" disabled>Timewalkers</option>
+                    <option value="Ancients" disabled>War of the Ancients</option>
+                    <option value="Betrayal" disabled>Betrayal of the Guardian</option>
+                    <option value="Reign" disabled>Reign of Fire</option>
                 </optgroup>
             </select>
         </div>
@@ -45,10 +71,18 @@
             <label for="type-select">Type</label>
             <select name="type" id="type-select" autocomplete="off" onchange="changeSealedType(event)">
                 <option value="" selected disabled>--- Select Type ---</option>
-                <option value="classic">Classic Sealed</option>
-                <option value="enhanced" disabled>Enhanced Sealed</option>
-                <option value="starter">Starter Deck</option>
-                <option value="single">Single Pack</option>                
+                <optgroup label="Sealed">
+                    <option value="classicSealed">Classic Sealed</option>
+                    <option value="enhancedSealed" disabled>Enhanced Sealed</option>
+                </optgroup>
+                <optgroup label="Preconstructed">
+                    <option value="starter">Starter Deck</option>
+                <optgroup label="Single Packs">
+                    <option value="classicPack">Classic Pack</option>
+                    <option value="abilityPack" disabled>Ability Pack</option>
+                    <option value="factionPack" disabled>Faction Pack</option>
+                    <option value="universalPack" disabled>Universal Pack</option>
+                </optgroup>     
             </select>
         </div>
         <div class="single">
@@ -86,7 +120,8 @@
     </div>
     
 
-    <script src="data/set/hoa.js"></script>
+    <script src="data/set/Azeroth.js"></script>
+    <script src="data/set/Dark Portal.js"></script>
     <script src="scripts/variables.js"></script>
     <script src="scripts/generator.js"></script>
     <script src="scripts/gui.js"></script>

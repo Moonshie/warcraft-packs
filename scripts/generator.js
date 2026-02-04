@@ -88,7 +88,7 @@ function sortPushBooster(booster, num) {
         nameDiv.classList.add('cardLink');
         nameDiv.innerHTML = name;
         nameDiv.setAttribute('href', `http://www.wowcards.info/card/azeroth/en/${data.setNumber}`)
-        nameDiv.setAttribute(`data-img`, hoaImg[data.setNumber-1])
+        nameDiv.setAttribute(`data-img`, AzerothImg[data.setNumber-1])
         nameDiv.setAttribute(`target`, "_blank")
 
         const rarityDiv = document.createElement("div");
