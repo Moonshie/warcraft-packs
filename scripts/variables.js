@@ -18,38 +18,46 @@ const typeRank = {
     "Quest": 1,
 };
 const slotCounts = {
-    classic: new Map([
+    classicBooster: new Map([
         [{'rarity': 'Common'}, 10],
         [{'rarity': 'Uncommon'}, 3],
         [{'rarity': ['Rare', 'Epic']}, 1],
         [{'type': 'Hero'}, 1]
     ]),
-    new: new Map ([
+    newBooster: new Map ([
         [{'rarity': 'Common'}, 12],
         [{'rarity': 'Uncommon'}, 4],
         [{'rarity': ['Rare', 'Epic']}, 1],
         [{'type': 'Hero'}, 1]
     ]),  
-    enhancedAbility: new Map ([
+    classAbilityBooster: new Map ([
         [{'rarity': 'Common', 'type': 'Ability'}, 6],
         [{'rarity': 'Uncommon', 'type': 'Ability'}, 5],
         [{'rarity': 'Rare', 'type': 'Ability'}, 4],
     ]),
-    allianceOnly: new Map ([
+    allianceBooster: new Map ([
         [{'rarity': 'Common', 'faction': 'Alliance'}, 10],
         [{'rarity': 'Uncommon', 'faction': 'Alliance'}, 3],
         [{'rarity': ['Rare', 'Epic'], 'faction': 'Alliance'}, 2],
     ]),
-    hordeOnly: new Map ([
+    hordeBooster: new Map ([
         [{'rarity': 'Common', 'faction': 'Horde'}, 10],
         [{'rarity': 'Uncommon', 'faction': 'Horde'}, 3],
         [{'rarity': ['Rare', 'Epic'], 'faction': 'Horde'}, 2],
     ]),
-    universal: new Map ([
+    universalBooster: new Map ([
         [{'rarity': 'Common', 'faction': '', 'class': ''}, 10],
         [{'rarity': 'Uncommon', 'faction': '', 'class': ''}, 3],
         [{'rarity': ['Rare', 'Epic'], 'faction': '', 'class': ''}, 2],
     ]),
+}
+const sealedTypes = {
+    classicSealed: {'classicBooster': 6},
+    enhancedSealed: {
+        'classAbilityBooster': 1,
+        'universalBooster': 2,
+        'factionBooster': 3
+    }
 }
 
 const upgradeChances = new Map([
@@ -68,15 +76,14 @@ const typeSelect = document.querySelector("#type-select");
 const previewBox = document.getElementById("preview-box");
 const previewImage = document.getElementById("preview-image");
 const previewLoader = document.getElementById("preview-loader");
-const sealedTypes = ["classic", "enhanced", "starter"];
 
 const sets = {
     'Azeroth': Azeroth,
     'DarkPortal': DarkPortal,
 };
-const starters = {
-    'Azeroth': AzerothStarters,
-    'DarkPortal': DarkPortalStarters
+const precons = {
+    'Azeroth': AzerothPrecons,
+    'DarkPortal': DarkPortalPrecons
 }
 
 let currentSealedType = '';

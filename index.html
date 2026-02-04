@@ -27,7 +27,7 @@
     <div class="sidebar">
         <div class="double">
             <label for="set-select">Set</label>
-            <select name="set" id="set-select" autocomplete="off" onchange="changeSet(event)">
+            <select name="set" id="set-select" autocomplete="off">
                 <option value="" selected disabled>--- Select Set ---</option>
                 <optgroup label="Azertoth Block">
                     <option value="Azeroth">Heroes of Azeroth</option>
@@ -69,24 +69,52 @@
         </div>
         <div class="double">
             <label for="type-select">Type</label>
-            <select name="type" id="type-select" autocomplete="off" onchange="changeSealedType(event)">
+            <select name="type" id="type-select" autocomplete="off">
                 <option value="" selected disabled>--- Select Type ---</option>
                 <optgroup label="Sealed">
-                    <option value="classicSealed">Classic Sealed</option>
-                    <option value="enhancedSealed" disabled>Enhanced Sealed</option>
+                    <option class='sealed' value="classicSealed">Classic Sealed</option>
+                    <option class='sealed' value="enhancedSealed">Enhanced Sealed</option>
                 </optgroup>
                 <optgroup label="Preconstructed">
-                    <option value="starter">Starter Deck</option>
-                <optgroup label="Single Packs">
-                    <option value="classicPack">Classic Pack</option>
-                    <option value="abilityPack" disabled>Ability Pack</option>
-                    <option value="factionPack" disabled>Faction Pack</option>
-                    <option value="universalPack" disabled>Universal Pack</option>
+                    <option class='preconstructed' value="starterDeck">Starter Deck</option>
+                <optgroup label="Single Boosters">
+                    <option class='booster' value="classicBooster">Classic Booster</option>
+                    <option class='booster' value="newBooster" disabled>New Booster</option>
+                    <option class='booster' value="classAbilityBooster" disabled>Class Ability Booster</option>
+                    <option class='booster' value="factionBooster" disabled>Faction Booster</option>
+                    <option class='booster' value="universalBooster" disabled>Universal Booster</option>
                 </optgroup>     
             </select>
         </div>
+        <div class="double">
+            <label for="type-select"></label>
+            <select name="class" id="class-select" autocomplete="off" disabled>
+                <option value="" selected disabled>--- Class ---</option>
+                <optgroup label="Sealed">
+                    <option value="Druid">Druid</option>
+                    <option value="Hunter">Hunter</option>
+                    <option value="Mage">Mage</option>
+                    <option value="Paladin">Paladin</option>
+                    <option value="Priest">Priest</option>
+                    <option value="Rogue">Rogue</option>
+                    <option value="Shaman">Shaman</option>
+                    <option value="Warlock">Warlock</option>
+                    <option value="Warrior">Warrior</option>
+                </optgroup>
+            </select>
+        </div>
+        <div class="double">
+            <label for="type-select"></label>
+            <select name="faction" id="faction-select" autocomplete="off" disabled>
+                <option value="" selected disabled>--- Faction ---</option>
+                <optgroup label="Sealed">
+                    <option value="Alliance">Alliance</option>
+                    <option value="Horde">Horde</option>
+                </optgroup>
+            </select>
+        </div>
         <div class="single">
-            <button id="generate" disabled autocomplete="off" onclick="generate()">GENERATE</button>
+            <button id="generate" autocomplete="off" onclick="generate()">GENERATE</button>
         </div>
         <div class="single">
             <div>Card List</div>
@@ -121,7 +149,7 @@
     
 
     <script src="data/set/Azeroth.js"></script>
-    <script src="data/set/Dark Portal.js"></script>
+    <script src="data/set/DarkPortal.js"></script>
     <script src="scripts/variables.js"></script>
     <script src="scripts/generator.js"></script>
     <script src="scripts/gui.js"></script>

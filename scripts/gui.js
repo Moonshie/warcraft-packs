@@ -1,17 +1,3 @@
-function changeSealedType(event){
-    currentSealedType = event.target.value;
-    if (currentSealedType && currentSet) {
-        buttonControl(true);
-    }
-}
-
-function changeSet(event){
-    currentSet = event.target.value;
-    if (currentSealedType && currentSet) {
-        buttonControl(true);
-    }
-}
-
 function toggleMenu() {
     if (menuOpen == true) {
         menu.style.width = 0;
@@ -37,17 +23,17 @@ function selectControl() {
     typeSelect.disabled = true;
 }
 
-function generate() {
-    if (currentSealedType == 'classic') {
-        genClassic(currentSet);
-    }
-    if (currentSealedType == 'starter') {
-        genStarter(currentSet);
-    }
-    if (currentSealedType == 'single') {
-        genSingle(currentSet);
-    }
-}
+// function generate() {
+//     if (currentSealedType == 'classic') {
+//         genClassic(currentSet);
+//     }
+//     if (currentSealedType == 'starter') {
+//         genStarter(currentSet);
+//     }
+//     if (currentSealedType == 'single') {
+//         genSingle(currentSet);
+//     }
+// }
 
 function genClassic(set) {
     selectControl();

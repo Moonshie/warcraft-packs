@@ -138,6 +138,10 @@ select {
     border-radius: 5px;
     font-family: Geologica;
 }
+select:disabled {
+    display: none;
+    color: #666666;
+}
 .single {
     display: flex;
     justify-content: center;

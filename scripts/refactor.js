@@ -1,9 +1,45 @@
-function generateContent(set, type, slotCount, extraFilters) {
-    if (type === 'booster') {
-        return generateBooster(sets[set], slotCount, extraFilters);
-    } else if (type === 'starter') {
-        return generateStarter(sets[set], starters[set]);
+function generate() {
+    set = sets[setSelect.value];
+    precon = precons[setSelect.value];
+
+    category = typeSelect.selectedOptions[0].className;
+    type = typeSelect.value;
+
+    if (!set) {
+        alert("Please select a valid set.");
+        return;
     }
+    if (!type) {
+        alert("Please select a valid type.");
+        return;
+    }
+
+    console.log(set, precon, category, type)
+    
+    if (category === 'sealed') {
+        item = generateSealed(set, type);
+    }
+    if (category === 'preconstructed') {
+        item = generatePreconstructed(set, precon);
+    }
+    if (category === 'booster') {
+        item = generateBooster(set, slotCounts[type])
+    }
+    console.log(item);
+}
+
+function generateSealed(set, type) {
+    let item = {
+        type: "sealed",
+        contents: []
+    };
+    Object.entries(sealedTypes[type]).forEach(([boosterType, count]) => { {
+        for (let i = 0; i < count; i++) {
+            let booster = generateBooster(set, slotCounts[boosterType])
+            item.contents.push(booster);
+        }
+    }});
+    return item;
 }
 
 function generateBooster(set, slotCount, extraFilters) {
@@ -21,7 +57,7 @@ function generateBooster(set, slotCount, extraFilters) {
     return item;
 }
 
-function generateStarter(set, starters) {
+function generatePreconstructed(set, starters) {
     let item = {
         type: "starter",
         contents: []
@@ -57,5 +93,3 @@ function generateCard(set, filters) {
     })
     return pool[Math.floor(Math.random() * pool.length)];
 }
-
-console.log(generateContent('Azeroth', 'booster', slotCounts['classic']));
