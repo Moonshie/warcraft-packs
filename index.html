@@ -24,104 +24,106 @@
         </div>
     </div>
 
-    <div class="sidebar">
-        <div class="double">
-            <label for="set-select">Set</label>
-            <select name="set" id="set-select" autocomplete="off">
-                <option value="" selected disabled>--- Select Set ---</option>
-                <optgroup label="Azertoth Block">
-                    <option value="Azeroth">Heroes of Azeroth</option>
-                    <option value="DarkPortal">Through the Dark Portal</option>
-                    <option value="Outland" disabled>Fires of Outland</option>
-                </optgroup>
-                <optgroup label="Burning Crusade Block">
-                    <option value="Legion" disabled>March of the Legion</option>
-                    <option value="Betrayer" disabled>Servants of the Betrayer</option>
-                    <option value="Illidan" disabled>The Hunt for Illidan</option>
-                </optgroup>
-                <optgroup label="Drums of War Block">
-                    <option value="Drums" disabled>Drums of War</option>
-                    <option value="Gladiators" disabled>Blood of Gladiators</option>
-                    <option value="Honor" disabled>Fields of Honor</option>
-                </optgroup>
-                <optgroup label="Scourgewar Block">
-                    <option value="Scourgewar" disabled>Scourgewar</option>
-                    <option value="Wrathgate" disabled>Wrathgate</option>
-                    <option value="Icecrown" disabled>Icecrown</option>
-                </optgroup>
-                <optgroup label="Worldbreaker Block">
-                    <option value="Worldbreaker" disabled>Worldbreaker</option>
-                    <option value="Elements" disabled>War of the Elements</option>
-                    <option value="Twilight" disabled>Twilight of the Dragons</option>
-                </optgroup>
-                <optgroup label="Aftermath Block">
-                    <option value="Throne" disabled>Throne of the Tides</option>
-                    <option value="Crown" disabled>Crown of the Heavens</option>
-                    <option value="Tomb" disabled>Tomb of the Forgotten</option>
-                </optgroup>
-                <optgroup label="Timewalkers Block">
-                    <option value="Timewalkers" disabled>Timewalkers</option>
-                    <option value="Ancients" disabled>War of the Ancients</option>
-                    <option value="Betrayal" disabled>Betrayal of the Guardian</option>
-                    <option value="Reign" disabled>Reign of Fire</option>
-                </optgroup>
-            </select>
-        </div>
-        <div class="double">
-            <label for="type-select">Type</label>
-            <select name="type" id="type-select" autocomplete="off">
-                <option value="" selected disabled>--- Select Type ---</option>
-                <optgroup label="Sealed">
-                    <option class='sealed' value="classicSealed">Classic Sealed</option>
-                    <option class='sealed' value="enhancedSealed" disabled>Enhanced Sealed</option>
-                </optgroup>
-                <optgroup label="Preconstructed">
-                    <option class='preconstructed' value="starterDeck">Starter Deck</option>
-                <optgroup label="Single Boosters">
-                    <option class='booster' value="classicBooster">Classic Booster</option>
-                    <option class='booster' value="newBooster" disabled>New Booster</option>
-                    <option class='booster' value="classAbilityBooster" disabled>Class Ability Booster</option>
-                    <option class='booster' value="factionBooster" disabled>Faction Booster</option>
-                    <option class='booster' value="universalBooster">Universal Booster</option>
-                </optgroup>     
-            </select>
-        </div>
-        <div class="double">
-            <label for="type-select"></label>
-            <select name="class" id="class-select" autocomplete="off" disabled>
-                <option value="" selected disabled>--- Class ---</option>
-                <optgroup label="Sealed">
-                    <option value="Druid">Druid</option>
-                    <option value="Hunter">Hunter</option>
-                    <option value="Mage">Mage</option>
-                    <option value="Paladin">Paladin</option>
-                    <option value="Priest">Priest</option>
-                    <option value="Rogue">Rogue</option>
-                    <option value="Shaman">Shaman</option>
-                    <option value="Warlock">Warlock</option>
-                    <option value="Warrior">Warrior</option>
-                </optgroup>
-            </select>
-        </div>
-        <div class="double">
-            <label for="type-select"></label>
-            <select name="faction" id="faction-select" autocomplete="off" disabled>
-                <option value="" selected disabled>--- Faction ---</option>
-                <optgroup label="Sealed">
-                    <option value="Alliance">Alliance</option>
-                    <option value="Horde">Horde</option>
-                </optgroup>
-            </select>
-        </div>
-        <div class="single">
-            <button id="generate" autocomplete="off" onclick="generate()">GENERATE</button>
-        </div>
-        <div class="single">
-            <div>Card List</div>
-        </div>
-    </div>
 
-    <div class="item-track">
+    <div class="main">
+        <div class="sidebar">
+            <div class="double">
+                <label for="set-select">Set</label>
+                <select name="set" id="set-select" autocomplete="off">
+                    <option value="" selected disabled>--- Select Set ---</option>
+                    <optgroup label="Azertoth Block">
+                        <option value="Azeroth" selected>Heroes of Azeroth</option>
+                        <option value="DarkPortal">Through the Dark Portal</option>
+                        <option value="Outland" disabled>Fires of Outland</option>
+                    </optgroup>
+                    <optgroup label="Burning Crusade Block">
+                        <option value="Legion" disabled>March of the Legion</option>
+                        <option value="Betrayer" disabled>Servants of the Betrayer</option>
+                        <option value="Illidan" disabled>The Hunt for Illidan</option>
+                    </optgroup>
+                    <optgroup label="Drums of War Block">
+                        <option value="Drums" disabled>Drums of War</option>
+                        <option value="Gladiators" disabled>Blood of Gladiators</option>
+                        <option value="Honor" disabled>Fields of Honor</option>
+                    </optgroup>
+                    <optgroup label="Scourgewar Block">
+                        <option value="Scourgewar" disabled>Scourgewar</option>
+                        <option value="Wrathgate" disabled>Wrathgate</option>
+                        <option value="Icecrown" disabled>Icecrown</option>
+                    </optgroup>
+                    <optgroup label="Worldbreaker Block">
+                        <option value="Worldbreaker" disabled>Worldbreaker</option>
+                        <option value="Elements" disabled>War of the Elements</option>
+                        <option value="Twilight" disabled>Twilight of the Dragons</option>
+                    </optgroup>
+                    <optgroup label="Aftermath Block">
+                        <option value="Throne" disabled>Throne of the Tides</option>
+                        <option value="Crown" disabled>Crown of the Heavens</option>
+                        <option value="Tomb" disabled>Tomb of the Forgotten</option>
+                    </optgroup>
+                    <optgroup label="Timewalkers Block">
+                        <option value="Timewalkers" disabled>Timewalkers</option>
+                        <option value="Ancients" disabled>War of the Ancients</option>
+                        <option value="Betrayal" disabled>Betrayal of the Guardian</option>
+                        <option value="Reign" disabled>Reign of Fire</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="double">
+                <label for="type-select">Type</label>
+                <select name="type" id="type-select" autocomplete="off">
+                    <option value="" selected disabled>--- Select Type ---</option>
+                    <optgroup label="Sealed">
+                        <option class='sealed' value="classicSealed">Classic Sealed</option>
+                        <option class='sealed' value="enhancedSealed" disabled>Enhanced Sealed</option>
+                    </optgroup>
+                    <optgroup label="Preconstructed">
+                        <option class='preconstructed' value="starterDeck">Starter Deck</option>
+                    <optgroup label="Single Boosters">
+                        <option class='booster' value="classicBooster">Classic Booster</option>
+                        <option class='booster' value="newBooster" disabled>New Booster</option>
+                        <option class='booster' value="classAbilityBooster" disabled>Class Ability Booster</option>
+                        <option class='booster' value="factionBooster" disabled>Faction Booster</option>
+                        <option class='booster' value="universalBooster">Universal Booster</option>
+                    </optgroup>     
+                </select>
+            </div>
+            <div class="double">
+                <label for="type-select"></label>
+                <select name="class" id="class-select" autocomplete="off" disabled>
+                    <option value="" selected disabled>--- Class ---</option>
+                    <optgroup label="Sealed">
+                        <option value="Druid">Druid</option>
+                        <option value="Hunter">Hunter</option>
+                        <option value="Mage">Mage</option>
+                        <option value="Paladin">Paladin</option>
+                        <option value="Priest">Priest</option>
+                        <option value="Rogue">Rogue</option>
+                        <option value="Shaman">Shaman</option>
+                        <option value="Warlock">Warlock</option>
+                        <option value="Warrior">Warrior</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="double">
+                <label for="type-select"></label>
+                <select name="faction" id="faction-select" autocomplete="off" disabled>
+                    <option value="" selected disabled>--- Faction ---</option>
+                    <optgroup label="Sealed">
+                        <option value="Alliance">Alliance</option>
+                        <option value="Horde">Horde</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="single">
+                <button id="generate" autocomplete="off" onclick="generate()">GENERATE</button>
+            </div>
+            <div class="single">
+                <div>Card List</div>
+            </div>
+        </div>
+        <div class="item-track">
+        </div>
     </div>
 
     <div id="preview-box">

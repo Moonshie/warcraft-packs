@@ -24,8 +24,6 @@ function generate() {
         generateBooster(set, slotCounts[type]);
     }
     render();
-    console.log(generatedItems);
-    console.log(renderedItems);
 }
 
 function generateSealed(set, type) {
@@ -96,6 +94,7 @@ function render() {
         renderItem(item);
         renderedItems.push(item);
     });
+    centerCorrectly();
     generatedItems.length = 0;
 }
 
@@ -272,4 +271,44 @@ function openBooster(id, booster) {
         });
       });
     }
+}
+
+function centerCorrectly() {
+    let menuSize = 0;
+    let offsetLeft = 0;
+    let offsetRight = 0;
+    if (menuOpen === true) {
+        menuSize = 30;
+    }
+
+    let leftmostItem = track.firstElementChild.className;
+    if (leftmostItem === 'booster-wrapper') {
+        offsetLeft = 15 + menuSize;
+    } else if (leftmostItem === 'box-wrapper') {
+        offsetLeft = 26 + menuSize;
+    }
+
+    let rightmostItem = track.lastElementChild.className;
+    if (rightmostItem === 'booster-wrapper') {
+        offsetRight = 15;
+    } else if (rightmostItem === 'box-wrapper') {
+        offsetRight = 26;
+    }
+
+    console.log(offsetLeft, offsetRight)
+    root.style.setProperty('--padding-left', `${offsetLeft}vh`)
+    root.style.setProperty('--padding-right', `${offsetRight}vh`)
+}
+
+function toggleMenu() {
+    if (menuOpen) {
+        menu.style.width = 0;
+        menu.style.borderRight = 'none';
+        menuOpen = false;
+    } else {
+        menu.style.width = '30vh'
+        menu.style.borderRight = '1px solid #8d6934';
+        menuOpen = true;
+    }
+    centerCorrectly();
 }

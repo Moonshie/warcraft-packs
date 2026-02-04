@@ -77,6 +77,7 @@ const imageCache = {};
 const generatedItems = []
 const renderedItems = [];
 
+const root = document.querySelector(':root');
 const genButton = document.getElementById("generate");
 const menu = document.querySelector(".sidebar");
 const track = document.querySelector('.item-track');
@@ -97,6 +98,4 @@ const precons = {
     'DarkPortal': DarkPortalPrecons
 }
 
-let currentSealedType = '';
-let currentSet = '';
-let itemsOnScreen = 0;
+let menuOpen = true;

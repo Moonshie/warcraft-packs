@@ -1,14 +1,4 @@
-function toggleMenu() {
-    if (menuOpen == true) {
-        menu.style.width = 0;
-        menu.style.borderRight = 'none';
-        menuOpen = false;
-    } else {
-        menu.style.width = '30vh'
-        menu.style.borderRight = '1px solid #8d6934';
-        menuOpen = true;
-    }
-}
+
 
 function buttonControl(e) {
     if (e == true) {
