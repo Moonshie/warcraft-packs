@@ -13,53 +13,51 @@ function generate() {
         alert("Please select a valid type.");
         return;
     }
-
-    console.log(set, precon, category, type)
     
     if (category === 'sealed') {
-        item = generateSealed(set, type);
+        generateSealed(set, type);
     }
     if (category === 'preconstructed') {
-        item = generatePreconstructed(set, precon);
+        generatePreconstructed(set, precon);
     }
     if (category === 'booster') {
-        item = generateBooster(set, slotCounts[type])
+        generateBooster(set, slotCounts[type]);
     }
-    console.log(item);
+    render();
+    console.log(generatedItems);
+    console.log(renderedItems);
 }
 
 function generateSealed(set, type) {
-    let item = {
-        type: "sealed",
-        contents: []
-    };
+    if (type === 'enhancedSealed') {
+        enhancedSealed(set)
+    }
     Object.entries(sealedTypes[type]).forEach(([boosterType, count]) => { {
         for (let i = 0; i < count; i++) {
-            let booster = generateBooster(set, slotCounts[boosterType])
-            item.contents.push(booster);
+            generateBooster(set, slotCounts[boosterType]);
         }
     }});
-    return item;
 }
 
 function generateBooster(set, slotCount, extraFilters) {
     let item = {
         type: "booster",
+        set: setSelect.value,
         contents: []
     };
-    console.log(slotCount)
     slotCount.forEach((count, filters) => {
         Object.assign(filters, extraFilters);
         for (let i = 0; i < count; i++) {
             let card = generateCard(set, filters);
             item.contents.push(card);
         }});
-    return item;
+    generatedItems.push(item);
 }
 
 function generatePreconstructed(set, starters) {
     let item = {
-        type: "starter",
+        type: "box",
+        set: setSelect.value,
         contents: []
     }
     const heroes = Object.keys(starters);
@@ -68,7 +66,7 @@ function generatePreconstructed(set, starters) {
         setNumber = deckList[index]-1;
         item.contents.push(set[setNumber]);
     }
-    return item;
+    generatedItems.push(item);
 }
 
 function generateCard(set, filters) {
@@ -87,9 +85,35 @@ function generateCard(set, filters) {
     }
     upgradeChances.forEach((chance, pair) => {
         if (pair.every(filterValue => filterValues.includes(filterValue)) && Math.random() < chance) {
-            console.log("Upgrading card rarity");
             pool = pool.filter(card => card.rarity === pair[1]);
         }
     })
     return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function render() {
+    generatedItems.forEach(item => {
+        renderItem(item);
+        renderedItems.push(item);
+    });
+    generatedItems.length = 0;
+}
+
+function renderItem(item) {
+    const cloneWrapper = document.querySelector(`.${item.type}-wrapper`).cloneNode(true);
+    const clone = cloneWrapper.querySelector(`.${item.type}`);
+    const cloneOutput = clone.querySelector('.output');
+    clone.id = renderedItems.length;
+    cloneOutput.id = `${renderedItems.length}-output`;
+
+    if (availableImages[item.set]) {
+        const images = availableImages[item.set][item.type];
+        console.log(images);
+        if (images && images.length > 0) {
+            const randomImage = images[Math.floor(Math.random() * images.length)];
+            clone.style.backgroundImage = `url(./data/img/${randomImage}.webp)`;
+        }
+    }
+
+    track.appendChild(cloneWrapper);
 }

@@ -31,7 +31,7 @@
                 <option value="" selected disabled>--- Select Set ---</option>
                 <optgroup label="Azertoth Block">
                     <option value="Azeroth">Heroes of Azeroth</option>
-                    <option value="DarkPortal" disabled>Through the Dark Portal</option>
+                    <option value="DarkPortal">Through the Dark Portal</option>
                     <option value="Outland" disabled>Fires of Outland</option>
                 </optgroup>
                 <optgroup label="Burning Crusade Block">
@@ -73,7 +73,7 @@
                 <option value="" selected disabled>--- Select Type ---</option>
                 <optgroup label="Sealed">
                     <option class='sealed' value="classicSealed">Classic Sealed</option>
-                    <option class='sealed' value="enhancedSealed">Enhanced Sealed</option>
+                    <option class='sealed' value="enhancedSealed" disabled>Enhanced Sealed</option>
                 </optgroup>
                 <optgroup label="Preconstructed">
                     <option class='preconstructed' value="starterDeck">Starter Deck</option>
@@ -82,7 +82,7 @@
                     <option class='booster' value="newBooster" disabled>New Booster</option>
                     <option class='booster' value="classAbilityBooster" disabled>Class Ability Booster</option>
                     <option class='booster' value="factionBooster" disabled>Faction Booster</option>
-                    <option class='booster' value="universalBooster" disabled>Universal Booster</option>
+                    <option class='booster' value="universalBooster">Universal Booster</option>
                 </optgroup>     
             </select>
         </div>
@@ -121,8 +121,7 @@
         </div>
     </div>
 
-    <div class="pack-track">
-
+    <div class="item-track">
     </div>
 
     <div id="preview-box">
@@ -131,16 +130,16 @@
     </div>
 
     <div class="template">
-        <div class="pack">
+        <div class="booster-wrapper">
             <hover-tilt shadow scale-factor="1" glare-intensity="0.7">
                 <div class="booster" onclick="openBooster(id, event)">
                     <div class="output hidden"></div>
                 </div>
             </hover-tilt>
         </div>
-        <div class="box">
+        <div class="box-wrapper">
             <hover-tilt shadow scale-factor="1.1" tilt-factor="0.3" glare-intensity="0.3">
-                <div class="starter" onclick="openStarter(id, event)">
+                <div class="box" onclick="openBox(id, event)">
                     <div class="output hidden"></div>
                 </div>
             </hover-tilt>

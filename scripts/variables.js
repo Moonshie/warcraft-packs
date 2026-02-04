@@ -59,16 +59,27 @@ const sealedTypes = {
         'factionBooster': 3
     }
 }
+const availableImages = {
+    Azeroth: {
+        booster: ['AzerothBooster1', 'AzerothBooster2'],
+        box: ['AzerothBox']
+    },
+    DarkPortal: {
+        booster: ['DarkPortalBooster1', 'DarkPortalBooster2'],
+        box: ['DarkPortalBox']
+    }
+}
 
 const upgradeChances = new Map([
     [['Rare', 'Epic'], 0.091] // 9.1% chance to upgrade Rare to Epic
 ])
 const imageCache = {};
-const generatedItems = {};
+const generatedItems = []
+const renderedItems = [];
 
 const genButton = document.getElementById("generate");
 const menu = document.querySelector(".sidebar");
-const track = document.querySelector('.pack-track');
+const track = document.querySelector('.item-track');
 const pack = document.querySelector(".pack");
 const box = document.querySelector(".box");
 const setSelect = document.querySelector("#set-select");

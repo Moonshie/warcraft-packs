@@ -127,6 +127,7 @@ a:hover {
 }
 label {
     justify-self: center;
+    user-select: none;
 }
 select {
     width: 85%;
@@ -185,13 +186,13 @@ button:disabled {
 .booster:not(.flip):hover {
     cursor: pointer;
 }
-.starter {
+.box {
     width: 52vh;
     height: 75vh;
     display: grid;
     background-size: cover;
 }
-.starter:not(.flip):hover {
+.box:not(.flip):hover {
     cursor: pointer;
 }
 
@@ -250,7 +251,7 @@ button:disabled {
 
 /*  */
 
-.pack-track {
+.item-track {
     display: flex;
     gap: 5rem;
 
@@ -275,28 +276,16 @@ button:disabled {
         transparent 100%
     );
 }
-.pack-track::-webkit-scrollbar {
+.item-track::-webkit-scrollbar {
     height: 6px;
 }
-.pack-track::-webkit-scrollbar-thumb {
+.item-track::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.25);
     border-radius: 3px;
 }
-.pack-track::-webkit-scrollbar-track {
+.item-track::-webkit-scrollbar-track {
     background: transparent;
 }
-.pack-track:hover::-webkit-scrollbar-thumb {
+.item-track:hover::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.35);
-}
-
-/*  */
-
-.booster.Azeroth1 {
-    background-image: url(./data/img/Azeroth1.webp);
-}
-.booster.Azeroth2 {
-    background-image: url(./data/img/Azeroth2.webp);
-}
-.starter.Azeroth {
-    background-image: url(./data/img/AzerothBox.webp);
 }
