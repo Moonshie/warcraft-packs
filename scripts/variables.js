@@ -86,9 +86,9 @@ const selects = [setSelect, typeSelect, classSelect, factionSelect]
 const extraSelects = [classSelect, factionSelect]
 
 const extraFilters = {
-    abilityBooster: classSelect,
-    equipmentBooster: classSelect,
-    factionBooster: factionSelect,
+    abilityBooster: [classSelect],
+    equipmentBooster: [classSelect],
+    factionBooster: [factionSelect]
 }
 const sealedTypes = {
     classicSealed: {'classicBooster': 6},

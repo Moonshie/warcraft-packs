@@ -131,7 +131,7 @@ a:hover {
     width: auto;
     z-index: 2;
     box-shadow: 0 0 0.5rem #8d6934;
-    clip-path: inset(0px -10px -10px -10px)
+    clip-path: inset(0px -10px -10px -10px);
 
 }
 .menu-wrapper.closed {
@@ -325,7 +325,7 @@ button:disabled {
     overflow-y: hidden;
 
     height: -webkit-fill-available;
-    padding-top: 10vh;
+    padding-top: 15vh;
     padding-left: calc(50% - var(--padding-left));
     padding-right: calc(50% - var(--padding-right));
     scroll-snap-type: x mandatory;

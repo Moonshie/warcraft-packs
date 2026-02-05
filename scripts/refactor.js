@@ -21,7 +21,7 @@ function generate() {
         generatePreconstructed(set, precon);
     }
     if (category === 'booster') {
-        generateBooster(set, slotCounts[type]);
+        generateBooster(set, slotCounts[type], extraFilters[type]);
     }
     render();
 }
@@ -37,14 +37,27 @@ function generateSealed(set, type) {
     }});
 }
 
-function generateBooster(set, slotCount, extraFilters) {
+function generateBooster(set, slotCount, extraFilters = []) {
+    tempFilters = {}
+    if (extraFilters != []) {
+        extraFilters.forEach(element => {
+            if (element.value === "") {
+                alert("Please select a valid option.");
+                throw new Error("No extra filter.");
+                ;
+            }
+            tempFilters[`${element.id.slice(0,-7)}`] = element.value;
+        });
+    }
+
     let item = {
         type: "booster",
         set: setSelect.value,
         contents: []
     };
+
     slotCount.forEach((count, filters) => {
-        Object.assign(filters, extraFilters);
+        Object.assign(filters, tempFilters);
         for (let i = 0; i < count; i++) {
             let card = generateCard(set, filters);
             item.contents.push(card);
@@ -107,7 +120,6 @@ function renderItem(item) {
 
     if (availableImages[item.set]) {
         const images = availableImages[item.set][item.type];
-        console.log(images);
         if (images && images.length > 0) {
             const randomImage = images[Math.floor(Math.random() * images.length)];
             clone.style.backgroundImage = `url(./data/img/${randomImage}.webp)`;
@@ -119,7 +131,6 @@ function renderItem(item) {
 
 function openItem(id) {
     const item = renderedItems[id];
-    console.log(item);
     itemAnimation(id);
     if (item.type === 'booster') {
         setTimeout(() => {openBooster(id, item);}, 800);
@@ -191,7 +202,7 @@ function openBooster(id, booster) {
         if (wowcardsString === 'darkportal') {
             wowcardsString = 'dark-portal';
         }
-        console.log(wowcardsString);
+
         nameDiv.setAttribute('href', `http://www.wowcards.info/card/${wowcardsString}/en/${data.setNumber}`)
         nameDiv.setAttribute(`dataImg`, `./data/cardImg/${booster['set']}/${data.setNumber}.jpg`);
         nameDiv.setAttribute(`target`, "_blank")
@@ -210,7 +221,6 @@ function openBooster(id, booster) {
     if (!isTouchDevice) {
     document.querySelectorAll("a").forEach(link => {
         const imgUrl = link.attributes.dataImg.value;
-        console.log(imgUrl);
     
         link.addEventListener("mouseenter", e => {
           previewBox.style.display = "block";
@@ -274,15 +284,14 @@ function openBooster(id, booster) {
 }
 
 function centerCorrectly() {
-    let menuSize = 0;
     let offsetLeft = 0;
     let offsetRight = 0;
 
     let leftmostItem = track.firstElementChild.className;
     if (leftmostItem === 'booster-wrapper') {
-        offsetLeft = 15 + menuSize;
+        offsetLeft = 15;
     } else if (leftmostItem === 'box-wrapper') {
-        offsetLeft = 26 + menuSize;
+        offsetLeft = 26;
     }
 
     let rightmostItem = track.lastElementChild.className;
@@ -292,7 +301,6 @@ function centerCorrectly() {
         offsetRight = 26;
     }
 
-    console.log(offsetLeft, offsetRight)
     root.style.setProperty('--padding-left', `${offsetLeft}vh`)
     root.style.setProperty('--padding-right', `${offsetRight}vh`)
 }
@@ -327,10 +335,9 @@ function toggleMenu(id) {
 
 function checkSelectors() {
     extraSelect = extraFilters[typeSelect.value];
-    console.log(extraSelect);
+    extraSelect === undefined ? extraSelect = [] : true;
     extraSelects.forEach(element => {
-
-        if (element === extraSelect) {
+        if (extraSelect.includes(element)) {
             element.classList.remove('disabled');
         } else {
             element.selectedIndex = 0;
