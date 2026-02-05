@@ -85,11 +85,18 @@ const slotCounts = {
 console.log(slotCounts);
 const selects = [setSelect, typeSelect, classSelect, factionSelect]
 const extraSelects = [classSelect, factionSelect]
-
 const extraFilters = {
     abilityBooster: [classSelect],
     equipmentBooster: [classSelect],
     factionBooster: [factionSelect]
+}
+const allowDuplicates = {
+    classicBooster: false,
+    newBooster: false,
+    abilityBooster: true,
+    equipmentBooster: true,
+    factionBooster: false,
+    neutralBooster: false,
 }
 const sealedTypes = {
     classicSealed: {'classicBooster': 6},

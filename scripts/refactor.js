@@ -21,7 +21,7 @@ function generate() {
         generatePreconstructed(set, precon);
     }
     if (category === 'booster') {
-        generateBooster(set, slotCounts[type], extraFilters[type]);
+        generateBooster(set, type, extraFilters[type]);
     }
     render();
 }
@@ -37,7 +37,7 @@ function generateSealed(set, type) {
     }});
 }
 
-function generateBooster(set, slotCount, extraFilters = []) {
+function generateBooster(set, type, extraFilters = []) {
     tempFilters = {}
     if (extraFilters != []) {
         extraFilters.forEach(element => {
@@ -56,11 +56,18 @@ function generateBooster(set, slotCount, extraFilters = []) {
         contents: []
     };
 
-    slotCount.forEach((count, filters) => {
+    slotCounts[type].forEach((count, filters) => {
         Object.assign(filters, tempFilters);
         for (let i = 0; i < count; i++) {
-            let card = generateCard(set, filters);
+            let card = generateCard(item, set, filters);
             item.contents.push(card);
+            if (allowDuplicates[type] === false) {
+                console.log('preventing duplicates')
+                item['contents'].forEach(generatedCard => {
+                    set = set.filter(card => generatedCard != card)
+                });
+                console.log(set);
+            }
         }});
     generatedItems.push(item);
 }
@@ -80,7 +87,7 @@ function generatePreconstructed(set, starters) {
     generatedItems.push(item);
 }
 
-function generateCard(set, filters) {
+function generateCard(item, set, filters) {
     let pool = set;
     let filterValues;
     let card;
@@ -93,7 +100,7 @@ function generateCard(set, filters) {
                 if (Math.random() < chance) {
                     let upgradedFilters = structuredClone(filters);
                     upgradedFilters['rarity'] = pair[1];
-                    upgradedCard = generateCard(set, upgradedFilters)
+                    upgradedCard = generateCard(item, set, upgradedFilters)
                 }
             }
         });

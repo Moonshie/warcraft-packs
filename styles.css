@@ -198,7 +198,7 @@ select.disabled {
     justify-content: center;
 }
 button {
-    width: 12rem;
+    width: 8rem;
     background-color: #e6cc80;
     border: none;
     border-radius: 5px;
@@ -325,7 +325,7 @@ button:disabled {
     overflow-y: hidden;
 
     height: -webkit-fill-available;
-    padding-top: 15vh;
+    padding-top: 20%;
     padding-left: calc(50% - var(--padding-left));
     padding-right: calc(50% - var(--padding-right));
     scroll-snap-type: x mandatory;
