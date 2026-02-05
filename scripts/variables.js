@@ -35,17 +35,16 @@ const slotCounts = {
         [{'rarity': 'Uncommon', 'type': 'Ability'}, 5],
         [{'rarity': 'Rare', 'type': 'Ability'}, 4],
     ]),
-    allianceBooster: new Map ([
-        [{'rarity': 'Common', 'faction': 'Alliance'}, 10],
-        [{'rarity': 'Uncommon', 'faction': 'Alliance'}, 3],
-        [{'rarity': ['Rare', 'Epic'], 'faction': 'Alliance'}, 2],
+    classEquipmentBooster: new Map ([
+        [{'rarity': 'Uncommon', 'type': 'Equipment'}, 6],
+        [{'rarity': 'Rare', 'type': 'Equipment'}, 4]
     ]),
-    hordeBooster: new Map ([
-        [{'rarity': 'Common', 'faction': 'Horde'}, 10],
-        [{'rarity': 'Uncommon', 'faction': 'Horde'}, 3],
-        [{'rarity': ['Rare', 'Epic'], 'faction': 'Horde'}, 2],
+    factiomBooster: new Map ([
+        [{'rarity': 'Common'}, 10],
+        [{'rarity': 'Uncommon'}, 3],
+        [{'rarity': ['Rare', 'Epic']}, 2],
     ]),
-    universalBooster: new Map ([
+    neutralBooster: new Map ([
         [{'rarity': 'Common', 'faction': '', 'class': ''}, 10],
         [{'rarity': 'Uncommon', 'faction': '', 'class': ''}, 3],
         [{'rarity': ['Rare', 'Epic'], 'faction': '', 'class': ''}, 2],
