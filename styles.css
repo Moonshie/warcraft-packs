@@ -319,13 +319,13 @@ button:disabled {
 .item-track {
     transition: all 0.3s ease;
     display: flex;
-    gap: 5rem;
+    gap: 3.5rem;
 
     overflow-x: scroll;
     overflow-y: hidden;
 
     height: -webkit-fill-available;
-    padding-top: 20%;
+    padding-top: clamp(10vh, 20vh, 30vh);
     padding-left: calc(50% - var(--padding-left));
     padding-right: calc(50% - var(--padding-right));
     scroll-snap-type: x mandatory;
