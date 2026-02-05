@@ -277,9 +277,6 @@ function centerCorrectly() {
     let menuSize = 0;
     let offsetLeft = 0;
     let offsetRight = 0;
-    if (menuOpen === true) {
-        menuSize = 30;
-    }
 
     let leftmostItem = track.firstElementChild.className;
     if (leftmostItem === 'booster-wrapper') {
@@ -300,15 +297,30 @@ function centerCorrectly() {
     root.style.setProperty('--padding-right', `${offsetRight}vh`)
 }
 
-function toggleMenu() {
-    if (menuOpen) {
-        menu.style.width = 0;
-        menu.style.borderRight = 'none';
-        menuOpen = false;
-    } else {
-        menu.style.width = '30vh'
-        menu.style.borderRight = '1px solid #8d6934';
-        menuOpen = true;
+function toggleMenu(id) {
+    if (openMenus[id] === true) {
+        if (id === 'left') {
+            left.classList.add('closed');
+            openMenus[id] = false;
+        } else if (id === 'right') {
+            right.classList.add('closed');
+            openMenus[id] = false;
+        } else if (id === 'center') {
+            center.classList.add('closed');
+            center.style.translate = `0 -${window.getComputedStyle(center).getPropertyValue('height')}`;
+            openMenus[id] = false;
+        }
+    } else if (openMenus[id] === false) {
+        if (id === 'left') {
+            left.classList.remove('closed');
+            openMenus[id] = true;
+        } else if (id === 'right') {
+            right.classList.remove('closed');
+            openMenus[id] = true;
+        } else if (id === 'center') {
+            center.classList.remove('closed');
+            center.style.translate = ``;
+            openMenus[id] = true;
+        }
     }
-    centerCorrectly();
 }

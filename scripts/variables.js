@@ -69,6 +69,11 @@ const availableImages = {
         box: ['DarkPortalBox']
     }
 }
+const openMenus = {
+    left: false,
+    center: true,
+    right: false,
+}
 
 const upgradeChances = new Map([
     [['Rare', 'Epic'], 0.091] // 9.1% chance to upgrade Rare to Epic
@@ -79,7 +84,9 @@ const renderedItems = [];
 
 const root = document.querySelector(':root');
 const genButton = document.getElementById("generate");
-const menu = document.querySelector(".sidebar");
+const left = document.querySelector(".sidebar#left");
+const center = document.querySelector(".menu-wrapper");
+const right = document.querySelector(".sidebar#right");
 const track = document.querySelector('.item-track');
 const pack = document.querySelector(".pack");
 const box = document.querySelector(".box");
@@ -98,4 +105,5 @@ const precons = {
     'DarkPortal': DarkPortalPrecons
 }
 
-let menuOpen = true;
+console.log(left, center, right)
+console.log(openMenus)

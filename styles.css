@@ -91,8 +91,10 @@ a:hover {
     gap: 5rem;
     padding: 0 0.5rem 0 0.5rem;
     justify-content: space-between;
-    border-bottom: 1px solid #8d6934;
+    border: 1px solid #8d6934;
     box-sizing: border-box;
+    position: relative;
+    z-index: 2;
 }
 .icon {
     height: 2rem;
@@ -100,7 +102,7 @@ a:hover {
 }
 .icon:hover {
     cursor: pointer;
-    transform: scale(1.05);
+    transform: scale(0.9);
 }
 .icon > * {
     padding: 0;
@@ -108,19 +110,56 @@ a:hover {
     height: 2rem;
 }
 
-.sidebar {
+.menu-wrapper {
     display: flex;
-    flex-shrink: 0;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.menu {
+    background-color: #101010;
+    border: 1px solid #8d6934;
+    border-top: none;
+    padding: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: space-around;
+    align-items: center;
+    width: auto;
+    z-index: 2;
+}
+.menu-wrapper.closed {
+    visibility: hidden;
+}
+
+.sidebar {
+    position: absolute;
+    top: 0;
+    display: flex;
     overflow: hidden;
     background-color: #101010;
-    height: 95vh;
+    height: 100vh;
     flex-direction: column;
-    width: 30vh;
-    z-index: 1000;
+    width: clamp(10%, 30vh, 50vw);
+    z-index: 1;
     transition: all 0.3s ease;
     gap: 0.5rem;
-    border-right: 1px solid#8d6934;
     padding-top: 0.5rem;
+    box-sizing: border-box;
+}
+.sidebar#left {
+    border-right: 1px solid#8d6934;
+}
+.sidebar#right {
+    right: 0;
+    border: none;
+    border-left: 1px solid #8d6934;
+}
+.sidebar.closed {
+    width: 0;
+    border: none !important;
 }
 
 .double {
@@ -132,7 +171,7 @@ label {
     user-select: none;
 }
 select {
-    width: 85%;
+    width: 10rem;
     height: 1.2rem;
     justify-self: center;
     background-color: #202020;
@@ -150,8 +189,7 @@ select:disabled {
     justify-content: center;
 }
 button {
-    width: 65%;
-    justify-self: center;
+    width: 12rem;
     background-color: #e6cc80;
     border: none;
     border-radius: 5px;
@@ -185,6 +223,7 @@ button:disabled {
     display: grid;
     background-size: cover;
     transition: all 0.3s ease;
+    box-sizing: border-box;
 }
 .booster:not(.flip):hover {
     cursor: pointer;
@@ -194,6 +233,7 @@ button:disabled {
     height: 75vh;
     display: grid;
     background-size: cover;
+    box-sizing: border-box;
 }
 .box:not(.flip):hover {
     cursor: pointer;
@@ -214,7 +254,7 @@ button:disabled {
     100% {transform: rotateY(0deg); background-image: none;}
 }
 .open {
-    padding: 1rem;
+    padding: 0.3rem;
     border: 1px solid #8d693470;
     border-radius: 10px;
     box-shadow: 0 0 10px #8d6934;
@@ -259,10 +299,6 @@ button:disabled {
 }
 
 /*  */
-
-.main {
-    display: flex;
-}
 
 .item-track {
     transition: all 0.3s ease;
