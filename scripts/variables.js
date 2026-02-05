@@ -53,13 +53,13 @@ const slotCounts = {
     classicBooster: new Map([
         [{'rarity': 'Common'}, 10],
         [{'rarity': 'Uncommon'}, 3],
-        [{'rarity': ['Rare', 'Epic']}, 1],
+        [{'rarity': 'Rare'}, 1],
         [{'type': 'Hero'}, 1]
     ]),
     newBooster: new Map ([
         [{'rarity': 'Common'}, 12],
         [{'rarity': 'Uncommon'}, 4],
-        [{'rarity': ['Rare', 'Epic']}, 1],
+        [{'rarity': 'Rare'}, 1],
         [{'type': 'Hero'}, 1]
     ]),  
     abilityBooster: new Map ([
@@ -74,12 +74,12 @@ const slotCounts = {
     factionBooster: new Map ([
         [{'rarity': 'Common'}, 10],
         [{'rarity': 'Uncommon'}, 3],
-        [{'rarity': ['Rare', 'Epic']}, 2],
+        [{'rarity': 'Rare'}, 2],
     ]),
     neutralBooster: new Map ([
         [{'rarity': 'Common', 'faction': '', 'class': ''}, 10],
         [{'rarity': 'Uncommon', 'faction': '', 'class': ''}, 3],
-        [{'rarity': ['Rare', 'Epic'], 'faction': '', 'class': ''}, 2],
+        [{'rarity': 'Rare', 'faction': '', 'class': ''}, 2],
     ]),
 }
 const selects = [setSelect, typeSelect, classSelect, factionSelect]

@@ -83,8 +83,21 @@ function generatePreconstructed(set, starters) {
 function generateCard(set, filters) {
     let pool = set;
     let filterValues;
+    let card;
+    let upgradedCard;
     Object.entries(filters).forEach(([key, value]) => {
         filterValues = Array.isArray(value) ? value : [value];
+
+        upgradeChances.forEach((chance, pair) => {
+            if (filterValues == pair[0]) {
+                if (Math.random() < chance) {
+                    let upgradedFilters = structuredClone(filters);
+                    upgradedFilters['rarity'] = pair[1];
+                    upgradedCard = generateCard(set, upgradedFilters)
+                }
+            }
+        });
+        
         pool = pool.filter(card => {
             const cardValue = card[key];
             const cardValues = Array.isArray(cardValue) ? cardValue : [cardValue];
@@ -92,14 +105,15 @@ function generateCard(set, filters) {
         });
     });
     if (pool.length === 0) {
-        throw new Error(`No cards found for filters: ${JSON.stringify(filters)}`);
+        console.log(`No cards found for filters: ${JSON.stringify(filters)}`);
+        card = '';
     }
-    upgradeChances.forEach((chance, pair) => {
-        if (pair.every(filterValue => filterValues.includes(filterValue)) && Math.random() < chance) {
-            pool = pool.filter(card => card.rarity === pair[1]);
-        }
-    })
-    return pool[Math.floor(Math.random() * pool.length)];
+    if (upgradedCard) {
+        return upgradedCard;
+    } else {
+        card = pool[Math.floor(Math.random() * pool.length)]
+        return card;
+    }
 }
 
 function render() {
