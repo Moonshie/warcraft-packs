@@ -97,12 +97,28 @@ function generateCard(set, filters) {
                 }
             }
         });
-        
+
         pool = pool.filter(card => {
             const cardValue = card[key];
             const cardValues = Array.isArray(cardValue) ? cardValue : [cardValue];
-            return cardValues.some(cv => filterValues.includes(cv));
+            
+            const positiveFilters = filterValues.filter(fv => !fv.startsWith('!'));
+            const negativeFilters = filterValues.filter(fv => fv.startsWith('!')).map(fv => fv.slice(1));
+            
+            if (positiveFilters.length > 0) {
+                if (!cardValues.some(cv => positiveFilters.includes(cv))) {
+                    return false;
+                }
+            }
+            
+            if (negativeFilters.length > 0) {
+                if (cardValues.some(cv => negativeFilters.includes(cv))) {
+                    return false;
+                }
+            }
+            return true;
         });
+
     });
     if (pool.length === 0) {
         console.log(`No cards found for filters: ${JSON.stringify(filters)}`);
