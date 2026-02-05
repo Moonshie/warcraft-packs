@@ -116,6 +116,7 @@ const availableImages = {
         box: ['DarkPortalBox']
     }
 }
+
 const openMenus = {
     left: false,
     center: true,

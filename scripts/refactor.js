@@ -32,7 +32,7 @@ function generateSealed(set, type) {
     }
     Object.entries(sealedTypes[type]).forEach(([boosterType, count]) => { {
         for (let i = 0; i < count; i++) {
-            generateBooster(set, slotCounts[boosterType]);
+            generateBooster(set, boosterType, extraFilters[type]);
         }
     }});
 }
@@ -62,11 +62,9 @@ function generateBooster(set, type, extraFilters = []) {
             let card = generateCard(item, set, filters);
             item.contents.push(card);
             if (allowDuplicates[type] === false) {
-                console.log('preventing duplicates')
                 item['contents'].forEach(generatedCard => {
                     set = set.filter(card => generatedCard != card)
                 });
-                console.log(set);
             }
         }});
     generatedItems.push(item);
@@ -187,11 +185,31 @@ function itemAnimation(id) {
 }
 
 function openBooster(id, booster) {
-    let counts = new Map();
+    const counted = countCards(booster['contents'])
 
-    for (const key of booster['contents']) {
-        if (!counts.has(key.name)) {
-            counts.set(key.name, {
+    const sorted = sortCards(counted);
+
+    renderBooster(id, booster, sorted);
+}
+
+function countAll() {
+    let total = [];
+    Object.keys(renderedItems).forEach(e => {
+        total = total.concat(renderedItems[e]['contents']);
+    });
+    counted = countCards(total);
+    sorted = sortCards(counted);
+    console.log(sorted);
+    sorted.forEach(element => {
+        document.querySelector(".full-out").innerHTML += `${element[1]['count']} ${element[0]} <br>`
+    })
+}
+
+function countCards(cards) {
+    let counts = new Map();
+    for (const key of cards) {
+    if (!counts.has(key.name)) {
+        counts.set(key.name, {
             count: 0,
             setNumber: key.setNumber,
             type: key.type,
@@ -199,30 +217,14 @@ function openBooster(id, booster) {
             factionn: key.faction,
             cost: key.cost,
             rarity: key.rarity,
-            });
-        }
+        });
+    }
     counts.get(key.name).count++;
     }
+    return counts;
+}
 
-    const sorted = [...counts.entries()].sort(([nameA, dataA], [nameB, dataB]) => {
-        let diff = rarityRank[dataB.rarity] - rarityRank[dataA.rarity];
-        if (diff !== 0) return diff;
-
-        diff = (typeRank[dataB.type] ?? 0) - (typeRank[dataA.type] ?? 0);
-        if (diff !== 0) return diff;
-    
-        diff = (factionRank[dataB.factionn] ?? 1) - (factionRank[dataA.factionn] ?? 1);
-        if (diff !== 0) return diff;
-    
-        diff = (dataB.cost ?? 0) - (dataA.cost ?? 0);
-        if (diff !== 0) return diff;
-    
-        diff = dataB.count - dataA.count;
-        if (diff !== 0) return diff;
-    
-        return (dataA.setNumber ?? 0) - (dataB.setNumber ?? 0);
-    });
-
+function renderBooster(id, booster, sorted) {
     const output = document.getElementById(id+`-output`);
     output.innerHTML = "";
     output.className = "output";
@@ -253,70 +255,74 @@ function openBooster(id, booster) {
         output.appendChild(rarityDiv);
     });
 
+    attachPreviewListeners();
+}
+
+function attachPreviewListeners() {
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     
     if (!isTouchDevice) {
-    document.querySelectorAll("a").forEach(link => {
-        const imgUrl = link.attributes.dataImg.value;
-    
-        link.addEventListener("mouseenter", e => {
-          previewBox.style.display = "block";
-          previewBox.classList.add("show");
+        document.querySelectorAll("a").forEach(link => {
+            const imgUrl = link.attributes.dataImg.value;
+        
+            link.addEventListener("mouseenter", e => {
+              previewBox.style.display = "block";
+              previewBox.classList.add("show");
 
-        if (previewImage.dataset.src === imgUrl) return;
+            if (previewImage.dataset.src === imgUrl) return;
 
-        if (imageCache[imgUrl]) {
-        previewLoader.style.display = "none";
-        previewImage.style.display = "block";
-        previewImage.src = imgUrl;
-        previewImage.dataset.src = imgUrl;
-        return;
-        }
-
-        previewImage.style.display = "none";
-        previewLoader.style.display = "flex";
-
-        const img = new Image();
-        img.src = imgUrl;
-
-        img.onload = () => {
-            imageCache[imgUrl] = true;
-            previewImage.src = imgUrl;
-            previewImage.dataset.src = imgUrl;
+            if (imageCache[imgUrl]) {
             previewLoader.style.display = "none";
             previewImage.style.display = "block";
-        };
-    
-        img.onerror = () => {
-            previewLoader.textContent = "Failed to load";
-          };
-        });
-    
-        link.addEventListener("mousemove", e => {
-            const offset = 20;
-            const boxWidth = previewBox.offsetWidth;
-            const boxHeight = previewBox.offsetHeight;
-          
-            let x = e.clientX + offset;
-            let y = e.clientY + offset;
-          
-            if (x + boxWidth > window.innerWidth) {
-              x = e.clientX - boxWidth - offset;
+            previewImage.src = imgUrl;
+            previewImage.dataset.src = imgUrl;
+            return;
             }
-          
-            if (y + boxHeight > window.innerHeight) {
-              y = e.clientY - boxHeight - offset;
-            }
-          
-            previewBox.style.left = x + "px";
-            previewBox.style.top = y + "px";
-        });
-    
-        link.addEventListener("mouseleave", () => {
-            previewBox.classList.remove("show");
-            previewBox.style.display = "none";
-        });
-      });
+
+            previewImage.style.display = "none";
+            previewLoader.style.display = "flex";
+
+            const img = new Image();
+            img.src = imgUrl;
+
+            img.onload = () => {
+                imageCache[imgUrl] = true;
+                previewImage.src = imgUrl;
+                previewImage.dataset.src = imgUrl;
+                previewLoader.style.display = "none";
+                previewImage.style.display = "block";
+            };
+        
+            img.onerror = () => {
+                previewLoader.textContent = "Failed to load";
+              };
+            });
+        
+            link.addEventListener("mousemove", e => {
+                const offset = 20;
+                const boxWidth = previewBox.offsetWidth;
+                const boxHeight = previewBox.offsetHeight;
+              
+                let x = e.clientX + offset;
+                let y = e.clientY + offset;
+              
+                if (x + boxWidth > window.innerWidth) {
+                  x = e.clientX - boxWidth - offset;
+                }
+              
+                if (y + boxHeight > window.innerHeight) {
+                  y = e.clientY - boxHeight - offset;
+                }
+              
+                previewBox.style.left = x + "px";
+                previewBox.style.top = y + "px";
+            });
+        
+            link.addEventListener("mouseleave", () => {
+                previewBox.classList.remove("show");
+                previewBox.style.display = "none";
+            });
+          });
     }
 }
 
@@ -380,5 +386,26 @@ function checkSelectors() {
             element.selectedIndex = 0;
             element.classList.add('disabled')
         };
+    });
+}
+
+function sortCards(cardsMap) {
+    return [...cardsMap.entries()].sort(([nameA, dataA], [nameB, dataB]) => {
+        let diff = rarityRank[dataB.rarity] - rarityRank[dataA.rarity];
+        if (diff !== 0) return diff;
+
+        diff = (typeRank[dataB.type] ?? 0) - (typeRank[dataA.type] ?? 0);
+        if (diff !== 0) return diff;
+    
+        diff = (factionRank[dataB.factionn] ?? 1) - (factionRank[dataA.factionn] ?? 1);
+        if (diff !== 0) return diff;
+    
+        diff = (dataB.cost ?? 0) - (dataA.cost ?? 0);
+        if (diff !== 0) return diff;
+    
+        diff = dataB.count - dataA.count;
+        if (diff !== 0) return diff;
+    
+        return (dataA.setNumber ?? 0) - (dataB.setNumber ?? 0);
     });
 }
