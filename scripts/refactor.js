@@ -324,3 +324,17 @@ function toggleMenu(id) {
         }
     }
 }
+
+function checkSelectors() {
+    extraSelect = extraFilters[typeSelect.value];
+    console.log(extraSelect);
+    extraSelects.forEach(element => {
+
+        if (element === extraSelect) {
+            element.classList.remove('disabled');
+        } else {
+            element.selectedIndex = 0;
+            element.classList.add('disabled')
+        };
+    });
+}

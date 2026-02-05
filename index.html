@@ -65,7 +65,7 @@
                     <option value="Reign" disabled>Reign of Fire</option>
                 </optgroup>
             </select>
-            <select name="type" id="type-select" autocomplete="off">
+            <select name="type" id="type-select" autocomplete="off" onchange="checkSelectors()">
                 <option value="" selected disabled>--- Select Type ---</option>
                 <optgroup label="Sealed">
                     <option class='sealed' value="classicSealed">Classic Sealed</option>
@@ -76,26 +76,27 @@
                 <optgroup label="Single Boosters">
                     <option class='booster' value="classicBooster">Classic Booster</option>
                     <option class='booster' value="newBooster" disabled>New Booster</option>
-                    <option class='booster' value="classAbilityBooster" disabled>Class Ability Booster</option>
-                    <option class='booster' value="factionBooster" disabled>Faction Booster</option>
-                    <option class='booster' value="universalBooster">Universal Booster</option>
+                    <option class='booster' value="abilityBooster">Ability Booster</option>
+                    <option class='booster' value="equipmentBooster">Equipment Booster</option>
+                    <option class='booster' value="factionBooster">Faction Booster</option>
+                    <option class='booster' value="neutralBooster">Neutral Booster</option>
                 </optgroup>     
             </select>
-            <select name="class" id="class-select" autocomplete="off">
-                <option value="" selected disabled>--- Select Class ---</option>
-                <optgroup label="Class">
-                    <option value="Druid">Druid</option>
-                    <option value="Hunter">Hunter</option>
-                    <option value="Mage">Mage</option>
-                    <option value="Paladin">Paladin</option>
-                    <option value="Priest">Priest</option>
-                    <option value="Rogue">Rogue</option>
-                    <option value="Shaman">Shaman</option>
-                    <option value="Warlock">Warlock</option>
-                    <option value="Warrior">Warrior</option>
-                </optgroup>
+            <select name="class" class="disabled" id="class-select" autocomplete="off">
+                    <option value="" selected disabled>--- Select Class ---</option>
+                    <optgroup label="Class">
+                        <option value="Druid">Druid</option>
+                        <option value="Hunter">Hunter</option>
+                        <option value="Mage">Mage</option>
+                        <option value="Paladin">Paladin</option>
+                        <option value="Priest">Priest</option>
+                        <option value="Rogue">Rogue</option>
+                        <option value="Shaman">Shaman</option>
+                        <option value="Warlock">Warlock</option>
+                        <option value="Warrior">Warrior</option>
+                    </optgroup>
             </select>
-            <select name="faction" id="faction-select" autocomplete="off">
+            <select name="faction" class="disabled" id="faction-select" autocomplete="off">
                 <option value="" selected disabled>--- Select Faction ---</option>
                 <optgroup label="Faction">
                     <option value="Alliance">Alliance</option>
@@ -109,7 +110,9 @@
     <div class="sidebar closed" id="left">
     </div>
 
-    <div class="item-track">
+    <div class="track-wrapper">
+        <div class="item-track">
+        </div>
     </div>
 
     <div class="sidebar closed" id="right">

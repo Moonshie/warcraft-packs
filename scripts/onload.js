@@ -10,3 +10,4 @@ track.addEventListener('wheel', (e) => {
 document.querySelectorAll("hover-tilt").forEach(pack => {
     pack.style.touchAction = "pan-x";
 });
+

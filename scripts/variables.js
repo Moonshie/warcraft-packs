@@ -1,3 +1,35 @@
+const upgradeChances = new Map([
+    [['Rare', 'Epic'], 0.091] // 9.1% chance to upgrade Rare to Epic
+])
+const imageCache = {};
+const generatedItems = []
+const renderedItems = [];
+
+const root = document.querySelector(':root');
+const genButton = document.getElementById("generate");
+const left = document.querySelector(".sidebar#left");
+const center = document.querySelector(".menu-wrapper");
+const right = document.querySelector(".sidebar#right");
+const track = document.querySelector('.item-track');
+const pack = document.querySelector(".pack");
+const box = document.querySelector(".box");
+const setSelect = document.querySelector("#set-select");
+const typeSelect = document.querySelector("#type-select");
+const classSelect = document.querySelector("#class-select");
+const factionSelect = document.querySelector("#faction-select");
+const previewBox = document.getElementById("preview-box");
+const previewImage = document.getElementById("preview-image");
+const previewLoader = document.getElementById("preview-loader");
+
+const sets = {
+    'Azeroth': Azeroth,
+    'DarkPortal': DarkPortal,
+};
+const precons = {
+    'Azeroth': AzerothPrecons,
+    'DarkPortal': DarkPortalPrecons
+}
+
 const rarityRank = {
     "Legendary": 5,
     "Epic": 4,
@@ -30,16 +62,16 @@ const slotCounts = {
         [{'rarity': ['Rare', 'Epic']}, 1],
         [{'type': 'Hero'}, 1]
     ]),  
-    classAbilityBooster: new Map ([
+    abilityBooster: new Map ([
         [{'rarity': 'Common', 'type': 'Ability'}, 6],
         [{'rarity': 'Uncommon', 'type': 'Ability'}, 5],
         [{'rarity': 'Rare', 'type': 'Ability'}, 4],
     ]),
-    classEquipmentBooster: new Map ([
+    equipmentBooster: new Map ([
         [{'rarity': 'Uncommon', 'type': 'Equipment'}, 6],
         [{'rarity': 'Rare', 'type': 'Equipment'}, 4]
     ]),
-    factiomBooster: new Map ([
+    factionBooster: new Map ([
         [{'rarity': 'Common'}, 10],
         [{'rarity': 'Uncommon'}, 3],
         [{'rarity': ['Rare', 'Epic']}, 2],
@@ -49,6 +81,14 @@ const slotCounts = {
         [{'rarity': 'Uncommon', 'faction': '', 'class': ''}, 3],
         [{'rarity': ['Rare', 'Epic'], 'faction': '', 'class': ''}, 2],
     ]),
+}
+const selects = [setSelect, typeSelect, classSelect, factionSelect]
+const extraSelects = [classSelect, factionSelect]
+
+const extraFilters = {
+    abilityBooster: classSelect,
+    equipmentBooster: classSelect,
+    factionBooster: factionSelect,
 }
 const sealedTypes = {
     classicSealed: {'classicBooster': 6},
@@ -74,35 +114,3 @@ const openMenus = {
     right: false,
 }
 
-const upgradeChances = new Map([
-    [['Rare', 'Epic'], 0.091] // 9.1% chance to upgrade Rare to Epic
-])
-const imageCache = {};
-const generatedItems = []
-const renderedItems = [];
-
-const root = document.querySelector(':root');
-const genButton = document.getElementById("generate");
-const left = document.querySelector(".sidebar#left");
-const center = document.querySelector(".menu-wrapper");
-const right = document.querySelector(".sidebar#right");
-const track = document.querySelector('.item-track');
-const pack = document.querySelector(".pack");
-const box = document.querySelector(".box");
-const setSelect = document.querySelector("#set-select");
-const typeSelect = document.querySelector("#type-select");
-const previewBox = document.getElementById("preview-box");
-const previewImage = document.getElementById("preview-image");
-const previewLoader = document.getElementById("preview-loader");
-
-const sets = {
-    'Azeroth': Azeroth,
-    'DarkPortal': DarkPortal,
-};
-const precons = {
-    'Azeroth': AzerothPrecons,
-    'DarkPortal': DarkPortalPrecons
-}
-
-console.log(left, center, right)
-console.log(openMenus)
