@@ -63,23 +63,23 @@ const slotCounts = {
         [{'type': 'Hero'}, 1]
     ]),  
     abilityBooster: new Map ([
-        [{'rarity': 'Common', 'type': 'Ability'}, 6],
-        [{'rarity': 'Uncommon', 'type': 'Ability'}, 5],
-        [{'rarity': 'Rare', 'type': 'Ability'}, 4],
+        [{'rarity': 'Common', 'type': 'Ability'}, 4],
+        [{'rarity': 'Uncommon', 'type': 'Ability'}, 3],
+        [{'rarity': 'Rare', 'type': 'Ability'}, 3],
     ]),
     equipmentBooster: new Map ([
-        [{'rarity': 'Uncommon', 'type': 'Equipment'}, 6],
-        [{'rarity': 'Rare', 'type': 'Equipment'}, 4]
+        [{'rarity': 'Uncommon', 'type': 'Equipment'}, 3],
+        [{'rarity': 'Rare', 'type': 'Equipment'}, 2]
     ]),
     factionBooster: new Map ([
-        [{'rarity': 'Common'}, 10],
+        [{'rarity': 'Common'}, 11],
         [{'rarity': 'Uncommon', 'type': '!Hero'}, 3],
-        [{'rarity': 'Rare'}, 2],
+        [{'rarity': 'Rare'}, 1],
     ]),
     neutralBooster: new Map ([
-        [{'rarity': 'Common', 'faction': '', 'class': ''}, 10],
-        [{'rarity': 'Uncommon', 'faction': '', 'class': ''}, 3],
-        [{'rarity': 'Rare', 'faction': '', 'class': ''}, 2],
+        [{'rarity': 'Common', 'faction': '', 'class': ''}, 8],
+        [{'rarity': 'Uncommon', 'faction': '', 'class': ''}, 1],
+        [{'rarity': 'Rare', 'faction': '', 'class': ''}, 1],
     ]),
 }
 console.log(slotCounts);
@@ -96,7 +96,7 @@ const allowDuplicates = {
     abilityBooster: true,
     equipmentBooster: true,
     factionBooster: false,
-    neutralBooster: false,
+    neutralBooster: true,
 }
 const sealedTypes = {
     classicSealed: {'classicBooster': 6},
