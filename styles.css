@@ -241,7 +241,7 @@ button:disabled {
 .booster {
     padding: 0 0.3rem 0 0.3rem;
     width: 30vh;
-    height: 50vh;
+    height: 48vh;
     display: grid;
     background-size: cover;
     transition: all 0.3s ease;
@@ -252,8 +252,8 @@ button:disabled {
 }
 .bigBox {
     padding: 0 0.3rem 0 0.3rem;
-    width: 52vh;
-    height: 75vh;
+    width: 42vh;
+    height: 60vh;
     display: grid;
     background-size: cover;
     box-sizing: border-box;
