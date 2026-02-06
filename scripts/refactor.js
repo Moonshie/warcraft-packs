@@ -53,7 +53,19 @@ function generatePreconstructed(set, category, type, starters) {
         setNumber = deckList[index]-1;
         item.contents.push(set[setNumber]);
     }
-    generatedItems.push(item);
+    if (category === 'bigBox') {
+        let heroes = set.filter(card => card.type === "Hero")
+        for (let index = 0; index < 3; index++) {
+            let oversizedHero = structuredClone(generateCard(heroes, ``));
+            heroes = heroes.filter(card => card.name != oversizedHero.name);
+            oversizedHero.type = 'OversizedHero';
+            oversizedHero.set = 'Azeroth Oversized';
+            item.contents.push(oversizedHero);
+        }
+        generatedItems.push(item);
+        generateBooster(set, 'booster', 'classicBooster');
+        generateBooster(set, 'booster', 'classicBooster');
+    }
 }
 function generateBooster(set, category = 'booster', type, extraFilters = []) {
     tempFilters = {}
@@ -78,7 +90,7 @@ function generateBooster(set, category = 'booster', type, extraFilters = []) {
     slotCounts[type].forEach((count, filters) => {
         Object.assign(filters, tempFilters);
         for (let i = 0; i < count; i++) {
-            let card = generateCard(item, set, filters);
+            let card = generateCard(set, filters);
             item.contents.push(card);
             if (allowDuplicates[type] === false) {
                 item['contents'].forEach(generatedCard => {
@@ -92,7 +104,7 @@ function generateBooster(set, category = 'booster', type, extraFilters = []) {
 
 
 //Card Generator, picking out a card based on all available filters
-function generateCard(item, set, filters) {
+function generateCard(set, filters) {
     let pool = set;
     let filterValues;
     let card;
@@ -105,7 +117,7 @@ function generateCard(item, set, filters) {
                 if (Math.random() < chance) {
                     let upgradedFilters = structuredClone(filters);
                     upgradedFilters['rarity'] = pair[1];
-                    upgradedCard = generateCard(item, set, upgradedFilters)
+                    upgradedCard = generateCard(set, upgradedFilters)
                 }
             }
         });
@@ -189,10 +201,17 @@ function openItem(id) {
     if (item.category === 'booster') {
         setTimeout(() => {openBooster(id, item);}, 800);
     };
+    if (item.category === 'bigBox') {
+        setTimeout(() => {openBigBox(id, item);}, 800)
+    }
 }
 function openBooster(id, booster) {
     const counted = countCards(booster['contents'])
     renderContents(id, booster, counted);
+}
+function openBigBox(id, bigBox) {
+    const counted = countCards(bigBox['contents'])
+    renderContents(id, bigBox, counted);
 }
 
 
@@ -216,12 +235,12 @@ function renderContents(id, item, counted) {
             let tempCounted = new Map();
             
             counted.forEach((obj, name) => {
-            if (block[0] === obj['type']) {
-                tempCounted.set(name, obj)
-                counted.delete(name);
-            }
+                if (block[0] === obj['type']) {
+                    tempCounted.set(name, obj)
+                    counted.delete(name);
+                }
+            });
             renderCards(output, item, tempCounted)
-        })
         } else {
             const line = document.createElement("div");
             line.classList.add("separator");
@@ -249,7 +268,7 @@ function renderCards(output, item, counted) {
 
         const nameSpan = document.createElement("a");
         nameSpan.classList.add('cardLink');
-        nameSpan.innerHTML = name;
+        nameSpan.innerHTML = data.name;
         let wowcardsString = item['set'].toLowerCase();
         if (wowcardsString === 'darkportal') {
             wowcardsString = 'dark-portal';
@@ -283,7 +302,7 @@ function countAll() {
     counted = countCards(total);
     sorted = sortCards(counted);
     sorted.forEach(element => {
-        document.querySelector(".full-out").innerHTML += `${element[1]['count']} ${element[0]} <br>`
+        document.querySelector(".full-out").innerHTML += `${element[1]['count']} ${element[1]['name']} <br>`
     })
 }
 
@@ -293,9 +312,11 @@ function countAll() {
 function countCards(cards) {
     let counts = new Map();
     for (const key of cards) {
-        if (!counts.has(key.name)) {
-            counts.set(key.name, {
+        if (!counts.has(`${key.name} [${key.set} #${key.setNumber}]`)) {
+            counts.set(`${key.name} [${key.set} #${key.setNumber}]`, {
                 count: 0,
+                name: key.name,
+                set: key.set,
                 setNumber: key.setNumber,
                 type: key.type,
                 class: key.class,
@@ -304,7 +325,7 @@ function countCards(cards) {
                 rarity: key.rarity,
         });
     }
-    counts.get(key.name).count++;
+    counts.get(`${key.name} [${key.set} #${key.setNumber}]`).count++;
     }
     return counts;
 }

@@ -106,7 +106,7 @@ const outputCounts = {
     ],
     starterDeck: [
         ['Hero', 'Hero'],
-        ['Hero', 'Oversized'],
+        ['OversizedHero', 'Oversized'],
         ['', 'Deck']
     ]
 }
