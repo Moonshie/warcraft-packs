@@ -4,6 +4,7 @@ const upgradeChances = new Map([
 const imageCache = {};
 const generatedItems = []
 const renderedItems = [];
+const openItems = [];
 
 const root = document.querySelector(':root');
 const genButton = document.getElementById("generate");
@@ -82,7 +83,33 @@ const slotCounts = {
         [{'rarity': 'Rare', 'faction': '', 'class': ''}, 1],
     ]),
 }
-console.log(slotCounts);
+const outputCounts = {
+    classicBooster:  [
+        ['Hero', 'Hero / Loot'],
+        ['', 'Cards']
+    ],
+    newBooster: [
+        ['Hero', 'Hero / Loot'],
+        ['', 'Cards']
+    ],
+    abilityBooster: [
+        ['', "Ability Cards"]
+    ],
+    equipmentBooster: [
+        ['', "Equipment Cards"]
+    ],
+    factionBooster: [
+        ['', "Faction Cards"],
+    ],
+    neutralBooster: [
+        ['', "Cards"]
+    ],
+    starterDeck: [
+        ['Hero', 'Hero'],
+        ['Hero', 'Oversized'],
+        ['', 'Deck']
+    ]
+}
 const selects = [setSelect, typeSelect, classSelect, factionSelect]
 const extraSelects = [classSelect, factionSelect]
 const extraFilters = {
@@ -109,11 +136,11 @@ const sealedTypes = {
 const availableImages = {
     Azeroth: {
         booster: ['AzerothBooster1', 'AzerothBooster2'],
-        box: ['AzerothBox']
+        bigBox: ['AzerothBigBox']
     },
     DarkPortal: {
         booster: ['DarkPortalBooster1', 'DarkPortalBooster2'],
-        box: ['DarkPortalBox']
+        bigBox: ['DarkPortalBigBox']
     }
 }
 

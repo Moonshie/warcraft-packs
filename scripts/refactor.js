@@ -1,7 +1,7 @@
+//Initial Generate
 function generate() {
     set = sets[setSelect.value];
     precon = precons[setSelect.value];
-
     category = typeSelect.selectedOptions[0].className;
     type = typeSelect.value;
 
@@ -15,29 +15,47 @@ function generate() {
     }
     
     if (category === 'sealed') {
-        generateSealed(set, type);
+        generateSealed(set, category, type);
     }
-    if (category === 'preconstructed') {
-        generatePreconstructed(set, precon);
+    if (category === 'bigBox') {
+        generatePreconstructed(set, category, type, precon);
     }
     if (category === 'booster') {
-        generateBooster(set, type, extraFilters[type]);
+        generateBooster(set, category, type, extraFilters[type]);
     }
     render();
 }
 
-function generateSealed(set, type) {
+
+
+//Generate based on category
+//Output a non-rendered object with main keys and a "Contents" array for chosen cards
+function generateSealed(set, category, type) {
     if (type === 'enhancedSealed') {
         enhancedSealed(set)
     }
     Object.entries(sealedTypes[type]).forEach(([boosterType, count]) => { {
         for (let i = 0; i < count; i++) {
-            generateBooster(set, boosterType, extraFilters[type]);
+            generateBooster(set, 'booster', boosterType, extraFilters[type]);
         }
     }});
 }
-
-function generateBooster(set, type, extraFilters = []) {
+function generatePreconstructed(set, category, type, starters) {
+    let item = {
+        category: category,
+        type: type,
+        set: setSelect.value,
+        contents: []
+    }
+    const heroes = Object.keys(starters);
+    const deckList = starters[heroes[Math.floor(Math.random() * heroes.length)]]
+    for (let index = 0; index < deckList.length; index++) {
+        setNumber = deckList[index]-1;
+        item.contents.push(set[setNumber]);
+    }
+    generatedItems.push(item);
+}
+function generateBooster(set, category = 'booster', type, extraFilters = []) {
     tempFilters = {}
     if (extraFilters != []) {
         extraFilters.forEach(element => {
@@ -51,7 +69,8 @@ function generateBooster(set, type, extraFilters = []) {
     }
 
     let item = {
-        type: "booster",
+        category: category,
+        type: type,
         set: setSelect.value,
         contents: []
     };
@@ -70,21 +89,9 @@ function generateBooster(set, type, extraFilters = []) {
     generatedItems.push(item);
 }
 
-function generatePreconstructed(set, starters) {
-    let item = {
-        type: "box",
-        set: setSelect.value,
-        contents: []
-    }
-    const heroes = Object.keys(starters);
-    const deckList = starters[heroes[Math.floor(Math.random() * heroes.length)]]
-    for (let index = 0; index < deckList.length; index++) {
-        setNumber = deckList[index]-1;
-        item.contents.push(set[setNumber]);
-    }
-    generatedItems.push(item);
-}
 
+
+//Card Generator, picking out a card based on all available filters
 function generateCard(item, set, filters) {
     let pool = set;
     let filterValues;
@@ -137,6 +144,13 @@ function generateCard(item, set, filters) {
     }
 }
 
+
+
+//--- End of behind-the-scenes generation, rendering ahead ---//
+
+
+
+//Initial Render, rendering all items currently generated
 function render() {
     generatedItems.forEach(item => {
         renderItem(item);
@@ -145,16 +159,17 @@ function render() {
     centerCorrectly();
     generatedItems.length = 0;
 }
-
+//Renders a wrapper appropriate for the item type
 function renderItem(item) {
-    const cloneWrapper = document.querySelector(`.template > .${item.type}-wrapper`).cloneNode(true);
-    const clone = cloneWrapper.querySelector(`.${item.type}`);
+    const cloneWrapper = document.querySelector(`.template > .${item.category}-wrapper`).cloneNode(true);
+    const clone = cloneWrapper.querySelector(`.${item.category}`);
     const cloneOutput = clone.querySelector('.output');
     clone.id = renderedItems.length;
     cloneOutput.id = `${renderedItems.length}-output`;
 
+
     if (availableImages[item.set]) {
-        const images = availableImages[item.set][item.type];
+        const images = availableImages[item.set][item.category];
         if (images && images.length > 0) {
             const randomImage = images[Math.floor(Math.random() * images.length)];
             clone.style.backgroundImage = `url(./data/img/${randomImage}.webp)`;
@@ -164,100 +179,158 @@ function renderItem(item) {
     track.appendChild(cloneWrapper);
 }
 
+
+
+//Opens up the item's contents 
 function openItem(id) {
     const item = renderedItems[id];
+    openItems.push(item);
     itemAnimation(id);
-    if (item.type === 'booster') {
+    if (item.category === 'booster') {
         setTimeout(() => {openBooster(id, item);}, 800);
     };
 }
-
-function itemAnimation(id) {
-    const itemElement = document.getElementById(id);
-    itemElement.onclick = false;
-    itemElement.classList.add("flip");
-    const tilt = itemElement.parentElement;
-    tilt.glareIntensity = 0;
-    tilt.scaleFactor = 1;
-    tilt.tiltFactor = 0;
-    tilt.removeAttribute('shadow');
-    setTimeout(() => {itemElement.classList.add("open")}, 800);
-}
-
 function openBooster(id, booster) {
     const counted = countCards(booster['contents'])
-
-    const sorted = sortCards(counted);
-
-    renderBooster(id, booster, sorted);
+    renderContents(id, booster, counted);
 }
 
+
+
+//Renders the layout inside the item
+function renderContents(id, item, counted) {
+    const output = document.getElementById(id+`-output`);
+    output.innerHTML = "";
+    output.classList.remove("hidden");
+
+    outputBlocks = outputCounts[item.type]
+
+    outputBlocks.forEach(block => {
+
+        if (block[0] != '') {
+            const line = document.createElement("div");
+            line.classList.add("separator");
+            line.innerText = block[1];
+            output.appendChild(line);
+
+            let tempCounted = new Map();
+            
+            counted.forEach((obj, name) => {
+            if (block[0] === obj['type']) {
+                tempCounted.set(name, obj)
+                counted.delete(name);
+            }
+            renderCards(output, item, tempCounted)
+        })
+        } else {
+            const line = document.createElement("div");
+            line.classList.add("separator");
+            line.innerText = block[1];
+            output.appendChild(line);
+
+            renderCards(output, item, counted)
+        }
+    })
+    attachPreviewListeners();
+}
+//Renders individual cards
+function renderCards(output, item, counted) {
+    let list = sortCards(counted);
+
+    list.forEach(([name, data]) => {
+        const line = document.createElement("div");
+        line.className = "line";
+
+        const card = document.createElement("span");
+
+        const countSpan = document.createElement("span");
+        countSpan.textContent = `${data.count} `;
+        countSpan.className = "count";
+
+        const nameSpan = document.createElement("a");
+        nameSpan.classList.add('cardLink');
+        nameSpan.innerHTML = name;
+        let wowcardsString = item['set'].toLowerCase();
+        if (wowcardsString === 'darkportal') {
+            wowcardsString = 'dark-portal';
+        }
+
+        nameSpan.setAttribute('href', `http://www.wowcards.info/card/${wowcardsString}/en/${data.setNumber}`)
+        nameSpan.setAttribute(`dataImg`, `./data/cardImg/${item['set']}/${data.setNumber}.jpg`);
+        nameSpan.setAttribute(`target`, "_blank")
+
+        const rarityDiv = document.createElement("div");
+        rarityDiv.textContent = `${data.rarity}`.substring(1,length);
+        rarityDiv.className = `rarity ${data.rarity}`;
+
+        card.appendChild(countSpan);
+        card.appendChild(nameSpan);
+        line.appendChild(card);
+        line.appendChild(rarityDiv);
+        output.appendChild(line);
+    });
+}
+
+
+
+//Finalize all opened cards in an export
 function countAll() {
     let total = [];
-    Object.keys(renderedItems).forEach(e => {
+    document.querySelector(".full-out").innerHTML = '';
+    Object.keys(openItems).forEach(e => {
         total = total.concat(renderedItems[e]['contents']);
     });
     counted = countCards(total);
     sorted = sortCards(counted);
-    console.log(sorted);
     sorted.forEach(element => {
         document.querySelector(".full-out").innerHTML += `${element[1]['count']} ${element[0]} <br>`
     })
 }
 
+
+//Sorting logic
+//Count to find duplicates and add them together
 function countCards(cards) {
     let counts = new Map();
     for (const key of cards) {
-    if (!counts.has(key.name)) {
-        counts.set(key.name, {
-            count: 0,
-            setNumber: key.setNumber,
-            type: key.type,
-            class: key.class,
-            factionn: key.faction,
-            cost: key.cost,
-            rarity: key.rarity,
+        if (!counts.has(key.name)) {
+            counts.set(key.name, {
+                count: 0,
+                setNumber: key.setNumber,
+                type: key.type,
+                class: key.class,
+                faction: key.faction,
+                cost: key.cost,
+                rarity: key.rarity,
         });
     }
     counts.get(key.name).count++;
     }
     return counts;
 }
+//Sort to take a map from above and return it sorted
+function sortCards(cardsMap) {
+    return [...cardsMap.entries()].sort(([nameA, dataA], [nameB, dataB]) => {
+        let diff = rarityRank[dataB.rarity] - rarityRank[dataA.rarity];
+        if (diff !== 0) return diff;
 
-function renderBooster(id, booster, sorted) {
-    const output = document.getElementById(id+`-output`);
-    output.innerHTML = "";
-    output.className = "output";
-
-    sorted.forEach(([name, data]) => {
-        const countDiv = document.createElement("div");
-        countDiv.textContent = `${data.count}`;
-        countDiv.className = "count";
-
-        const nameDiv = document.createElement("a");
-        nameDiv.classList.add('cardLink');
-        nameDiv.innerHTML = name;
-        let wowcardsString = booster['set'].toLowerCase();
-        if (wowcardsString === 'darkportal') {
-            wowcardsString = 'dark-portal';
-        }
-
-        nameDiv.setAttribute('href', `http://www.wowcards.info/card/${wowcardsString}/en/${data.setNumber}`)
-        nameDiv.setAttribute(`dataImg`, `./data/cardImg/${booster['set']}/${data.setNumber}.jpg`);
-        nameDiv.setAttribute(`target`, "_blank")
-
-        const rarityDiv = document.createElement("div");
-        rarityDiv.textContent = `${data.rarity}`.substring(1,length);
-        rarityDiv.className = `rarity ${data.rarity}`;
-
-        output.appendChild(countDiv);
-        output.appendChild(nameDiv);
-        output.appendChild(rarityDiv);
+        diff = (typeRank[dataB.type] ?? 0) - (typeRank[dataA.type] ?? 0);
+        if (diff !== 0) return diff;
+    
+        diff = (factionRank[dataB.factionn] ?? 1) - (factionRank[dataA.factionn] ?? 1);
+        if (diff !== 0) return diff;
+    
+        diff = (dataB.cost ?? 0) - (dataA.cost ?? 0);
+        if (diff !== 0) return diff;
+    
+        diff = dataB.count - dataA.count;
+        if (diff !== 0) return diff;
+    
+        return (dataA.setNumber ?? 0) - (dataB.setNumber ?? 0);
     });
-
-    attachPreviewListeners();
 }
 
+//Extra functionality, like previews
 function attachPreviewListeners() {
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     
@@ -326,6 +399,19 @@ function attachPreviewListeners() {
     }
 }
 
+//Extra flourishes, like the animation
+function itemAnimation(id) {
+    const itemElement = document.getElementById(id);
+    itemElement.onclick = false;
+    itemElement.classList.add("flip");
+    const tilt = itemElement.parentElement;
+    tilt.glareIntensity = 0;
+    tilt.scaleFactor = 1;
+    tilt.tiltFactor = 0;
+    tilt.removeAttribute('shadow');
+    setTimeout(() => {itemElement.classList.add("open")}, 800);
+}
+
 function centerCorrectly() {
     let offsetLeft = 0;
     let offsetRight = 0;
@@ -333,19 +419,33 @@ function centerCorrectly() {
     let leftmostItem = track.firstElementChild.className;
     if (leftmostItem === 'booster-wrapper') {
         offsetLeft = 15;
-    } else if (leftmostItem === 'box-wrapper') {
+    } else if (leftmostItem === 'bigBox-wrapper') {
         offsetLeft = 26;
     }
 
     let rightmostItem = track.lastElementChild.className;
     if (rightmostItem === 'booster-wrapper') {
         offsetRight = 15;
-    } else if (rightmostItem === 'box-wrapper') {
+    } else if (rightmostItem === 'bigBox-wrapper') {
         offsetRight = 26;
     }
 
     root.style.setProperty('--padding-left', `${offsetLeft}vh`)
     root.style.setProperty('--padding-right', `${offsetRight}vh`)
+}
+
+//UI
+function checkSelectors() {
+    extraSelect = extraFilters[typeSelect.value];
+    extraSelect === undefined ? extraSelect = [] : true;
+    extraSelects.forEach(element => {
+        if (extraSelect.includes(element)) {
+            element.classList.remove('disabled');
+        } else {
+            element.selectedIndex = 0;
+            element.classList.add('disabled')
+        };
+    });
 }
 
 function toggleMenu(id) {
@@ -374,38 +474,4 @@ function toggleMenu(id) {
             openMenus[id] = true;
         }
     }
-}
-
-function checkSelectors() {
-    extraSelect = extraFilters[typeSelect.value];
-    extraSelect === undefined ? extraSelect = [] : true;
-    extraSelects.forEach(element => {
-        if (extraSelect.includes(element)) {
-            element.classList.remove('disabled');
-        } else {
-            element.selectedIndex = 0;
-            element.classList.add('disabled')
-        };
-    });
-}
-
-function sortCards(cardsMap) {
-    return [...cardsMap.entries()].sort(([nameA, dataA], [nameB, dataB]) => {
-        let diff = rarityRank[dataB.rarity] - rarityRank[dataA.rarity];
-        if (diff !== 0) return diff;
-
-        diff = (typeRank[dataB.type] ?? 0) - (typeRank[dataA.type] ?? 0);
-        if (diff !== 0) return diff;
-    
-        diff = (factionRank[dataB.factionn] ?? 1) - (factionRank[dataA.factionn] ?? 1);
-        if (diff !== 0) return diff;
-    
-        diff = (dataB.cost ?? 0) - (dataA.cost ?? 0);
-        if (diff !== 0) return diff;
-    
-        diff = dataB.count - dataA.count;
-        if (diff !== 0) return diff;
-    
-        return (dataA.setNumber ?? 0) - (dataB.setNumber ?? 0);
-    });
 }

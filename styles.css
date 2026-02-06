@@ -94,7 +94,7 @@ a:hover {
     border: 1px solid #8d6934;
     box-sizing: border-box;
     position: relative;
-    z-index: 3;
+    z-index: 4;
 }
 .icon {
     height: 2rem;
@@ -150,7 +150,7 @@ a:hover {
     height: 100vh;
     flex-direction: column;
     width: clamp(10%, 30vh, 50vw);
-    z-index: 1;
+    z-index: 3;
     transition: all 0.3s ease;
     gap: 0.5rem;
     padding-top: 2.5rem;
@@ -173,7 +173,11 @@ a:hover {
 
 .full-out {
     overflow: scroll;
-    padding-bottom: 0.5rem;
+    padding: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: #8d693430 transparent;
 }
 
 .double {
@@ -235,7 +239,7 @@ button:disabled {
 }
 
 .booster {
-    padding: 0.3rem;
+    padding: 0 0.3rem 0 0.3rem;
     width: 30vh;
     height: 50vh;
     display: grid;
@@ -246,14 +250,14 @@ button:disabled {
 .booster:not(.flip):hover {
     cursor: pointer;
 }
-.box {
+.bigBox {
     width: 52vh;
     height: 75vh;
     display: grid;
     background-size: cover;
     box-sizing: border-box;
 }
-.box:not(.flip):hover {
+.bigBox:not(.flip):hover {
     cursor: pointer;
 }
 
@@ -278,13 +282,18 @@ button:disabled {
 }
 
 .output {
-    display: grid;
-    grid-template-columns: 1fr 10fr 1fr;
-    align-items: start;
-    align-self: baseline;
+    display: flex;
+    flex-direction: column;
 }
 .output.hidden {
     display: none;
+}
+.line {
+    display: flex;
+    justify-content: space-between;
+}
+.line > a {
+    margin-right: auto;
 }
 
 .count {
@@ -292,12 +301,21 @@ button:disabled {
     font-family: Geologica;
 }
 
+.separator {
+    font-family: Morpheus;
+    text-align: center;
+    font-weight: bold;
+    user-select: none;
+    color: #00ccff;
+    margin: 0.3rem 0 0.3rem 0;
+}
+
 .rarity {
     font-weight: bold;
     user-select: none;
-    justify-self: center;
     font-family: Morpheus;
     margin-top: -0.2rem;
+    width: 0.7rem;
 }
 .Common {
     color: #ffffff;
