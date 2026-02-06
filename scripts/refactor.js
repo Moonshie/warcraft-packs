@@ -23,7 +23,6 @@ function generate() {
     if (category === 'booster') {
         generateBooster(set, category, type, extraFilters[type]);
     }
-    render();
 }
 
 
@@ -39,6 +38,7 @@ function generateSealed(set, category, type) {
             generateBooster(set, 'booster', boosterType, extraFilters[type]);
         }
     }});
+    render();
 }
 function generatePreconstructed(set, category, type, starters) {
     let item = {
@@ -63,9 +63,8 @@ function generatePreconstructed(set, category, type, starters) {
             item.contents.push(oversizedHero);
         }
         generatedItems.push(item);
-        generateBooster(set, 'booster', 'classicBooster');
-        generateBooster(set, 'booster', 'classicBooster');
     }
+    render();
 }
 function generateBooster(set, category = 'booster', type, extraFilters = []) {
     tempFilters = {}
@@ -99,6 +98,7 @@ function generateBooster(set, category = 'booster', type, extraFilters = []) {
             }
         }});
     generatedItems.push(item);
+    render();
 }
 
 
@@ -212,6 +212,9 @@ function openBooster(id, booster) {
 function openBigBox(id, bigBox) {
     const counted = countCards(bigBox['contents'])
     renderContents(id, bigBox, counted);
+    let set = sets[bigBox['set']];
+    generateBooster(set, 'booster', 'classicBooster');
+    generateBooster(set, 'booster', 'classicBooster');
 }
 
 
