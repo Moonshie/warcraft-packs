@@ -444,14 +444,14 @@ function centerCorrectly() {
     if (leftmostItem === 'booster-wrapper') {
         offsetLeft = 15;
     } else if (leftmostItem === 'bigBox-wrapper') {
-        offsetLeft = 26;
+        offsetLeft = 21;
     }
 
     let rightmostItem = track.lastElementChild.className;
     if (rightmostItem === 'booster-wrapper') {
         offsetRight = 15;
     } else if (rightmostItem === 'bigBox-wrapper') {
-        offsetRight = 26;
+        offsetRight = 21;
     }
 
     root.style.setProperty('--padding-left', `${offsetLeft}vh`)
