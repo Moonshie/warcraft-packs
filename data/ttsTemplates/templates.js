@@ -194,9 +194,8 @@ console.log(cardTemplate);
 console.log(customDecks);
 
 function exportTTS() {
-
     renderedItems.forEach(item => {
-        let boosterCopy = {...boosterTemplate};
+        let boosterCopy = Object.assign({}, boosterTemplate);
         boosterCopy.ObjectStates[0].Nickname = `${item.set} ${item.type}`;
 
         item.contents.forEach(cardData => {
@@ -227,6 +226,7 @@ function exportTTS() {
             cardCopy.CustomDeck = tempCustomDeck;
 
             boosterCopy.ObjectStates[0].ContainedObjects.push(cardCopy);
+            console.log(boosterCopy);
         });
     let exportBooster = JSON.stringify(boosterCopy);
 
@@ -237,5 +237,6 @@ function exportTTS() {
     a.download = `${boosterCopy.ObjectStates[0].Nickname}.json`
     a.click()
 
+    boosterCopy.ObjectStates[0].ContainedObjects = [];
     });
 }
