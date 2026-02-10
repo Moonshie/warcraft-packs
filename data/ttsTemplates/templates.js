@@ -204,6 +204,12 @@ function exportTTS() {
             cardCopy.Nickname = cardData.name;
             cardCopy.GMNotes = String(cardData.setNumber).padStart(3, '0') + cardData.rarity.charAt(0);
 
+            if (cardData.type === "Hero") {
+                cardCopy.HideWhenFaceDown = false;
+            } else {
+                cardCopy.HideWhenFaceDown = true;
+            }
+
             const tags = [];
             if (cardData.type) {
                 tags.push(cardData.type);
