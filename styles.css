@@ -179,6 +179,13 @@ a:hover {
     scrollbar-width: thin;
     scrollbar-color: #8d693430 transparent;
 }
+.exportedItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed #8d6934;
+    border-bottom: 1px dashed #8d6934;
+}
 
 .double {
     display: grid;

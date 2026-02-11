@@ -57,14 +57,14 @@ function generatePreconstructed(set, category, type, starters) {
         item.cardContents.push(set[setNumber]);
     }
     if (category === 'bigBox') {
-        let heroes = set.filter(card => card.type === "Hero")
-        for (let index = 0; index < 3; index++) {
-            let oversizedHero = structuredClone(generateCard(heroes, ``));
-            heroes = heroes.filter(card => card.name != oversizedHero.name);
-            oversizedHero.type = 'OversizedHero';
-            oversizedHero.set = 'Azeroth Oversized';
-            item.cardContents.push(oversizedHero);
+        let oversizeHeroesSet = oversize[`${setSelect.value}Oversize`];
+        let oversizeHeroes = [];
+        for (let i = 0; i < 3; i++) {
+            let card = generateCard(oversizeHeroesSet, '');
+            oversizeHeroes.push(card);
+            oversizeHeroesSet = oversizeHeroesSet.filter(element => card != element)
         }
+        item.otherContents.push(oversizeHeroes);
         item.otherContents.push(generateBooster(set, 'booster', 'Classic Booster'));
         item.otherContents.push(generateBooster(set, 'booster', 'Classic Booster'));
     }
@@ -213,9 +213,11 @@ function openBooster(id, booster) {
     renderCardContents(id, booster, counted);
 }
 function openBigBox(id, bigBox) {
-    const counted = countCards(bigBox['cardContents'])
+    let includeExtras = bigBox['cardContents'].concat(bigBox['otherContents'][0]);
+    let counted = countCards(includeExtras)
     renderCardContents(id, bigBox, counted);
-    bigBox['otherContents'].forEach(element => {
+    let remaining = bigBox['otherContents'].slice(1);
+    remaining.forEach(element => {
         generatedItems.push(element);
         render();
     });
@@ -242,7 +244,12 @@ function renderCardContents(id, item, counted) {
             let tempCounted = new Map();
             
             counted.forEach((obj, name) => {
-                if (block[0] === obj['type']) {
+                if (Array.isArray(block[0])) {
+                    if (block[0].length === obj['type'].length && block[0].every(x => obj['type'].includes(x))) {
+                        tempCounted.set(name, obj)
+                        counted.delete(name);
+                    }
+                } else if (block[0] == obj['type']) {
                     tempCounted.set(name, obj)
                     counted.delete(name);
                 }
@@ -282,7 +289,7 @@ function renderCards(output, item, counted) {
         }
 
         nameSpan.setAttribute('href', `http://www.wowcards.info/card/${wowcardsString}/en/${data.setNumber}`)
-        nameSpan.setAttribute(`dataImg`, `./data/cardImg/${item['set']}/${data.setNumber}.jpg`);
+        nameSpan.setAttribute(`dataImg`, `./data/cardImg/${data['set']}/${data.setNumber}.jpg`);
         nameSpan.setAttribute(`target`, "_blank")
 
         const rarityDiv = document.createElement("div");
@@ -363,7 +370,7 @@ function attachPreviewListeners() {
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     
     if (!isTouchDevice) {
-        document.querySelectorAll("a").forEach(link => {
+        document.querySelectorAll("a.cardLink").forEach(link => {
             const imgUrl = link.attributes.dataImg.value;
         
             link.addEventListener("mouseenter", e => {

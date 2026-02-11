@@ -320,6 +320,8 @@ const DarkPortal = [
   { set: "DarkPortal", setNumber: 319, name: "The Scourge Cauldrons", type: "Quest", class: "", faction: "", cost: "", rarity: "Common" }
 ];
 
+const DarkPortalOversize = [];
+
 const DarkPortalPrecons = {
   "Anchorite Kalinna": [1, 67, 70, 70, 75, 77, 77, 153, 153, 162, 162, 163, 170, 170, 173, 173, 185, 185, 189, 189, 193, 193, 196, 251, 287, 290, 290, 314, 314, 315, 316, 316, 319],
   "Phadalus the Enlightened": [4, 92, 93, 94, 94, 98, 130, 156, 156, 160, 160, 174, 174, 178, 178, 182, 184, 184, 194, 194, 195, 195, 253, 272, 286, 290, 290, 312, 315, 315, 316, 316, 319],

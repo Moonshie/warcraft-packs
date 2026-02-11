@@ -30,6 +30,10 @@ const precons = {
     'Azeroth': AzerothPrecons,
     'DarkPortal': DarkPortalPrecons
 }
+const oversize = {
+    'AzerothOversize': AzerothOversize,
+    'DarkPortalOversize': DarkPortalOversize,
+}
 
 const rarityRank = {
     "Legendary": 5,
@@ -106,7 +110,7 @@ const outputCounts = {
     ],
     'Starter Deck': [
         ['Hero', 'Hero'],
-        ['OversizedHero', 'Oversized'],
+        [['Hero', 'Oversize'], 'Oversize'],
         ['', 'Deck']
     ]
 }
