@@ -15,43 +15,46 @@ function generate() {
     }
     
     if (category === 'sealed') {
-        generateSealed(set, category, type);
+        let sealed = generateSealed(set, category, type);
+        sealed.forEach(booster => {
+            generatedItems.push(booster)
+        });
     }
     if (category === 'bigBox') {
-        generatePreconstructed(set, category, type, precon);
+        generatedItems.push(generatePreconstructed(set, category, type, precon));
     }
     if (category === 'booster') {
-        generateBooster(set, category, type, extraFilters[type]);
+        generatedItems.push(generateBooster(set, category, type, extraFilters[type]));
     }
+    render();
 }
 
 
 
 //Generate based on category
-//Output a non-rendered object with main keys and a "Contents" array for chosen cards
+//Output a non-rendered object with main keys and a "Contents" arrays for chosen cards
 function generateSealed(set, category, type) {
-    if (type === 'Enhanced Sealed') {
-        enhancedSealed(set)
-    }
+    let sealed = [];
     Object.entries(sealedTypes[type]).forEach(([boosterType, count]) => { {
         for (let i = 0; i < count; i++) {
-            generateBooster(set, 'booster', boosterType, extraFilters[type]);
+            sealed.push(generateBooster(set, 'booster', boosterType, extraFilters[type]));
         }
     }});
-    render();
+    return sealed;
 }
 function generatePreconstructed(set, category, type, starters) {
     let item = {
         category: category,
         type: type,
         set: setSelect.value,
-        contents: []
+        cardContents: [],
+        otherContents: [],
     }
     const heroes = Object.keys(starters);
     const deckList = starters[heroes[Math.floor(Math.random() * heroes.length)]]
     for (let index = 0; index < deckList.length; index++) {
         setNumber = deckList[index]-1;
-        item.contents.push(set[setNumber]);
+        item.cardContents.push(set[setNumber]);
     }
     if (category === 'bigBox') {
         let heroes = set.filter(card => card.type === "Hero")
@@ -60,11 +63,12 @@ function generatePreconstructed(set, category, type, starters) {
             heroes = heroes.filter(card => card.name != oversizedHero.name);
             oversizedHero.type = 'OversizedHero';
             oversizedHero.set = 'Azeroth Oversized';
-            item.contents.push(oversizedHero);
+            item.cardContents.push(oversizedHero);
         }
-        generatedItems.push(item);
+        item.otherContents.push(generateBooster(set, 'booster', 'Classic Booster'));
+        item.otherContents.push(generateBooster(set, 'booster', 'Classic Booster'));
     }
-    render();
+    return item;
 }
 function generateBooster(set, category = 'booster', type, extraFilters = []) {
     tempFilters = {}
@@ -83,22 +87,21 @@ function generateBooster(set, category = 'booster', type, extraFilters = []) {
         category: category,
         type: type,
         set: setSelect.value,
-        contents: []
+        cardContents: []
     };
 
     slotCounts[type].forEach((count, filters) => {
         Object.assign(filters, tempFilters);
         for (let i = 0; i < count; i++) {
             let card = generateCard(set, filters);
-            item.contents.push(card);
+            item.cardContents.push(card);
             if (allowDuplicates[type] === false) {
-                item['contents'].forEach(generatedCard => {
+                item['cardContents'].forEach(generatedCard => {
                     set = set.filter(card => generatedCard != card)
                 });
             }
         }});
-    generatedItems.push(item);
-    render();
+    return item;
 }
 
 
@@ -206,21 +209,22 @@ function openItem(id) {
     }
 }
 function openBooster(id, booster) {
-    const counted = countCards(booster['contents'])
-    renderContents(id, booster, counted);
+    const counted = countCards(booster['cardContents'])
+    renderCardContents(id, booster, counted);
 }
 function openBigBox(id, bigBox) {
-    const counted = countCards(bigBox['contents'])
-    renderContents(id, bigBox, counted);
-    let set = sets[bigBox['set']];
-    generateBooster(set, 'booster', 'Classic Booster');
-    generateBooster(set, 'booster', 'Classic Booster');
+    const counted = countCards(bigBox['cardContents'])
+    renderCardContents(id, bigBox, counted);
+    bigBox['otherContents'].forEach(element => {
+        generatedItems.push(element);
+        render();
+    });
 }
 
 
 
 //Renders the layout inside the item
-function renderContents(id, item, counted) {
+function renderCardContents(id, item, counted) {
     const output = document.getElementById(id+`-output`);
     output.innerHTML = "";
     output.classList.remove("hidden");
@@ -300,7 +304,7 @@ function countAll() {
     let total = [];
     document.querySelector(".full-out").innerHTML = '';
     Object.keys(openItems).forEach(e => {
-        total = total.concat(renderedItems[e]['contents']);
+        total = total.concat(renderedItems[e]['cardContents']);
     });
     counted = countCards(total);
     sorted = sortCards(counted);

@@ -198,7 +198,7 @@ function exportTTS() {
         let boosterCopy = Object.assign({}, boosterTemplate);
         boosterCopy.ObjectStates[0].Nickname = `${item.set} ${item.type}`;
 
-        item.contents.forEach(cardData => {
+        item.cardContents.forEach(cardData => {
             let cardCopy = {...cardTemplate};
 
             cardCopy.Nickname = cardData.name;
