@@ -51,60 +51,60 @@ const typeRank = {
     "Quest": 1,
 };
 const slotCounts = {
-    classicBooster: new Map([
+    'Classic Booster': new Map([
         [{'rarity': 'Common'}, 10],
         [{'rarity': 'Uncommon', 'type': '!Hero'}, 3],
         [{'rarity': 'Rare'}, 1],
         [{'type': 'Hero'}, 1]
     ]),
-    newBooster: new Map ([
+    'New Booster': new Map ([
         [{'rarity': 'Common'}, 12],
         [{'rarity': 'Uncommon', 'type': '!Hero'}, 4],
         [{'rarity': 'Rare'}, 1],
         [{'type': 'Hero'}, 1]
     ]),  
-    abilityBooster: new Map ([
-        [{'rarity': 'Common', 'type': 'Ability'}, 4],
-        [{'rarity': 'Uncommon', 'type': 'Ability'}, 3],
-        [{'rarity': 'Rare', 'type': 'Ability'}, 3],
+    'Class Booster': new Map ([
+        [{'rarity': 'Common', 'type': ['Ability', 'Ally']}, 4],
+        [{'rarity': 'Uncommon', 'type': ['Ability', 'Ally']}, 3],
+        [{'rarity': 'Rare', 'type': ['Ability', 'Ally']}, 3],
     ]),
-    equipmentBooster: new Map ([
+    'Equipment Booster': new Map ([
         [{'rarity': 'Uncommon', 'type': 'Equipment'}, 3],
         [{'rarity': 'Rare', 'type': 'Equipment'}, 2]
     ]),
-    factionBooster: new Map ([
+    'Faction Booster': new Map ([
         [{'rarity': 'Common'}, 11],
         [{'rarity': 'Uncommon', 'type': '!Hero'}, 3],
         [{'rarity': 'Rare'}, 1],
     ]),
-    neutralBooster: new Map ([
+    'Neutral Booster': new Map ([
         [{'rarity': 'Common', 'faction': '', 'class': ''}, 8],
         [{'rarity': 'Uncommon', 'faction': '', 'class': ''}, 1],
         [{'rarity': 'Rare', 'faction': '', 'class': ''}, 1],
     ]),
 }
 const outputCounts = {
-    classicBooster:  [
+    'Classic Booster':  [
         ['Hero', 'Hero / Loot'],
         ['', 'Cards']
     ],
-    newBooster: [
+    'New Booster': [
         ['Hero', 'Hero / Loot'],
         ['', 'Cards']
     ],
-    abilityBooster: [
-        ['', "Ability Cards"]
+    'Class Booster': [
+        ['', "Class Cards"]
     ],
-    equipmentBooster: [
+    'Equipment Booster': [
         ['', "Equipment Cards"]
     ],
-    factionBooster: [
+    'Faction Cards': [
         ['', "Faction Cards"],
     ],
-    neutralBooster: [
-        ['', "Cards"]
+    'Neutral Booster': [
+        ['', "Neutral Cards"]
     ],
-    starterDeck: [
+    'Starter Deck': [
         ['Hero', 'Hero'],
         ['OversizedHero', 'Oversized'],
         ['', 'Deck']
@@ -113,24 +113,25 @@ const outputCounts = {
 const selects = [setSelect, typeSelect, classSelect, factionSelect]
 const extraSelects = [classSelect, factionSelect]
 const extraFilters = {
-    abilityBooster: [classSelect],
-    equipmentBooster: [classSelect],
-    factionBooster: [factionSelect]
+    'Class Booster': [classSelect],
+    'Equipment Booster': [classSelect],
+    'Faction Booster': [factionSelect]
 }
 const allowDuplicates = {
-    classicBooster: false,
-    newBooster: false,
-    abilityBooster: true,
-    equipmentBooster: true,
-    factionBooster: false,
-    neutralBooster: true,
+    'Classic Booster': false,
+    'New Booster': false,
+    'Class Booster': true,
+    'Equipment Booster': true,
+    'Faction Booster': false,
+    'Neutral Booster': true,
 }
 const sealedTypes = {
-    classicSealed: {'classicBooster': 6},
-    enhancedSealed: {
-        'classAbilityBooster': 1,
-        'universalBooster': 2,
-        'factionBooster': 3
+    'Classic Sealed': {'Classic Booster': 6},
+    'Enhanced Sealed': {
+        'Class Booster': 1,
+        'Equipment Booster': 1,
+        'Neutral Booster': 1,
+        'Faction Booster': 3
     }
 }
 const availableImages = {

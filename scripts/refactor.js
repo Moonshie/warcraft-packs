@@ -30,7 +30,7 @@ function generate() {
 //Generate based on category
 //Output a non-rendered object with main keys and a "Contents" array for chosen cards
 function generateSealed(set, category, type) {
-    if (type === 'enhancedSealed') {
+    if (type === 'Enhanced Sealed') {
         enhancedSealed(set)
     }
     Object.entries(sealedTypes[type]).forEach(([boosterType, count]) => { {
@@ -213,8 +213,8 @@ function openBigBox(id, bigBox) {
     const counted = countCards(bigBox['contents'])
     renderContents(id, bigBox, counted);
     let set = sets[bigBox['set']];
-    generateBooster(set, 'booster', 'classicBooster');
-    generateBooster(set, 'booster', 'classicBooster');
+    generateBooster(set, 'booster', 'Classic Booster');
+    generateBooster(set, 'booster', 'Classic Booster');
 }
 
 
