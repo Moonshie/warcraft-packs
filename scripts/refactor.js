@@ -50,6 +50,14 @@ function generatePreconstructed(set, category, type, starters) {
         cardContents: [],
         otherContents: [],
     }
+
+    if (availableImages[item.set]) {
+        const images = availableImages[item.set][item.category];
+        if (images && images.length > 0) {
+            item.artID = images[Math.floor(Math.random() * images.length)];
+        }
+    }
+
     const heroes = Object.keys(starters);
     const deckList = starters[heroes[Math.floor(Math.random() * heroes.length)]]
     for (let index = 0; index < deckList.length; index++) {
@@ -68,6 +76,7 @@ function generatePreconstructed(set, category, type, starters) {
         item.otherContents.push(generateBooster(set, 'booster', 'Classic Booster'));
         item.otherContents.push(generateBooster(set, 'booster', 'Classic Booster'));
     }
+    console.log(item);
     return item;
 }
 function generateBooster(set, category = 'booster', type, extraFilters = []) {
@@ -89,6 +98,13 @@ function generateBooster(set, category = 'booster', type, extraFilters = []) {
         set: setSelect.value,
         cardContents: []
     };
+
+    if (availableImages[item.set]) {
+        const images = availableImages[item.set][item.category];
+        if (images && images.length > 0) {
+            item.artID = images[Math.floor(Math.random() * images.length)];
+        }
+    }
 
     slotCounts[type].forEach((count, filters) => {
         Object.assign(filters, tempFilters);
@@ -182,14 +198,7 @@ function renderItem(item) {
     clone.id = renderedItems.length;
     cloneOutput.id = `${renderedItems.length}-output`;
 
-
-    if (availableImages[item.set]) {
-        const images = availableImages[item.set][item.category];
-        if (images && images.length > 0) {
-            const randomImage = images[Math.floor(Math.random() * images.length)];
-            clone.style.backgroundImage = `url(./data/img/${randomImage}.webp)`;
-        }
-    }
+    clone.style.backgroundImage = `url(./data/img/${item.artID}.webp)`;
 
     track.appendChild(cloneWrapper);
 }
