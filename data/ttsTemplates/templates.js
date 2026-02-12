@@ -438,7 +438,7 @@ const rulebookTemplate = {
 
 const customDecks = {
     'Azeroth': {
-        229: {
+        1: {
             "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13417990999640844537/2B2F15C1A26068AE074582FBF6021C5A41A5D089/",
             "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17632449275576979154/77FD399963BDEA67EAC0D22CEDCC626D2B85CBFA/",
             "NumWidth": 5,
@@ -447,7 +447,7 @@ const customDecks = {
             "UniqueBack": true,
             "Type": 0
         },
-        230: {
+        2: {
             "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16030895108459434663/911557F5375084A6CE3F900F97CEEF7721C259AC/",
             "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17146053646204639674/6410FA3E438DBF040B3436F17A7DA7B2F97A86EF/",
             "NumWidth": 10,
@@ -456,7 +456,7 @@ const customDecks = {
             "UniqueBack": false,
             "Type": 0
         },
-        231: {
+        3: {
             "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17284153877165841619/852498632816F9877887A26A2EA82386026E5FF4/",
             "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17146053646204639674/6410FA3E438DBF040B3436F17A7DA7B2F97A86EF/",
             "NumWidth": 10,
@@ -465,7 +465,7 @@ const customDecks = {
             "UniqueBack": false,
             "Type": 0
         },
-        232: {
+        4: {
             "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15576550831512241522/24D2944FDAAEBF72E099FC368CD0F25E4B4862A8/",
             "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17146053646204639674/6410FA3E438DBF040B3436F17A7DA7B2F97A86EF/",
             "NumWidth": 10,
@@ -474,7 +474,7 @@ const customDecks = {
             "UniqueBack": false,
             "Type": 0
         },
-        233: {
+        5: {
             "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10141918766255584244/F1038524BD80306C57EB2FCE0FCD6F1B340D1A5E/",
             "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17146053646204639674/6410FA3E438DBF040B3436F17A7DA7B2F97A86EF/",
             "NumWidth": 10,
@@ -483,7 +483,7 @@ const customDecks = {
             "UniqueBack": false,
             "Type": 0
         },
-        234: {
+        6: {
             "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12956762013996720270/312C0B518F16125344D8576CCBCCDF9F35229E04/",
             "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17146053646204639674/6410FA3E438DBF040B3436F17A7DA7B2F97A86EF/",
             "NumWidth": 10,
@@ -494,9 +494,76 @@ const customDecks = {
         }
     },
     'Azeroth Oversize': {
-        235: {
+        7: {
             "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14876611159502112538/FB10BF67D1D75F0BB2EA4314473030EDD797A642/",
             "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/10170071975024849537/877F497E40B1F948E5B9BFBE4FA44BAFFD77E0FC/",
+            "NumWidth": 5,
+            "NumHeight": 4,
+            "BackIsHidden": false,
+            "UniqueBack": true,
+            "Type": 0
+        }
+    },
+    'DarkPortal': {
+        8: {
+            "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14242462149872807802/F0F32348A5D5F70F1CD428FB26E4546BFA21418B/",
+            "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9231936298222979685/ADCBFB991E96264609E0CD24DD4AC6BE155B911F/",
+            "NumWidth": 5,
+            "NumHeight": 4,
+            "BackIsHidden": false,
+            "UniqueBack": true,
+            "Type": 0
+        },
+        9: {
+            "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17284044589253058834/D9C72B20B14C3B89AA723A2BF242C6A4CE057416/",
+            "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17146053646204639674/6410FA3E438DBF040B3436F17A7DA7B2F97A86EF/",
+            "NumWidth": 10,
+            "NumHeight": 7,
+            "BackIsHidden": false,
+            "UniqueBack": false,
+            "Type": 0
+        },
+        10: {
+            "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16390025322761471985/547B744FDD4C51F6148304EC4E9443747F134DEE/",
+            "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17146053646204639674/6410FA3E438DBF040B3436F17A7DA7B2F97A86EF/",
+            "NumWidth": 10,
+            "NumHeight": 7,
+            "BackIsHidden": false,
+            "UniqueBack": false,
+            "Type": 0
+        },
+        11: {
+            "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13339404461975753550/31E7D2F86D8FB59E55FF20B7F5497327D535C6AC/",
+            "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17146053646204639674/6410FA3E438DBF040B3436F17A7DA7B2F97A86EF/",
+            "NumWidth": 10,
+            "NumHeight": 7,
+            "BackIsHidden": false,
+            "UniqueBack": false,
+            "Type": 0
+        },
+        12: {
+            "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13891976965441406771/BF521CDBC36E0E24D148CD3087B0E31F84B52D0D/",
+            "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17146053646204639674/6410FA3E438DBF040B3436F17A7DA7B2F97A86EF/",
+            "NumWidth": 10,
+            "NumHeight": 7,
+            "BackIsHidden": false,
+            "UniqueBack": false,
+            "Type": 0
+        },
+        13: {
+            "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11971870181017252475/616CA38765B83BE8FD20D4F7108B9B76BEB67EB4/",
+            "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17146053646204639674/6410FA3E438DBF040B3436F17A7DA7B2F97A86EF/",
+            "NumWidth": 10,
+            "NumHeight": 7,
+            "BackIsHidden": false,
+            "UniqueBack": false,
+            "Type": 0
+        }
+    },
+    'DarkPortal Oversize': {
+        14: {
+            "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15808913951021144665/3968BA838980BB8090901A60ACD57F6B26CCB169/",
+            "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/12572555518116899653/10DC64805DE0C71CCDEABC608DFEADC5DD1A3C2A/",
             "NumWidth": 5,
             "NumHeight": 4,
             "BackIsHidden": false,

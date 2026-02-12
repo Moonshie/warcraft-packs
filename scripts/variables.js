@@ -28,7 +28,7 @@ const sets = {
 };
 const precons = {
     'Azeroth': AzerothPrecons,
-    'DarkPortal': DarkPortalPrecons
+    'DarkPortal': DarkPortalPrecons,
 }
 const oversize = {
     'AzerothOversize': AzerothOversize,
