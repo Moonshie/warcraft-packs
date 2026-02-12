@@ -320,7 +320,24 @@ const DarkPortal = [
   { set: "DarkPortal", setNumber: 319, name: "The Scourge Cauldrons", type: "Quest", class: "", faction: "", cost: "", rarity: "Common" }
 ];
 
-const DarkPortalOversize = [];
+const DarkPortalOversize = [
+  { set: "DarkPortal", setNumber: 1, name: "Anchorite Kalinna", type: ["Hero", "Oversize"], class: "Priest", faction: "Alliance", cost: "", rarity: "Rare" },
+  { set: "DarkPortal", setNumber: 2, name: "Grumpherys", type: ["Hero", "Oversize"], class: "Hunter", faction: "Alliance", cost: "", rarity: "Rare" },
+  { set: "DarkPortal", setNumber: 3, name: "Nathressa Darkstrider", type: ["Hero", "Oversize"], class: "Rogue", faction: "Alliance", cost: "", rarity: "Rare" },
+  { set: "DarkPortal", setNumber: 4, name: "Phadalus the Enlightened", type: ["Hero", "Oversize"], class: "Shaman", faction: "Alliance", cost: "", rarity: "Rare" },
+  { set: "DarkPortal", setNumber: 5, name: "Ruby Gemsparkle", type: ["Hero", "Oversize"], class: "Mage", faction: "Alliance", cost: "", rarity: "Rare" },
+  { set: "DarkPortal", setNumber: 6, name: "Savin Lightguard", type: ["Hero", "Oversize"], class: "Paladin", faction: "Alliance", cost: "", rarity: "Rare" },
+  { set: "DarkPortal", setNumber: 7, name: "Telrander", type: ["Hero", "Oversize"], class: "Druid", faction: "Alliance", cost: "", rarity: "Rare" },
+  { set: "DarkPortal", setNumber: 8, name: "Victoria Jaton", type: ["Hero", "Oversize"], class: "Warrior", faction: "Alliance", cost: "", rarity: "Rare" },
+  { set: "DarkPortal", setNumber: 9, name: "Zenith Shadowforce", type: ["Hero", "Oversize"], class: "Warlock", faction: "Alliance", cost: "", rarity: "Rare" },
+  { set: "DarkPortal", setNumber: 10, name: "Aleyah Dawnborn", type: ["Hero", "Oversize"], class: "Paladin", faction: "Horde", cost: "", rarity: "Rare" },
+  { set: "DarkPortal", setNumber: 11, name: "Azarak Wolfsblood", type: ["Hero", "Oversize"], class: "Hunter", faction: "Horde", cost: "", rarity: "Rare" },
+  { set: "DarkPortal", setNumber: 12, name: "Bulkas Wildhorn", type: ["Hero", "Oversize"], class: "Warrior", faction: "Horde", cost: "", rarity: "Rare" },
+  { set: "DarkPortal", setNumber: 13, name: "Daspien Bladedancer", type: ["Hero", "Oversize"], class: "Rogue", faction: "Horde", cost: "", rarity: "Rare" },
+  { set: "DarkPortal", setNumber: 14, name: "Haruka Skycaller", type: ["Hero", "Oversize"], class: "Shaman", faction: "Horde", cost: "", rarity: "Rare" },
+  { set: "DarkPortal", setNumber: 15, name: "Mojo Mender Ja'nah", type: ["Hero", "Oversize"], class: "Priest", faction: "Horde", cost: "", rarity: "Rare" },
+  { set: "DarkPortal", setNumber: 16, name: "Morganis Blackvein", type: ["Hero", "Oversize"], class: "Mage", faction: "Horde", cost: "", rarity: "Rare" },
+];
 
 const DarkPortalPrecons = {
   "Anchorite Kalinna": [1, 67, 70, 70, 75, 77, 77, 153, 153, 162, 162, 163, 170, 170, 173, 173, 185, 185, 189, 189, 193, 193, 196, 251, 287, 290, 290, 314, 314, 315, 316, 316, 319],

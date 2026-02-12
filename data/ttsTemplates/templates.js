@@ -515,7 +515,7 @@ const artIDsSteamCloud = {
     'AzerothBigBox': 'https://steamusercontent-a.akamaihd.net/ugc/11959105098238899912/208C3C0A2456A06B5001EF7CA0135DDB2ED4D621/',
     'AzerothBooster1': 'https://steamusercontent-a.akamaihd.net/ugc/14112822235229092952/DC43688C9BA514D9439E41C007A5EB46674A1A64/',
     'AzerothBooster2': 'https://steamusercontent-a.akamaihd.net/ugc/14195948671432938179/B233997DE63552F9B309B2CBCEB5C097A50F41CF/',
-    'DarkPortalBigBox': '',
+    'DarkPortalBigBox': 'https://steamusercontent-a.akamaihd.net/ugc/13830077253897791760/891829101809830E79273D79655934CEC6B451DA/',
     'DarkPortalBooster1': 'https://steamusercontent-a.akamaihd.net/ugc/14755963915318952112/3CED74014200F6BD66E478D0485AE6DB7187BD80/',
     'DarkPortalBooster2': 'https://steamusercontent-a.akamaihd.net/ugc/17774724210400209970/BAF78A3651B026D21E6E3410FEEB5CB73443F357/',      
 }
