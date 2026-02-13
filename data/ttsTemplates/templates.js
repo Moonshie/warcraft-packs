@@ -575,6 +575,10 @@ const customDecks = {
 
 const templates = {
     'Classic Booster': boosterSaveTemplate,
+    'Class Booster': boosterSaveTemplate,
+    'Faction Booster': boosterSaveTemplate,
+    'Equipment Booster': boosterSaveTemplate,
+    'Neutral Booster': boosterSaveTemplate,
     'Starter Deck': bigBoxSaveTemplate,
 }
 
@@ -598,6 +602,7 @@ function exportTTS() {
         if (exportedItems.includes(item)) {
             return;
         }
+        console.log(item);
         let templateCopy = JSON.parse(JSON.stringify(templates[item.type]));
         templateCopy.ObjectStates[0].Nickname = `${item.set} ${item.type}`;
 
