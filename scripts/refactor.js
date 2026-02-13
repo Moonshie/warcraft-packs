@@ -1,6 +1,7 @@
 //Initial Generate
 function generate() {
-    set = sets[setSelect.value];
+    set = setSelect.value;
+    pool = sets[setSelect.value];
     precon = precons[setSelect.value];
     category = typeSelect.selectedOptions[0].className;
     type = typeSelect.value;
@@ -15,90 +16,108 @@ function generate() {
     }
     
     if (category === 'sealed') {
-        let sealed = generateSealed(set, category, type);
+        let sealed = generateSealed(set, pool, category, type);
         sealed.forEach(booster => {
             generatedItems.push(booster)
         });
     }
     if (category === 'bigBox') {
-        generatedItems.push(generatePreconstructed(set, category, type, precon));
+        generatedItems.push(generatePreconstructed(set, pool, category, type, precon));
     }
     if (category === 'booster') {
-        generatedItems.push(generateBooster(set, category, type, extraFilters[type]));
+        let extra = filtersFromSelectors(extraFilters[type]);
+        generatedItems.push(generateBooster(set, pool, category, type, extra));
     }
     render();
+}
+
+function filtersFromSelectors(selector = []) {
+    let extra = {}
+    if (selector != []) {
+        selector.forEach(element => {
+            if (element.value === "") {
+                alert("Please select a valid option.");
+                throw new Error("No extra filter.");
+                ;
+            }
+            extra[`${element.id.slice(0,-7)}`] = element.value;
+        });
+    }
+    return extra;
 }
 
 
 
 //Generate based on category
 //Output a non-rendered object with main keys and a "Contents" arrays for chosen cards
-function generateSealed(set, category, type) {
+function generateSealed(set, pool, category, type) {
     let sealed = [];
     Object.entries(sealedTypes[type]).forEach(([boosterType, count]) => { {
         for (let i = 0; i < count; i++) {
-            sealed.push(generateBooster(set, 'booster', boosterType, extraFilters[type]));
+            sealed.push(generateBooster(set, pool, 'booster', boosterType));
         }
     }});
     return sealed;
 }
-function generatePreconstructed(set, category, type, starters) {
+function generatePreconstructed(set, pool, category, type, starters) {
     let item = {
         category: category,
         type: type,
-        set: setSelect.value,
+        set: set,
         cardContents: [],
         otherContents: [],
     }
 
-    if (availableImages[item.set]) {
-        const images = availableImages[item.set][item.category];
-        if (images && images.length > 0) {
-            item.artID = images[Math.floor(Math.random() * images.length)];
-        }
-    }
+    setArtID(item);
 
     const heroes = Object.keys(starters);
     const deckList = starters[heroes[Math.floor(Math.random() * heroes.length)]]
     for (let index = 0; index < deckList.length; index++) {
         setNumber = deckList[index]-1;
-        item.cardContents.push(set[setNumber]);
+        item.cardContents.push(pool[setNumber]);
     }
     if (category === 'bigBox') {
-        let oversizeHeroesSet = oversize[`${setSelect.value}Oversize`];
+        let oversizeHeroesPool = oversize[`${set}Oversize`];
         let oversizeHeroes = [];
         for (let i = 0; i < 3; i++) {
-            let card = generateCard(oversizeHeroesSet, '');
+            let card = generateCard(set, oversizeHeroesPool, '', item);
             oversizeHeroes.push(card);
-            oversizeHeroesSet = oversizeHeroesSet.filter(element => card != element)
+            oversizeHeroesPool = oversizeHeroesPool.filter(element => card != element)
         }
         item.otherContents.push(oversizeHeroes);
-        item.otherContents.push(generateBooster(set, 'booster', 'Classic Booster'));
-        item.otherContents.push(generateBooster(set, 'booster', 'Classic Booster'));
+        item.otherContents.push(generateBooster(set, pool, 'booster', 'Classic Booster'));
+        item.otherContents.push(generateBooster(set, pool, 'booster', 'Classic Booster'));
     }
-    console.log(item);
     return item;
 }
-function generateBooster(set, category = 'booster', type, extraFilters = []) {
-    tempFilters = {}
-    if (extraFilters != []) {
-        extraFilters.forEach(element => {
-            if (element.value === "") {
-                alert("Please select a valid option.");
-                throw new Error("No extra filter.");
-                ;
-            }
-            tempFilters[`${element.id.slice(0,-7)}`] = element.value;
-        });
-    }
-
+function generateBooster(set, pool, category = 'booster', type, extra = []) {
     let item = {
         category: category,
         type: type,
-        set: setSelect.value,
+        set: set,
+        extra: extra,
         cardContents: []
     };
 
+    setArtID(item);
+
+    slotCounts[type].forEach((count, filters) => {
+        Object.assign(filters, extra);
+        for (let i = 0; i < count; i++) {
+            let card = generateCard(set, pool, filters, item);
+            item.cardContents.push(card);
+            if (allowDuplicates[type] === false) {
+                item['cardContents'].forEach(generatedCard => {
+                    pool = pool.filter(card => generatedCard != card)
+                });
+            }
+        }
+    });
+
+    return item;
+}
+
+function setArtID(item) {
     if (availableImages[item.set]) {
         const images = availableImages[item.set][item.category];
         if (images && images.length > 0) {
@@ -106,37 +125,35 @@ function generateBooster(set, category = 'booster', type, extraFilters = []) {
         }
     }
 
-    slotCounts[type].forEach((count, filters) => {
-        Object.assign(filters, tempFilters);
-        for (let i = 0; i < count; i++) {
-            let card = generateCard(set, filters);
-            item.cardContents.push(card);
-            if (allowDuplicates[type] === false) {
-                item['cardContents'].forEach(generatedCard => {
-                    set = set.filter(card => generatedCard != card)
-                });
-            }
-        }});
-    return item;
+    if (item.type === 'Class Booster') {
+        item.artID = `enhanced/Class%20Booster%20${item.extra.class}`
+    } else if (item.type === 'Faction Booster') {
+        item.artID = `enhanced/Faction%20Booster%20${item.extra.faction}`
+    } else if (item.type === 'Equipment Booster') {
+        item.artID = `enhanced/Equipment%20Booster`
+    } else if (item.type === 'Neutral Booster') {
+        item.artID = `enhanced/Neutral%20Booster`
+    }
 }
 
 
 
 //Card Generator, picking out a card based on all available filters
-function generateCard(set, filters) {
-    let pool = set;
+function generateCard(set, pool, filters, parentItem) {
     let filterValues;
     let card;
     let upgradedCard;
+
+    let potentialUpgrades = upgradeChances[parentItem.type] || [];
     Object.entries(filters).forEach(([key, value]) => {
         filterValues = Array.isArray(value) ? value : [value];
 
-        upgradeChances.forEach((chance, pair) => {
+        potentialUpgrades.forEach((chance, pair) => {
             if (filterValues == pair[0]) {
                 if (Math.random() < chance) {
                     let upgradedFilters = structuredClone(filters);
                     upgradedFilters['rarity'] = pair[1];
-                    upgradedCard = generateCard(set, upgradedFilters)
+                    upgradedCard = generateCard(set, pool, upgradedFilters, parentItem)
                 }
             }
         });
@@ -199,6 +216,8 @@ function renderItem(item) {
     cloneOutput.id = `${renderedItems.length}-output`;
 
     clone.style.backgroundImage = `url(./data/img/${item.artID}.webp)`;
+
+    console.log(`url(./data/img/${item.artID}.webp)`)
 
     track.appendChild(cloneWrapper);
 }

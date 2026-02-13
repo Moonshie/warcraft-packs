@@ -1,8 +1,14 @@
-const upgradeChances = new Map([
-    [['Rare', 'Epic'], 0.091] // 9.1% chance to upgrade Rare to Epic
-])
+const upgradeChances = {
+    'Classic Booster': new Map([
+        [['Rare', 'Epic'], 0.091]
+    ]),
+    'Equipment Booster': new Map([
+        [['Uncommon', 'Rare'], 0.5],
+        [['Rare', 'Epic'], 0.2]
+    ]),
+};
 const imageCache = {};
-const generatedItems = []
+const generatedItems = [];
 const renderedItems = [];
 const openItems = [];
 
@@ -70,19 +76,18 @@ const slotCounts = {
     'Class Booster': new Map ([
         [{'rarity': 'Common', 'type': ['Ability', 'Ally']}, 4],
         [{'rarity': 'Uncommon', 'type': ['Ability', 'Ally']}, 3],
-        [{'rarity': 'Rare', 'type': ['Ability', 'Ally']}, 3],
+        [{'rarity': 'Rare', 'type': ['Ability', 'Ally']}, 2],
     ]),
     'Equipment Booster': new Map ([
-        [{'rarity': 'Uncommon', 'type': 'Equipment'}, 3],
-        [{'rarity': 'Rare', 'type': 'Equipment'}, 2]
+        [{'rarity': 'Uncommon', 'type': 'Equipment'}, 6],
     ]),
     'Faction Booster': new Map ([
-        [{'rarity': 'Common'}, 11],
-        [{'rarity': 'Uncommon', 'type': '!Hero'}, 3],
-        [{'rarity': 'Rare'}, 1],
+        [{'rarity': 'Common'}, 6],
+        [{'rarity': 'Uncommon', 'type': '!Hero'}, 4],
+        [{'rarity': 'Rare'}, 2],
     ]),
     'Neutral Booster': new Map ([
-        [{'rarity': 'Common', 'faction': '', 'class': ''}, 8],
+        [{'rarity': 'Common', 'faction': '', 'class': ''}, 10],
         [{'rarity': 'Uncommon', 'faction': '', 'class': ''}, 1],
         [{'rarity': 'Rare', 'faction': '', 'class': ''}, 1],
     ]),
@@ -141,7 +146,7 @@ const sealedTypes = {
 const availableImages = {
     Azeroth: {
         booster: ['AzerothBooster1', 'AzerothBooster2'],
-        bigBox: ['AzerothBigBox']
+        bigBox: ['AzerothBigBox'],
     },
     DarkPortal: {
         booster: ['DarkPortalBooster1', 'DarkPortalBooster2'],

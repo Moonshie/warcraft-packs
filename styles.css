@@ -251,6 +251,7 @@ button:disabled {
     height: 48vh;
     display: grid;
     background-size: cover;
+    background-position: center;
     transition: all 0.3s ease;
     box-sizing: border-box;
 }
