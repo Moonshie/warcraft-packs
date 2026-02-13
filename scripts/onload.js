@@ -1,5 +1,3 @@
-// randomBackgrounds(currentSet);
-
 track.addEventListener('wheel', (e) => {
     let element = document.elementFromPoint(e.clientX, e.clientY);
     

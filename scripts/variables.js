@@ -1,17 +1,11 @@
-const upgradeChances = {
-    'Classic Booster': new Map([
-        [['Rare', 'Epic'], 0.091]
-    ]),
-    'Equipment Booster': new Map([
-        [['Uncommon', 'Rare'], 0.5],
-        [['Rare', 'Epic'], 0.2]
-    ]),
-};
-const imageCache = {};
-const generatedItems = [];
-const renderedItems = [];
-const openItems = [];
+//Empty variables
+const imageCache = {};      //For image previews
+const generatedItems = [];  //For items in queue for rendering
+const renderedItems = [];   //For items rendered and on screen
+const openItems = [];       //For items rendered, on screen, and opened
+const exportedItems = [];   //For items exported to TTS
 
+//HTML elements
 const root = document.querySelector(':root');
 const genButton = document.getElementById("generate");
 const left = document.querySelector(".sidebar#left");
@@ -28,6 +22,14 @@ const previewBox = document.getElementById("preview-box");
 const previewImage = document.getElementById("preview-image");
 const previewLoader = document.getElementById("preview-loader");
 
+//UI states
+const openMenus = {
+    left: false,
+    center: true,
+    right: false,
+}
+
+//Set access by name
 const sets = {
     'Azeroth': Azeroth,
     'DarkPortal': DarkPortal,
@@ -41,6 +43,7 @@ const oversize = {
     'DarkPortalOversize': DarkPortalOversize,
 }
 
+//Sorting order
 const rarityRank = {
     "Legendary": 5,
     "Epic": 4,
@@ -60,6 +63,20 @@ const typeRank = {
     "Equipment": 2,
     "Quest": 1,
 };
+
+//Upgrade chances for random generations
+//The only official ones are Rare to Epic and Hero to Loot
+const upgradeChances = {
+    'Classic Booster': new Map([
+        [['Rare', 'Epic'], 0.091]
+    ]),
+    'Equipment Booster': new Map([
+        [['Uncommon', 'Rare'], 0.5],
+        [['Rare', 'Epic'], 0.2]
+    ]),
+};
+
+//Normal counts of cards of certain slots for various booster types and their filters
 const slotCounts = {
     'Classic Booster': new Map([
         [{'rarity': 'Common'}, 10],
@@ -92,6 +109,29 @@ const slotCounts = {
         [{'rarity': 'Rare', 'faction': '', 'class': ''}, 1],
     ]),
 }
+
+//Normal state of duplication for booster types
+const allowDuplicates = {
+    'Classic Booster': false,
+    'New Booster': false,
+    'Class Booster': true,
+    'Equipment Booster': true,
+    'Faction Booster': false,
+    'Neutral Booster': true,
+}
+
+//Normal counts of booster packs generated for a sealed
+const sealedTypes = {
+    'Classic Sealed': {'Classic Booster': 6},
+    'Enhanced Sealed': {
+        'Class Booster': 1,
+        'Equipment Booster': 1,
+        'Neutral Booster': 1,
+        'Faction Booster': 3
+    }
+}
+
+//Opened booster dividers
 const outputCounts = {
     'Classic Booster':  [
         ['Hero', 'Hero / Loot'],
@@ -119,6 +159,8 @@ const outputCounts = {
         ['', 'Deck']
     ]
 }
+
+//Additional variables for selectors
 const selects = [setSelect, typeSelect, classSelect, factionSelect]
 const extraSelects = [classSelect, factionSelect]
 const extraFilters = {
@@ -126,23 +168,8 @@ const extraFilters = {
     'Equipment Booster': [classSelect],
     'Faction Booster': [factionSelect]
 }
-const allowDuplicates = {
-    'Classic Booster': false,
-    'New Booster': false,
-    'Class Booster': true,
-    'Equipment Booster': true,
-    'Faction Booster': false,
-    'Neutral Booster': true,
-}
-const sealedTypes = {
-    'Classic Sealed': {'Classic Booster': 6},
-    'Enhanced Sealed': {
-        'Class Booster': 1,
-        'Equipment Booster': 1,
-        'Neutral Booster': 1,
-        'Faction Booster': 3
-    }
-}
+
+//Images available for rendering
 const availableImages = {
     Azeroth: {
         booster: ['AzerothBooster1', 'AzerothBooster2'],
@@ -153,10 +180,3 @@ const availableImages = {
         bigBox: ['DarkPortalBigBox']
     }
 }
-
-const openMenus = {
-    left: false,
-    center: true,
-    right: false,
-}
-
