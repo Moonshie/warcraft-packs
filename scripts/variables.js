@@ -4,6 +4,7 @@ const generatedItems = [];  //For items in queue for rendering
 const renderedItems = [];   //For items rendered and on screen
 const openItems = [];       //For items rendered, on screen, and opened
 const exportedItems = [];   //For items exported to TTS
+let cardOptions = [];     //Cards presented on screen for choices
 
 //HTML elements
 const root = document.querySelector(':root');
@@ -22,6 +23,7 @@ const previewBox = document.getElementById("preview-box");
 const previewImage = document.getElementById("preview-image");
 const previewLoader = document.getElementById("preview-loader");
 const fullscreenMenu = document.querySelector(".fullscreen")
+const cardSelect = document.querySelector(".card-select")
 
 //UI states
 const openMenus = {
@@ -128,8 +130,8 @@ const sealedTypes = {
     'Enhanced Sealed': {
         'Class Booster': 1,
         'Equipment Booster': 1,
+        'Faction Booster': 2,
         'Neutral Booster': 1,
-        'Faction Booster': 3
     }
 }
 
@@ -149,7 +151,7 @@ const outputCounts = {
     'Equipment Booster': [
         ['', "Equipment Cards"]
     ],
-    'Faction Cards': [
+    'Faction Booster': [
         ['', "Faction Cards"],
     ],
     'Neutral Booster': [
@@ -166,9 +168,14 @@ const outputCounts = {
 const selects = [setSelect, typeSelect, classSelect, factionSelect]
 const extraSelects = [classSelect, factionSelect]
 const extraFilters = {
+    'Class Booster': 'class',
+    'Equipment Booster': 'class',
+    'Faction Booster': 'faction',
+}
+const extraFiltersSelectors = {
     'Class Booster': [classSelect],
     'Equipment Booster': [classSelect],
-    'Faction Booster': [factionSelect]
+    'Faction Booster': [factionSelect],
 }
 
 //Images available for rendering

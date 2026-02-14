@@ -143,7 +143,7 @@ function toggleMenu(id) {
 
 //Cleanup selectors on switching
 function checkSelectors() {
-    extraSelect = extraFilters[typeSelect.value];
+    extraSelect = extraFiltersSelectors[typeSelect.value];
     extraSelect === undefined ? extraSelect = [] : true;
     extraSelects.forEach(element => {
         if (extraSelect.includes(element)) {

@@ -18,6 +18,14 @@ function generate() {
     }
     
     if (category === 'sealed') {
+        if (type === 'Enhanced Sealed') {
+            if (oversize[`${set}Oversize`]) {
+                cardDraft(`${set} Oversize`, oversize[`${set}Oversize`], 3);
+            } else {
+                cardDraft(set, pool.filter(card => card.type === "Hero"), 3)
+            }
+            return;
+        }
         let sealed = generateSealed(set, pool, category, type);
         sealed.forEach(booster => {
             generatedItems.push(booster)
@@ -27,30 +35,79 @@ function generate() {
         generatedItems.push(generatePreconstructed(set, pool, category, type, precon));
     }
     if (category === 'booster') {
-        let extra = filtersFromSelectors(extraFilters[type]);
+        let extra = filtersFromSelectors(extraFiltersSelectors[type]);
         generatedItems.push(generateBooster(set, pool, category, type, extra));
     }
-    render();
+    
+    if (generatedItems.length > 0) {
+        render();
+    }
 }
 
 //Category --- Sealed
 //Generates a number of packs for a sealed format play
 
-function generateSealed(set, pool, category, type) {
+function generateSealed(set, pool, category, type, extras = {}) {
     let sealed = [];
-    let extra = [];
+    console.log(extras);
 
-    if (type === 'Enhanced Sealed') {
-        let selectedHero = heroDraft(set);
-    }
-
-    Object.entries(sealedTypes[type]).forEach(([boosterType, count]) => { {
+    Object.entries(sealedTypes[type]).forEach(([boosterType, count]) => {{
         for (let i = 0; i < count; i++) {
-            sealed.push(generateBooster(set, pool, 'booster', boosterType, extra));
+            sealed.push(generateBooster(set, pool, 'booster', boosterType, extras[boosterType]));
         }
     }});
     return sealed;
 }
+
+function cardDraft(set, pool, count = 3) {
+    console.log(pool);
+    for (let index = 0; index < count; index++) {
+        cardOptions.push(generateCard(set, pool, {}, {}))
+        cardOptions.forEach(generatedCard => {pool = pool.filter(card => generatedCard != card)})
+    }
+    cardOptions.forEach((card, index) => {
+        const cardOption = document.createElement("div");
+        cardOption.classList.add("card-option");
+        cardOption.addEventListener("click", () => chooseCard(index, type))
+        const cardImg = document.createElement("img");
+        cardImg.src = `./data/cardImg/${set}/${card.setNumber}.jpg`;
+        cardOption.appendChild(cardImg);
+        cardSelect.appendChild(cardOption);
+    })
+    toggleMenu('fullscreen');
+}
+
+function chooseCard(index, type) {
+    if (type === 'Enhanced Sealed') {
+        let extras = {};
+
+        Object.entries(sealedTypes[type]).forEach(([key]) => {
+            if (extraFilters[key] != undefined) {
+                console.log(key);
+                let filterPair = {}
+                filterPair[extraFilters[key]] = cardOptions[index][extraFilters[key]]
+                console.log(filterPair);
+                extras[key] = filterPair;
+            }
+        })
+
+        let sealed = generateSealed(set, pool, category, type, extras);
+        console.log(sealed);
+        sealed.forEach(booster => {
+            generatedItems.push(booster)
+        });
+    }
+    cardDraftCleanup()
+    toggleMenu('fullscreen');
+    render();
+}
+
+function cardDraftCleanup() {
+    cardSelect.innerHTML = '';
+    cardOptions = [];
+    console.log(cardOptions);
+}
+
 
 //Category --- Preconstructed
 //Generates a preconstructed package from a selection of types, like a starter deck

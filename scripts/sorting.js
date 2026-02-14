@@ -11,6 +11,7 @@ function filtersFromSelectors(selector = []) {
             extra[`${element.id.slice(0,-7)}`] = element.value;
         });
     }
+    console.log(extra);
     return extra;
 }
 
