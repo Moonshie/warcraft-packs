@@ -117,6 +117,10 @@ function toggleMenu(id) {
             center.classList.add('closed');
             center.style.translate = `0 -${window.getComputedStyle(center).getPropertyValue('height')}`;
             openMenus[id] = false;
+        } else if (id === 'fullscreen') {
+            fullscreenMenu.classList.add('closed');
+            fullscreenMenu.style.translate = `0 -${window.getComputedStyle(fullscreenMenu).getPropertyValue('height')}`;
+            openMenus[id] = false;
         }
     } else if (openMenus[id] === false) {
         if (id === 'left') {
@@ -128,6 +132,10 @@ function toggleMenu(id) {
         } else if (id === 'center') {
             center.classList.remove('closed');
             center.style.translate = ``;
+            openMenus[id] = true;
+        } else if (id === 'fullscreen') {
+            fullscreenMenu.classList.remove('closed');
+            fullscreenMenu.style.translate = ``;
             openMenus[id] = true;
         }
     }

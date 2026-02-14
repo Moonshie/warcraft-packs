@@ -21,12 +21,14 @@ const factionSelect = document.querySelector("#faction-select");
 const previewBox = document.getElementById("preview-box");
 const previewImage = document.getElementById("preview-image");
 const previewLoader = document.getElementById("preview-loader");
+const fullscreenMenu = document.querySelector(".fullscreen")
 
 //UI states
 const openMenus = {
     left: false,
     center: true,
     right: false,
+    fullscreen: false,
 }
 
 //Set access by name

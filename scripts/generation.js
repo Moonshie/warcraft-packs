@@ -38,9 +38,15 @@ function generate() {
 
 function generateSealed(set, pool, category, type) {
     let sealed = [];
+    let extra = [];
+
+    if (type === 'Enhanced Sealed') {
+        let selectedHero = heroDraft(set);
+    }
+
     Object.entries(sealedTypes[type]).forEach(([boosterType, count]) => { {
         for (let i = 0; i < count; i++) {
-            sealed.push(generateBooster(set, pool, 'booster', boosterType));
+            sealed.push(generateBooster(set, pool, 'booster', boosterType, extra));
         }
     }});
     return sealed;
