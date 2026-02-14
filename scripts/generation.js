@@ -60,7 +60,6 @@ function generateSealed(set, pool, category, type, extras = {}) {
 }
 
 function cardDraft(set, pool, count = 3) {
-    console.log(pool);
     for (let index = 0; index < count; index++) {
         cardOptions.push(generateCard(set, pool, {}, {}))
         cardOptions.forEach(generatedCard => {pool = pool.filter(card => generatedCard != card)})
@@ -79,6 +78,10 @@ function cardDraft(set, pool, count = 3) {
 
 function chooseCard(index, type) {
     if (type === 'Enhanced Sealed') {
+        singleCard = cardOptions[index];
+        singleCard['category'] = 'card';
+        generatedItems.push(singleCard);
+
         let extras = {};
 
         Object.entries(sealedTypes[type]).forEach(([key]) => {

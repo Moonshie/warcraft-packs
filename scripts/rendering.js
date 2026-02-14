@@ -17,6 +17,10 @@ function renderItem(item) {
     cloneOutput.id = `${renderedItems.length}-output`;
 
     clone.style.backgroundImage = `url(./data/img/${item.artID}.webp)`;
+    if (item.category === 'card') {
+        console.log(item.set, item.setNumber)
+        clone.style.backgroundImage = `url(./data/cardImg/Azeroth%20Oversize/${item.setNumber}.jpg)`
+    }
 
     track.appendChild(cloneWrapper);
 }

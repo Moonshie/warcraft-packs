@@ -91,6 +91,8 @@ function centerCorrectly() {
         offsetLeft = 15;
     } else if (leftmostItem === 'bigBox-wrapper') {
         offsetLeft = 21;
+    } else if (leftmostItem === 'card-wrapper') {
+        offsetLeft = 12.5;
     }
 
     let rightmostItem = track.lastElementChild.className;
@@ -98,6 +100,8 @@ function centerCorrectly() {
         offsetRight = 15;
     } else if (rightmostItem === 'bigBox-wrapper') {
         offsetRight = 21;
+    } else if (leftmostItem === 'card-wrapper') {
+        offsetRight = 12.5;
     }
 
     root.style.setProperty('--padding-left', `${offsetLeft}vh`)

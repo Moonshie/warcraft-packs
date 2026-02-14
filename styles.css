@@ -269,6 +269,15 @@ button:disabled {
 .bigBox:not(.flip):hover {
     cursor: pointer;
 }
+.card {
+    width: 25vh;
+    height: 35vh;
+    margin-top: 6.5vh;
+    background-size: cover;
+    background-position: center;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
 
 .flip {
     animation: booster-flip 1s;
