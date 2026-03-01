@@ -250,24 +250,52 @@ button:disabled {
     width: 30vh;
     height: 48vh;
     display: grid;
-    background-size: cover;
-    background-position: center;
+    position: relative;
+    overflow: visible;
     transition: all 0.3s ease;
     box-sizing: border-box;
+    border: 1px solid transparent;
+    border-radius: 10px;
 }
-.booster:not(.flip):hover {
+.booster:not(.cutting):hover {
     cursor: pointer;
+    border: 1px solid #8d693470;
+    box-shadow: 0 0 10px #8d6934;
 }
 .bigBox {
     padding: 0 0.3rem 0 0.3rem;
     width: 42vh;
     height: 60vh;
     display: grid;
-    background-size: cover;
+    position: relative;
+    overflow: visible;
     box-sizing: border-box;
 }
-.bigBox:not(.flip):hover {
+.bigBox:not(.cutting):hover {
     cursor: pointer;
+    border: 1px solid #8d693470;
+    box-shadow: 0 0 10px #8d6934;
+}
+
+/* The actual pack image, layered on top of the card list */
+.booster-img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+    pointer-events: none;
+    user-select: none;
+    border-radius: 4px;
+    z-index: 1;
+}
+
+/* Canvases injected during cut animation */
+.cut-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 2;
 }
 .card {
     width: 25vh;
@@ -279,20 +307,7 @@ button:disabled {
     box-sizing: border-box;
 }
 
-.flip {
-    animation: booster-flip 1s;
-    background-position: top;
-    background-repeat: no-repeat;
-    background-size: contain;
-    animation-fill-mode: forwards
-}
-@keyframes booster-flip {
-    0% {};
-    25% {transform: rotateY(90deg);}
-    50% {transform: rotateY(180deg); background-image: url(./data/img/0.webp);}
-    75% {transform: rotateY(90deg);}
-    100% {transform: rotateY(0deg); background-image: none;}
-}
+
 .open {
     border: 1px solid #8d693470;
     border-radius: 10px;

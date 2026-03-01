@@ -16,7 +16,15 @@ function renderItem(item) {
     clone.id = renderedItems.length;
     cloneOutput.id = `${renderedItems.length}-output`;
 
-    clone.style.backgroundImage = `url(./data/img/${item.artID}.webp)`;
+    if (item.category === 'booster' || item.category === 'bigBox') {
+        // Use a real <img> so the cut animation can draw it onto a canvas
+        const packImg = document.createElement('img');
+        packImg.className = 'booster-img';
+        packImg.src = `./data/img/${item.artID}.webp`;
+        packImg.draggable = false;
+        clone.appendChild(packImg);
+    }
+
     if (item.category === 'card') {
         console.log(item.set, item.setNumber)
         clone.style.backgroundImage = `url(./data/cardImg/Azeroth%20Oversize/${item.setNumber}.jpg)`
@@ -31,10 +39,11 @@ function openItem(id) {
     openItems.push(item);
     itemAnimation(id);
     if (item.category === 'booster') {
-        setTimeout(() => {openBooster(id, item);}, 800);
+        // Delay matches slash (300ms) + fade (180ms) + a small buffer
+        setTimeout(() => {openBooster(id, item);}, 520);
     };
     if (item.category === 'bigBox') {
-        setTimeout(() => {openBigBox(id, item);}, 800)
+        setTimeout(() => {openBigBox(id, item);}, 520);
     }
 }
 function openBooster(id, booster) {
