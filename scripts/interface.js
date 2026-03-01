@@ -138,7 +138,7 @@ function animateSlash(container, cutPoints, W, H, onComplete) {
         ctx.beginPath();
         ctx.moveTo(cutPoints[0][0], cutPoints[0][1]);
         for (let i = 1; i <= maxIdx; i++) ctx.lineTo(cutPoints[i][0], cutPoints[i][1]);
-        ctx.strokeStyle = 'rgba(255,245,220,0.92)';
+        ctx.strokeStyle = '#e6cc80';
         ctx.lineWidth = 1.2;
         ctx.stroke();
 
@@ -204,7 +204,7 @@ function flyApart(container, packImg, cutPoints, angle, W, H, onComplete) {
     // Hide the source image now that canvases cover it
     packImg.style.visibility = 'hidden';
 
-    const DURATION = 900, TRAVEL = Math.max(W, H) * 0.7, ROT_DEG = (Math.random() * 35) * (Math.random() < 0.5 ? -1 : 1);
+    const DURATION = 500, TRAVEL = Math.max(W, H) * 0.7, ROT_DEG = (Math.random() * 35) * (Math.random() < 0.5 ? -1 : 1);
     const start = performance.now();
 
     function animate(now) {
@@ -225,35 +225,84 @@ function flyApart(container, packImg, cutPoints, angle, W, H, onComplete) {
     requestAnimationFrame(animate);
 }
 
-// Main entry point — replaces the old flip animation
-function itemAnimation(id) {
-    const itemElement = document.getElementById(id);
-    const packImg = itemElement.querySelector('.booster-img');
-    itemElement.classList.add('open');
-
-    // Disable further clicks and tilt effects
-    itemElement.onclick = false;
-    itemElement.classList.add('cutting');
+// Shared tilt teardown — smoothly eases the hover-tilt back to neutral
+// before any animation starts, avoiding the jarring snap-to-flat
+function disableTilt(itemElement) {
     const tilt = itemElement.parentElement;
     tilt.glareIntensity = 0;
     tilt.scaleFactor = 1;
     tilt.tiltFactor = 0;
     tilt.removeAttribute('shadow');
+}
 
-    // Measure actual pixel size at runtime (dimensions are vh-based)
+// Booster cut animation (slash + fly-apart)
+function boosterCutAnimation(id) {
+    const itemElement = document.getElementById(id);
+    const packImg = itemElement.querySelector('.booster-img');
+    itemElement.classList.add('open');
+    itemElement.onclick = false;
+    itemElement.classList.add('cutting');
+    disableTilt(itemElement);
+
+    // Wait for the tilt to settle before measuring and starting the slash
     const rect = itemElement.getBoundingClientRect();
-    const W = rect.width;
-    const H = rect.height;
-
+    const W = rect.width, H = rect.height;
     const angle = (Math.random() - 0.5) * Math.PI * 0.55 + (Math.random() > 0.5 ? 0 : Math.PI / 2 * (Math.random() - 0.5));
     const cutPoints = buildCutPath(angle, W, H);
 
-    // Phase 1: slash, then reveal card output and phase 2: fly apart
     animateSlash(itemElement, cutPoints, W, H, () => {
         const output = itemElement.querySelector('.output');
         output.classList.remove('hidden');
         flyApart(itemElement, packImg, cutPoints, angle, W, H, () => {});
     });
+}
+
+// BigBox swing-open animation — like lifting a box lid from the right
+function bigBoxAnimation(id) {
+    const itemElement = document.getElementById(id);
+    const packImg = itemElement.querySelector('.booster-img');
+    itemElement.classList.add('open');
+    itemElement.onclick = false;
+    itemElement.classList.add('cutting');
+    disableTilt(itemElement);
+
+    setTimeout(() => {
+        // Apply perspective to the container so the 3D swing looks right
+        itemElement.style.perspective = '1200px';
+        packImg.style.transformOrigin = 'left center';
+        packImg.style.transition = 'transform 0.55s cubic-bezier(0.4, 0, 0.8, 0.6), opacity 0.55s ease-in';
+        packImg.style.transform = 'rotateY(-105deg)';
+        packImg.style.opacity = '0';
+        setTimeout(() => packImg.remove(), 560);
+    }, 150);
+}
+
+// Fly-in entrance for newly rendered booster/bigBox wrappers.
+// Called from renderItem — covers both initial generation and
+// boosters spawned out of a bigBox.
+function animateItemIn(wrapperEl) {
+    wrapperEl.style.opacity = '0';
+    wrapperEl.style.transform = 'translateY(-40px)';
+    wrapperEl.style.transition = 'none';
+    // Double rAF ensures the browser has painted the initial state
+    // before we trigger the transition
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            wrapperEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            wrapperEl.style.opacity = '1';
+            wrapperEl.style.transform = 'translateY(0)';
+        });
+    });
+}
+
+// Main entry point — branches on item category
+function itemAnimation(id) {
+    const item = renderedItems[id];
+    if (item.category === 'bigBox') {
+        bigBoxAnimation(id);
+    } else {
+        boosterCutAnimation(id);
+    }
 }
 
 //Centering the item track based on leftmost and rightmost items

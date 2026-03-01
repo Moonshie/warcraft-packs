@@ -31,6 +31,10 @@ function renderItem(item) {
     }
 
     track.appendChild(cloneWrapper);
+    // Animate new items sliding in from the right
+    if (item.category === 'booster' || item.category === 'bigBox') {
+        animateItemIn(cloneWrapper);
+    }
 }
 
 //Open up the item's contents 
@@ -39,11 +43,12 @@ function openItem(id) {
     openItems.push(item);
     itemAnimation(id);
     if (item.category === 'booster') {
-        // Delay matches slash (300ms) + fade (180ms) + a small buffer
-        setTimeout(() => {openBooster(id, item);}, 520);
+        // Delay matches tilt settle (150ms) + slash (300ms) + fade (180ms) + buffer
+        setTimeout(() => {openBooster(id, item);}, 670);
     };
     if (item.category === 'bigBox') {
-        setTimeout(() => {openBigBox(id, item);}, 520);
+        // Delay matches tilt settle (150ms) + swing (550ms) + buffer
+        setTimeout(() => {openBigBox(id, item);}, 0);
     }
 }
 function openBooster(id, booster) {
