@@ -204,7 +204,7 @@ function flyApart(container, packImg, cutPoints, angle, W, H, onComplete) {
     // Hide the source image now that canvases cover it
     packImg.style.visibility = 'hidden';
 
-    const DURATION = 900, TRAVEL = Math.max(W, H) * 0.7, ROT_DEG = 18;
+    const DURATION = 900, TRAVEL = Math.max(W, H) * 0.7, ROT_DEG = (Math.random() * 35) * (Math.random() < 0.5 ? -1 : 1);
     const start = performance.now();
 
     function animate(now) {
