@@ -26,7 +26,7 @@ function renderItem(item) {
     }
 
     if (item.category === 'card') {
-        clone.style.backgroundImage = `url(./data/cardImg/Azeroth%20Oversize/${item.setNumber}.jpg)`
+        clone.style.backgroundImage = `url(./data/cardImg/${encodeURIComponent(item.set.trim())}/${item.setNumber}.jpg)`
     }
 
     track.appendChild(cloneWrapper);
