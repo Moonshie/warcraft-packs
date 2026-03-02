@@ -26,7 +26,6 @@ function renderItem(item) {
     }
 
     if (item.category === 'card') {
-        console.log(item.set, item.setNumber)
         clone.style.backgroundImage = `url(./data/cardImg/Azeroth%20Oversize/${item.setNumber}.jpg)`
     }
 
@@ -72,7 +71,7 @@ function renderCardContents(id, item, counted) {
     output.innerHTML = "";
     output.classList.remove("hidden");
 
-    outputBlocks = outputCounts[item.type]
+    let outputBlocks = outputCounts[item.type]
 
     outputBlocks.forEach(block => {
 
@@ -135,7 +134,7 @@ function renderCards(output, item, counted) {
         nameSpan.setAttribute(`target`, "_blank")
 
         const rarityDiv = document.createElement("div");
-        rarityDiv.textContent = `${data.rarity}`.substring(1,length);
+        rarityDiv.textContent = `${data.rarity}`.substring(0, 1);
         rarityDiv.className = `rarity ${data.rarity}`;
 
         card.appendChild(countSpan);

@@ -49,7 +49,6 @@ function generate() {
 
 function generateSealed(set, pool, category, type, extras = {}) {
     let sealed = [];
-    console.log(extras);
 
     Object.entries(sealedTypes[type]).forEach(([boosterType, count]) => {{
         for (let i = 0; i < count; i++) {
@@ -86,16 +85,13 @@ function chooseCard(index, type) {
 
         Object.entries(sealedTypes[type]).forEach(([key]) => {
             if (extraFilters[key] != undefined) {
-                console.log(key);
                 let filterPair = {}
                 filterPair[extraFilters[key]] = cardOptions[index][extraFilters[key]]
-                console.log(filterPair);
                 extras[key] = filterPair;
             }
         })
 
         let sealed = generateSealed(set, pool, category, type, extras);
-        console.log(sealed);
         sealed.forEach(booster => {
             generatedItems.push(booster)
         });
@@ -108,7 +104,6 @@ function chooseCard(index, type) {
 function cardDraftCleanup() {
     cardSelect.innerHTML = '';
     cardOptions = [];
-    console.log(cardOptions);
 }
 
 

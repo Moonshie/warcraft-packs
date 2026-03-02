@@ -324,7 +324,7 @@ function centerCorrectly() {
         offsetRight = 15;
     } else if (rightmostItem === 'bigBox-wrapper') {
         offsetRight = 21;
-    } else if (leftmostItem === 'card-wrapper') {
+    } else if (rightmostItem === 'card-wrapper') {
         offsetRight = 12.5;
     }
 

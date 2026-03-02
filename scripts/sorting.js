@@ -11,7 +11,6 @@ function filtersFromSelectors(selector = []) {
             extra[`${element.id.slice(0,-7)}`] = element.value;
         });
     }
-    console.log(extra);
     return extra;
 }
 
@@ -65,7 +64,7 @@ function sortCards(cardsMap) {
         diff = (typeRank[dataB.type] ?? 0) - (typeRank[dataA.type] ?? 0);
         if (diff !== 0) return diff;
     
-        diff = (factionRank[dataB.factionn] ?? 1) - (factionRank[dataA.factionn] ?? 1);
+        diff = (factionRank[dataB.faction] ?? 1) - (factionRank[dataA.faction] ?? 1);
         if (diff !== 0) return diff;
     
         diff = (dataB.cost ?? 0) - (dataA.cost ?? 0);
