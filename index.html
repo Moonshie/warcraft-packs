@@ -6,12 +6,14 @@
     <title>Warcraft Packs</title>
     <link rel="stylesheet" href="styles.css">
     <script type="module" src="https://cdn.jsdelivr.net/npm/hover-tilt/dist/hover-tilt.js"></script>
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geologica:wght,CRSV@100..900,0&family=Reddit+Sans:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
 </head>
 <body>
 
+    <!-- ── Header ──────────────────────────────────────────────── -->
     <div class="header">
         <div class="icon">
             <img id="left" src="./data/icon/menu.png" onclick="toggleMenu(id)">
@@ -24,162 +26,92 @@
         </div>
     </div>
 
+    <!-- ── Generate menu ───────────────────────────────────────── -->
     <div class="menu-wrapper" id="center">
         <div class="menu">
-            <select name="set" id="set-select" autocomplete="off">
-                <option value="" selected disabled>--- Select Set ---</option>
-                <optgroup label="Azertoth Block">
-                    <option value="Azeroth" selected>Heroes of Azeroth</option>
-                    <option value="DarkPortal">Through the Dark Portal</option>
-                    <option value="Outland" disabled>Fires of Outland</option>
-                </optgroup>
-                <optgroup label="Burning Crusade Block">
-                    <option value="Legion" disabled>March of the Legion</option>
-                    <option value="Betrayer" disabled>Servants of the Betrayer</option>
-                    <option value="Illidan" disabled>The Hunt for Illidan</option>
-                </optgroup>
-                <optgroup label="Drums of War Block">
-                    <option value="Drums" disabled>Drums of War</option>
-                    <option value="Gladiators" disabled>Blood of Gladiators</option>
-                    <option value="Honor" disabled>Fields of Honor</option>
-                </optgroup>
-                <optgroup label="Scourgewar Block">
-                    <option value="Scourgewar" disabled>Scourgewar</option>
-                    <option value="Wrathgate" disabled>Wrathgate</option>
-                    <option value="Icecrown" disabled>Icecrown</option>
-                </optgroup>
-                <optgroup label="Worldbreaker Block">
-                    <option value="Worldbreaker" disabled>Worldbreaker</option>
-                    <option value="Elements" disabled>War of the Elements</option>
-                    <option value="Twilight" disabled>Twilight of the Dragons</option>
-                </optgroup>
-                <optgroup label="Aftermath Block">
-                    <option value="Throne" disabled>Throne of the Tides</option>
-                    <option value="Crown" disabled>Crown of the Heavens</option>
-                    <option value="Tomb" disabled>Tomb of the Forgotten</option>
-                </optgroup>
-                <optgroup label="Timewalkers Block">
-                    <option value="Timewalkers" disabled>Timewalkers</option>
-                    <option value="Ancients" disabled>War of the Ancients</option>
-                    <option value="Betrayal" disabled>Betrayal of the Guardian</option>
-                    <option value="Reign" disabled>Reign of Fire</option>
-                </optgroup>
-            </select>
-            <select name="type" id="type-select" autocomplete="off" onchange="checkSelectors()">
-                <option value="" selected disabled>--- Select Type ---</option>
-                <optgroup label="Sealed">
-                    <option class='sealed' value="Classic Sealed">Classic Sealed</option>
-                    <option class='sealed' value="Enhanced Sealed">Enhanced Sealed</option>
-                </optgroup>
-                <optgroup label="Preconstructed">
-                    <option class='bigBox' value="Starter Deck">Starter Deck</option>
-                <optgroup label="Single Boosters">
-                    <option class='booster' value="Classic Booster">Classic Booster</option>
-                    <option class='booster' value="New Booster" disabled>New Booster</option>
-                    <option class='booster' value="Class Booster">Class Booster</option>
-                    <option class='booster' value="Equipment Booster">Equipment Booster</option>
-                    <option class='booster' value="Faction Booster">Faction Booster</option>
-                    <option class='booster' value="Neutral Booster">Neutral Booster</option>
-                </optgroup>     
-            </select>
-            <select name="class" class="disabled" id="class-select" autocomplete="off">
-                    <option value="" selected disabled>--- Select Class ---</option>
-                    <optgroup label="Class">
-                        <option value="Druid">Druid</option>
-                        <option value="Hunter">Hunter</option>
-                        <option value="Mage">Mage</option>
-                        <option value="Paladin">Paladin</option>
-                        <option value="Priest">Priest</option>
-                        <option value="Rogue">Rogue</option>
-                        <option value="Shaman">Shaman</option>
-                        <option value="Warlock">Warlock</option>
-                        <option value="Warrior">Warrior</option>
-                    </optgroup>
-            </select>
-            <select name="faction" class="disabled" id="faction-select" autocomplete="off">
-                <option value="" selected disabled>--- Select Faction ---</option>
-                <optgroup label="Faction">
-                    <option value="Alliance">Alliance</option>
-                    <option value="Horde">Horde</option>
-                </optgroup>
-            </select>
+            <!-- Populated dynamically by ui.js from GameConfig -->
+            <select id="set-select"  autocomplete="off"></select>
+            <select id="type-select" autocomplete="off"></select>
+            <!-- Extra selectors (class, faction, etc.) injected here -->
+            <div id="extras-container"></div>
         </div>
         <div class="menu">
-            <button id="generate" autocomplete="off" onclick="generate()">GENERATE</button>
+            <button id="generate" autocomplete="off">GENERATE</button>
+            <button id="bundle"   autocomplete="off">BUNDLE</button>
         </div>
     </div>
 
+    <!-- ── Left sidebar — bundle manager ───────────────────────── -->
     <div class="sidebar closed" id="left">
-        <button id="count" autocomplete="off" onclick="exportTTS()">EXPORT</button>
-        <div class="full-out">
-
+        <div class="sidebar-actions">
+            <button id="import-btn" autocomplete="off">IMPORT</button>
+            <input  id="import-input" type="file" accept=".json" style="display:none">
         </div>
+        <div class="bundle-list"></div>
     </div>
 
+    <!-- ── Item track ───────────────────────────────────────────── -->
     <div class="track-wrapper">
-        <div class="item-track">
-        </div>
+        <div class="item-track"></div>
     </div>
 
-    <div class="sidebar closed" id="right">
-    </div>
+    <!-- ── Right sidebar — info / future use ───────────────────── -->
+    <div class="sidebar closed" id="right"></div>
 
-    <div class="fullscreen closed" style="translate: 0px -100%">
-        <div class="card-select">
-        </div>
-    </div>
+    <!-- ── Fullscreen overlay — future use ─────────────────────── -->
+    <div class="fullscreen closed" style="translate: 0px -100%"></div>
 
+    <!-- ── Card preview tooltip ────────────────────────────────── -->
     <div id="preview-box">
         <div id="preview-loader"></div>
         <img id="preview-image" src="">
     </div>
 
+    <!-- ── Item templates (cloned by renderItem, never visible) ── -->
     <div class="template">
-        <div class="booster-wrapper">
+
+        <!-- Booster pack -->
+        <div class="pack-wrapper">
             <hover-tilt shadow scale-factor="1" glare-intensity="0.5">
-                <div class="booster" onclick="openItem(id)">
+                <div class="pack">
                     <div class="output hidden"></div>
                 </div>
             </hover-tilt>
         </div>
-        <div class="bigBox-wrapper">
+
+        <!-- Big box / precon -->
+        <div class="box-wrapper">
             <hover-tilt shadow scale-factor="1.05" tilt-factor="0.3" glare-intensity="0.3">
-                <div class="bigBox" onclick="openItem(id)">
+                <div class="box">
                     <div class="output hidden"></div>
                 </div>
             </hover-tilt>
         </div>
+
+        <!-- Singleton card (oversize hero, dragged-out card, etc.) -->
         <div class="card-wrapper">
             <hover-tilt shadow scale-factor="1.4" tilt-factor="1.4" glare-intensity="0.8">
-                <div class="card">
-                    <div class="output hidden"></div>
-                </div>
+                <div class="card"></div>
             </hover-tilt>
         </div>
-        <div class="exportedItem">
-            <div class="exportedItemName">
-                Item Name
-            </div>
-            <a class="icon">
-                <img id="left" src="./data/icon/save-arrow.png">
-            </a>
-        </div>
-    </div>
-    
 
+    </div>
+
+    <!-- ── Scripts ─────────────────────────────────────────────── -->
+
+    <!-- Set databases -->
     <script src="data/set/Azeroth.js"></script>
     <script src="data/set/DarkPortal.js"></script>
 
-    <script src="scripts/variables.js"></script>
-    <script src="scripts/variables-TTS.js"></script>
+    <!-- Game definitions + GameConfig -->
+    <script src="scripts/wow-tcg-definitions.js"></script>
 
-    <script src="scripts/interface.js"></script>
+    <!-- Core modules -->
     <script src="scripts/generation.js"></script>
-    <script src="scripts/sorting.js"></script>
-    <script src="scripts/rendering.js"></script>
+    <script src="scripts/storage.js"></script>
+    <script src="scripts/animation.js"></script>
+    <script src="scripts/render.js"></script>
+    <script src="scripts/ui.js"></script>
 
-    <script src="scripts/export-TTS.js"></script>
-
-    <script src="scripts/onload.js"></script>
 </body>
 </html>

@@ -245,7 +245,7 @@ button:disabled {
     gap: 5em;
 }
 
-.booster {
+.pack {
     padding: 0 0.3rem 0 0.3rem;
     width: 30vh;
     height: 48vh;
@@ -257,12 +257,12 @@ button:disabled {
     border: 1px solid transparent;
     border-radius: 10px;
 }
-.booster:not(.cutting):hover {
+.pack:not(.cutting):hover {
     cursor: pointer;
     border: 1px solid #8d693470;
     box-shadow: 0 0 10px #8d6934;
 }
-.bigBox {
+.box {
     padding: 0 0.3rem 0 0.3rem;
     width: 42vh;
     height: 60vh;
@@ -271,14 +271,14 @@ button:disabled {
     overflow: visible;
     box-sizing: border-box;
 }
-.bigBox:not(.cutting):hover {
+.box:not(.cutting):hover {
     cursor: pointer;
     border: 1px solid #8d693470;
     box-shadow: 0 0 10px #8d6934;
 }
 
 /* The actual pack image, layered on top of the card list */
-.booster-img {
+.pack-img {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
@@ -331,20 +331,6 @@ button:disabled {
 }
 .line > a {
     margin-right: auto;
-}
-
-.count {
-    justify-self: center;
-    font-family: Geologica;
-}
-
-.separator {
-    font-family: Morpheus;
-    text-align: center;
-    font-weight: bold;
-    user-select: none;
-    color: #00ccff;
-    margin: 0.3rem 0 0.3rem 0;
 }
 
 .rarity {
@@ -462,4 +448,130 @@ button:disabled {
     transform: scale(1.05);
     cursor: pointer;
     box-shadow: 0 0 1vh #00ccff;
+}
+/* ── Bundle sidebar ─────────────────────────────────────────── */
+
+.sidebar-actions {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: center;
+    border-bottom: 1px solid #8d693450;
+}
+
+.bundle-list {
+    overflow-y: scroll;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.3rem 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: #8d693430 transparent;
+    flex: 1;
+}
+
+.bundle-empty {
+    color: #666;
+    text-align: center;
+    font-family: Geologica;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+}
+
+.bundle-entry {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.35rem 0.4rem;
+    border-bottom: 1px solid #8d693430;
+    transition: background 0.15s ease;
+}
+.bundle-entry:hover {
+    background: #ffffff08;
+    cursor: default;
+}
+
+.bundle-name {
+    font-family: Geologica;
+    font-size: 0.8rem;
+    color: #e6e6e6;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bundle-btn {
+    width: 1.4rem;
+    height: 1.4rem;
+    min-width: 1.4rem;
+    padding: 0;
+    font-size: 0.7rem;
+    background: #2a2a2a;
+    border: 1px solid #8d693450 !important;
+    border-radius: 4px;
+    color: #e6e6e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Geologica;
+}
+.bundle-btn:hover {
+    background: #3a3a3a;
+    border-color: #8d6934 !important;
+    cursor: pointer;
+}
+.bundle-btn--load::before      { content: '▶'; }
+.bundle-btn--export::before    { content: '↓'; }
+.bundle-btn--duplicate::before { content: '⧉'; }
+.bundle-btn--delete::before    { content: '✕'; }
+.bundle-btn--delete:hover      { background: #5a1a1a; border-color: #cc4444 !important; }
+
+/* ── Extras container (dynamic class/faction selectors) ─────── */
+
+#extras-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+}
+
+.extra-select-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.extra-select-wrapper label {
+    font-family: Geologica;
+    font-size: 0.8rem;
+    color: #8d6934;
+    margin-right: 0.2rem;
+    user-select: none;
+}
+
+.extra-select {
+    width: 14rem;
+    height: 1.2rem;
+    background-color: #202020;
+    color: #00ccff;
+    border: none;
+    border-radius: 5px;
+    font-family: Geologica;
+    transition: all 0.3s ease;
+    margin: 0.2rem;
+}
+.extra-select.disabled {
+    width: 0;
+    padding: 0;
+    margin: 0;
+    visibility: hidden;
+}
+
+/* ── Item locked state ──────────────────────────────────────── */
+
+.pack.locked .output,
+.box.locked .output {
+    opacity: 0.6;
 }
