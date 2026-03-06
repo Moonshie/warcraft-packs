@@ -108,14 +108,11 @@ function populateSelectors() {
         wrapper.className         = 'extra-select-wrapper';
         wrapper.dataset.filterKey = item.extraFilter;
 
-        const label       = document.createElement('label');
-        label.textContent = GameConfig.extraFilterLabels[item.extraFilter] ?? item.extraFilter;
-
         const select             = document.createElement('select');
         select.id                = `extra-${item.extraFilter}`;
         select.dataset.filterKey = item.extraFilter;
         select.className         = 'extra-select disabled';
-        select.innerHTML         = '<option value="">— Any —</option>';
+        select.innerHTML         = `<option value="">— ${GameConfig.extraFilterLabels[item.extraFilter] ?? item.extraFilter} —</option>`;
 
         GameConfig.extraFilterOptions[item.extraFilter].forEach(val => {
             const opt       = document.createElement('option');
@@ -124,7 +121,6 @@ function populateSelectors() {
             select.appendChild(opt);
         });
 
-        wrapper.appendChild(label);
         wrapper.appendChild(select);
         extrasContainer.appendChild(wrapper);
     });
