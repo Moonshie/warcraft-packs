@@ -42,11 +42,13 @@
 
     <!-- ── Left sidebar — bundle manager ───────────────────────── -->
     <div class="sidebar closed" id="left">
-        <div class="sidebar-actions">
-            <button id="import-btn" autocomplete="off">IMPORT</button>
-            <input  id="import-input" type="file" accept=".json" style="display:none">
-        </div>
         <div class="bundle-list"></div>
+        <div class="sidebar-panel">
+            <button id="import-btn"    autocomplete="off">IMPORT</button>
+            <button id="export-all-btn" autocomplete="off">EXPORT ALL</button>
+            <button id="delete-all-btn" autocomplete="off">DELETE ALL</button>
+            <input id="import-input" type="file" accept=".json" style="display:none">
+        </div>
     </div>
 
     <!-- ── Item track ───────────────────────────────────────────── -->

@@ -196,16 +196,22 @@ genButton.addEventListener('click', () => {
         // resolving art from their own definition's typeConfig
         box.containedItems.forEach(item => {
             item.set = item.set ?? setId;
-            if (!item.artID) {
-                const itemTypeConfig = GameConfig.itemTypes.find(t => t.definition === item._definition);
-                item.artID = resolveArtID(set, itemTypeConfig ?? { artCategory: 'booster' }, {});
-            }
+            const itemTypeConfig = GameConfig.itemTypes.find(t => t.definition === item._definition);
+            item.artID          ??= resolveArtID(set, itemTypeConfig ?? { artCategory: 'booster' }, {});
+            item.definitionName ??= itemTypeConfig?.name ?? 'Booster';
         });
         items.push(box);
     }
 
     if (typeConfig.category === 'sealed') {
-        generateSealed(set, setId, typeConfig).forEach(item => items.push(item));
+        const packs = generateSealed(set, typeConfig.definition);
+        packs.forEach(pack => {
+            const itemTypeConfig    = GameConfig.itemTypes.find(t => t.definition === pack._definition);
+            pack.set                = setId;
+            pack.definitionName     = itemTypeConfig?.name ?? 'Booster';
+            pack.artID              = resolveArtID(set, itemTypeConfig ?? { artCategory: 'booster' }, {});
+            items.push(pack);
+        });
     }
 
     if (items.length > 0) renderAll(items);
@@ -225,24 +231,6 @@ function injectExtraFilters(definition, extra) {
             filters: { ...slot.filters, ...extra },
         })),
     };
-}
-
-// Sealed formats — unroll the box definition into individual packs
-function generateSealed(set, setId, typeConfig) {
-    if (!typeConfig.definition?.contents) return [];
-
-    return typeConfig.definition.contents.flatMap(entry => {
-        const packs = [];
-        for (let i = 0; i < (entry.count ?? 1); i++) {
-            const entryType   = GameConfig.itemTypes.find(t => t.definition === entry.definition);
-            const pack        = generatePack(set, entry.definition);
-            pack.definitionName = entryType?.name ?? 'Booster';
-            pack.set            = setId;
-            pack.artID          = resolveArtID(set, entryType ?? typeConfig, {});
-            packs.push(pack);
-        }
-        return packs;
-    });
 }
 
 
@@ -289,8 +277,7 @@ async function refreshBundleList() {
         const nameEl      = document.createElement('span');
         nameEl.className  = 'bundle-name';
         nameEl.textContent = bundle.name;
-        nameEl.title      = 'Double-click to rename';
-        el.title          = buildBundleSummary(bundle.items);
+        nameEl.title      = `Double-click to rename\n${'─'.repeat(20)}\n${buildBundleSummary(bundle.items)}`;
 
         nameEl.addEventListener('dblclick', () => {
             const input = document.createElement('input');
@@ -362,19 +349,20 @@ function buildBundleSummary(items) {
         const key = `${setName} ${item.definitionName}`;
         counts[key] = (counts[key] ?? 0) + 1;
     });
-    return Object.entries(counts).map(([n, c]) => `${c}x ${n}`).join(', ');
+    return Object.entries(counts).map(([n, c]) => `${c}x ${n}`).join('\n');
 }
 
 
 // ── Import button ─────────────────────────────────────────────
 
-function initImportButton() {
-    const importInput = document.getElementById('import-input');
-    const importBtn   = document.getElementById('import-btn');
-    if (!importInput || !importBtn) return;
+function initSidebarPanel() {
+    const importInput  = document.getElementById('import-input');
+    const importBtn    = document.getElementById('import-btn');
+    const exportAllBtn = document.getElementById('export-all-btn');
+    const deleteAllBtn = document.getElementById('delete-all-btn');
 
-    importBtn.addEventListener('click', () => importInput.click());
-    importInput.addEventListener('change', async e => {
+    importBtn?.addEventListener('click', () => importInput.click());
+    importInput?.addEventListener('change', async e => {
         const file = e.target.files[0];
         if (!file) return;
         try {
@@ -384,6 +372,15 @@ function initImportButton() {
             alert(`Import failed: ${err.message}`);
         }
         importInput.value = '';
+    });
+
+    exportAllBtn?.addEventListener('click', () => exportAllBundles());
+
+    deleteAllBtn?.addEventListener('click', async () => {
+        if (!confirm('Delete all bundles? This cannot be undone.')) return;
+        await deleteAllBundles();
+        clearTrack();
+        await refreshBundleList();
     });
 }
 
@@ -473,7 +470,7 @@ async function initUI() {
     await initStorage();
     populateSelectors();
     await refreshBundleList();
-    initImportButton();
+    initSidebarPanel();
     track.scrollLeft = 0;
 
     document.querySelectorAll('hover-tilt').forEach(el => {

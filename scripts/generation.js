@@ -185,3 +185,22 @@ function generateBox(set, definition) {
     console.log(`[generateBox] Done. ${box.cards.length} inline card(s), ${box.containedItems.length} spawned item(s).`);
     return box;
 }
+
+// ── generateSealed ────────────────────────────────────────────
+// Generates an array of packs from a sealed definition.
+// Returns plain pack objects — ui.js stamps set, artID,
+// and definitionName on each one afterward.
+
+function generateSealed(set, definition) {
+    if (!definition?.contents) return [];
+
+    return definition.contents.flatMap(entry => {
+        const packs = [];
+        for (let i = 0; i < (entry.count ?? 1); i++) {
+            const pack        = generatePack(set, entry.definition);
+            pack._definition  = entry.definition; // used by ui.js for metadata stamping
+            packs.push(pack);
+        }
+        return packs;
+    });
+}

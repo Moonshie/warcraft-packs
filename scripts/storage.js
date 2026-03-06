@@ -131,8 +131,18 @@ async function duplicateBundle(id) {
     const original = await loadBundle(id);
     if (!original) return null;
 
-    // saveBundle without an id always creates new
-    const newId = await saveBundle(original.items);
+    // Count existing copies to determine suffix number
+    const all     = await db.bundles.toArray();
+    const base    = original.name.replace(/ \(copy(?: \d+)?\)$/, '');
+    const copies  = all.filter(b => {
+        const stripped = b.name.replace(/ \(copy(?: \d+)?\)$/, '');
+        return stripped === base && b.id !== id;
+    });
+    const suffix  = copies.length === 0 ? '(copy)' : `(copy ${copies.length + 1})`;
+    const newName = `${base} ${suffix}`;
+
+    // Place immediately after the original by bumping createdAt by 1ms
+    const newId = await saveBundle(original.items, null, newName, original.createdAt + 1);
     console.log(`[storage] Bundle #${id} duplicated as #${newId}.`);
     return newId;
 }
@@ -161,14 +171,38 @@ async function exportBundleJSON(id) {
 }
 
 
+// ── exportAllBundles ──────────────────────────────────────────
+// Serialises all bundles to a single JSON file and triggers download.
+
+async function exportAllBundles() {
+    const bundles  = await getAllBundles();
+    if (bundles.length === 0) { console.warn('[storage] No bundles to export.'); return; }
+
+    const json     = JSON.stringify(bundles, null, 2);
+    const blob     = new Blob([json], { type: 'application/json' });
+    const url      = URL.createObjectURL(blob);
+    const date     = new Date().toISOString().slice(0, 10);
+    const filename = `warcraft-packs-backup-${date}.json`;
+
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = filename;
+    a.click();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    console.log(`[storage] All ${bundles.length} bundle(s) exported as ${filename}.`);
+}
+
+
+// ── deleteAllBundles ──────────────────────────────────────────
+
+async function deleteAllBundles() {
+    await db.bundles.clear();
+    console.log('[storage] All bundles deleted.');
+}
 // ── importBundleJSON ──────────────────────────────────────────
-// Reads a .json file (from an <input type="file"> change event)
-// and saves it as a new bundle. Returns the new bundle's id.
-//
-// Usage:
-//   fileInput.addEventListener('change', async e => {
-//       const id = await importBundleJSON(e.target.files[0]);
-//   });
+// Reads a .json file and saves it as one or more bundles.
+// Accepts both single-bundle files and exportAllBundles backup files.
 
 async function importBundleJSON(file) {
     return new Promise((resolve, reject) => {
@@ -177,15 +211,19 @@ async function importBundleJSON(file) {
         reader.onload = async e => {
             try {
                 const data = JSON.parse(e.target.result);
+                const list = Array.isArray(data) ? data : [data];
+                const ids  = [];
 
-                if (!data.items || !Array.isArray(data.items)) {
-                    throw new Error('Invalid bundle file — missing items array.');
+                for (const entry of list) {
+                    if (!entry.items || !Array.isArray(entry.items)) {
+                        throw new Error('Invalid bundle file — missing items array.');
+                    }
+                    const newId = await saveBundle(entry.items, null, entry.name, entry.createdAt);
+                    ids.push(newId);
                 }
 
-                // Always import as a brand new bundle, ignoring original id
-                const newId = await saveBundle(data.items, null, data.name, data.createdAt);
-                console.log(`[storage] Imported bundle as #${newId}.`);
-                resolve(newId);
+                console.log(`[storage] Imported ${ids.length} bundle(s).`);
+                resolve(ids);
             } catch (err) {
                 console.error('[storage] Import failed:', err);
                 reject(err);

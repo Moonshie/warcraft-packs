@@ -451,14 +451,20 @@ button:disabled {
 }
 /* ── Bundle sidebar ─────────────────────────────────────────── */
 
-.sidebar-actions {
+.sidebar-panel {
     display: flex;
-    gap: 0.5rem;
+    flex-direction: column;
+    gap: 0.4rem;
     padding: 0.5rem;
     width: 100%;
     box-sizing: border-box;
-    justify-content: center;
-    border-bottom: 1px solid #8d693450;
+    border-top: 1px solid #8d693450;
+    margin-top: auto;
+}
+
+.sidebar-panel button {
+    width: 100%;
+    font-size: 0.85rem;
 }
 
 .bundle-list {
