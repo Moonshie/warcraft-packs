@@ -42,13 +42,31 @@
 
     <!-- ── Left sidebar — bundle manager ───────────────────────── -->
     <div class="sidebar closed" id="left">
+
+        <!-- Active bundle list -->
         <div class="bundle-list"></div>
-        <div class="sidebar-panel">
-            <button id="import-btn"    autocomplete="off">IMPORT</button>
-            <button id="export-all-btn" autocomplete="off">EXPORT ALL</button>
-            <button id="delete-all-btn" autocomplete="off">DELETE ALL</button>
-            <input id="import-input" type="file" accept=".json" style="display:none">
+
+        <!-- Recycle bin -->
+        <div class="bundle-bin">
+            <div class="bundle-bin-header">
+                <span class="bundle-bin-icon">🗑</span>
+                <span class="bundle-bin-label">Bin</span>
+                <span class="bundle-bin-count"></span>
+                <button class="bundle-btn bundle-btn--empty-bin" title="Empty bin">Empty</button>
+            </div>
+            <div class="bundle-bin-list"></div>
         </div>
+
+        <!-- Bottom panel -->
+        <div class="sidebar-panel">
+            <button class="bundle-btn" id="import-btn"    title="Import bundle">↑ Import</button>
+            <button class="bundle-btn" id="restore-btn"   title="Load backup">↺ Load backup</button>
+            <button class="bundle-btn" id="backup-btn"    title="Backup all bundles">↓ Backup</button>
+            <button class="bundle-btn" id="bin-all-btn"   title="Move all to bin">🗑 Bin all</button>
+            <input id="import-input"  type="file" accept=".json" style="display:none">
+            <input id="restore-input" type="file" accept=".json" style="display:none">
+        </div>
+
     </div>
 
     <!-- ── Item track ───────────────────────────────────────────── -->

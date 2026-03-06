@@ -255,7 +255,15 @@ function resolveArtID(set, typeConfig, extra) {
 
 // ── Bundle sidebar ────────────────────────────────────────────
 
+let draggedBundleId = null; // id of bundle currently being dragged
+
+let refreshBundleListPending = false;
 async function refreshBundleList() {
+    if (refreshBundleListPending) return;
+    refreshBundleListPending = true;
+    await Promise.resolve(); // yield to let any concurrent calls see the flag
+    refreshBundleListPending = false;
+
     const bundles = await getAllBundles();
     bundleList.innerHTML = '';
 
@@ -264,80 +272,130 @@ async function refreshBundleList() {
         empty.className   = 'bundle-empty';
         empty.textContent = 'No bundles yet.';
         bundleList.appendChild(empty);
-        return;
+    } else {
+        bundles.forEach(bundle => makeBundleEntry(bundle, bundleList));
     }
 
-    bundles.forEach(bundle => {
-        const isActive = bundle.id === currentBundleId;
+    await refreshBin();
+}
 
-        const el          = document.createElement('div');
-        el.className      = `bundle-entry${isActive ? ' active' : ''}`;
-        el.dataset.id     = bundle.id;
+function makeBundleEntry(bundle, container) {
+    const isActive = bundle.id === currentBundleId;
 
-        const nameEl      = document.createElement('span');
-        nameEl.className  = 'bundle-name';
-        nameEl.textContent = bundle.name;
-        nameEl.title      = `Double-click to rename\n${'─'.repeat(20)}\n${buildBundleSummary(bundle.items)}`;
+    const el      = document.createElement('div');
+    el.className  = `bundle-entry${isActive ? ' active' : ''}`;
+    el.dataset.id = bundle.id;
+    el.draggable  = true;
 
-        nameEl.addEventListener('dblclick', () => {
-            const input = document.createElement('input');
-            input.className   = 'bundle-name-input';
-            input.value       = bundle.name;
-            input.spellcheck  = false;
-            nameEl.replaceWith(input);
-            input.focus();
-            input.select();
+    // ── Name + rename ──
+    const nameEl       = document.createElement('span');
+    nameEl.className   = 'bundle-name';
+    nameEl.textContent = bundle.name;
+    nameEl.title       = `Double-click to rename\n${'─'.repeat(20)}\n${buildBundleSummary(bundle.items)}`;
 
-            const commit = async () => {
-                const newName = input.value.trim() || bundle.name;
-                const full    = await loadBundle(bundle.id);
-                if (full) await saveBundle(full.items, bundle.id, newName, full.createdAt);
-                await refreshBundleList();
-            };
+    nameEl.addEventListener('dblclick', () => {
+        const input     = document.createElement('input');
+        input.className = 'bundle-name-input';
+        input.value     = bundle.name;
+        input.spellcheck = false;
+        nameEl.replaceWith(input);
+        input.focus();
+        input.select();
 
-            input.addEventListener('keydown', e => {
-                if (e.key === 'Enter') { e.preventDefault(); commit(); }
-                if (e.key === 'Escape') refreshBundleList();
-            });
-            input.addEventListener('blur', commit);
+        const commit = async () => {
+            const newName = input.value.trim() || bundle.name;
+            const full    = await loadBundle(bundle.id);
+            if (full) await saveBundle(full.items, bundle.id, newName, full.createdAt);
+            await refreshBundleList();
+        };
+
+        input.addEventListener('keydown', e => {
+            if (e.key === 'Enter')  { e.preventDefault(); commit(); }
+            if (e.key === 'Escape') refreshBundleList();
         });
-
-        el.appendChild(nameEl);
-
-        if (isActive) {
-            const unloadBtn = makeIconBtn('unload', () => {
-                clearTrack(true);
-                refreshBundleList();
-            });
-            unloadBtn.title = 'Unload';
-            el.appendChild(unloadBtn);
-        } else {
-            const loadBtn   = makeIconBtn('load', async () => {
-                await hydrateBundle(bundle.id);
-                await refreshBundleList();
-            });
-            const exportBtn = makeIconBtn('export',    () => exportBundleJSON(bundle.id));
-            const dupBtn    = makeIconBtn('duplicate', async () => {
-                await duplicateBundle(bundle.id);
-                await refreshBundleList();
-            });
-            const delBtn    = makeIconBtn('delete', async () => {
-                if (confirm(`Delete bundle "${bundle.name}"?`)) {
-                    await deleteBundle(bundle.id);
-                    await refreshBundleList();
-                }
-            });
-            el.append(loadBtn, exportBtn, dupBtn, delBtn);
-        }
-
-        bundleList.appendChild(el);
+        input.addEventListener('blur', commit);
     });
+
+    el.appendChild(nameEl);
+
+    // ── Action buttons ──
+    if (isActive) {
+        const unloadBtn = makeIconBtn('unload', () => {
+            clearTrack();
+            refreshBundleList();
+        });
+        el.appendChild(unloadBtn);
+    } else {
+        const loadBtn = makeIconBtn('load', async () => {
+            await hydrateBundle(bundle.id);
+            await refreshBundleList();
+        });
+        const exportBtn = makeIconBtn('export', () => exportBundleJSON(bundle.id));
+        const dupBtn    = makeIconBtn('duplicate', async () => {
+            await duplicateBundle(bundle.id);
+            await refreshBundleList();
+        });
+        el.append(loadBtn, exportBtn, dupBtn);
+    }
+
+    // ── Drag to reorder ──
+    el.addEventListener('dragstart', e => {
+        draggedBundleId = bundle.id;
+        e.dataTransfer.effectAllowed = 'move';
+        setTimeout(() => {
+            el.classList.add('dragging');
+            binEl.classList.add('drag-active');
+        }, 0);
+    });
+
+    el.addEventListener('dragend', () => {
+        draggedBundleId = null;
+        el.classList.remove('dragging');
+        binEl.classList.remove('drag-active', 'drag-over');
+        container.querySelectorAll('.drop-above, .drop-below').forEach(el => {
+            el.classList.remove('drop-above', 'drop-below');
+        });
+    });
+
+    el.addEventListener('dragover', e => {
+        if (draggedBundleId === null || draggedBundleId === bundle.id) return;
+        e.preventDefault();
+        const rect        = el.getBoundingClientRect();
+        const insertBefore = e.clientY < rect.top + rect.height / 2;
+        el.classList.toggle('drop-above', insertBefore);
+        el.classList.toggle('drop-below', !insertBefore);
+    });
+
+    el.addEventListener('dragleave', () => {
+        el.classList.remove('drop-above', 'drop-below');
+    });
+
+    el.addEventListener('drop', async e => {
+        e.preventDefault();
+        if (draggedBundleId === null || draggedBundleId === bundle.id) return;
+        const rect         = el.getBoundingClientRect();
+        const insertBefore = e.clientY < rect.top + rect.height / 2;
+        el.classList.remove('drop-above', 'drop-below');
+        await moveBundleRelativeTo(draggedBundleId, bundle.id, insertBefore);
+        await refreshBundleList();
+    });
+
+    container.appendChild(el);
 }
 
 function makeIconBtn(action, onClick) {
+    const glyphs = {
+        load:      '▶',
+        export:    '↓',
+        duplicate: '⧉',
+        unload:    '■',
+        recover:   '↩',
+        delete:    '✕',
+    };
     const btn     = document.createElement('button');
     btn.className = `bundle-btn bundle-btn--${action}`;
     btn.title     = action.charAt(0).toUpperCase() + action.slice(1);
+    btn.textContent = glyphs[action] ?? action;
     btn.addEventListener('click', e => { e.stopPropagation(); onClick(); });
     return btn;
 }
@@ -353,33 +411,127 @@ function buildBundleSummary(items) {
 }
 
 
-// ── Import button ─────────────────────────────────────────────
+// ── Bin ───────────────────────────────────────────────────────
+
+const binEl      = document.querySelector('.bundle-bin');
+const binList    = document.querySelector('.bundle-bin-list');
+const binCount   = document.querySelector('.bundle-bin-count');
+const emptyBinBtn = document.querySelector('.bundle-btn--empty-bin');
+
+async function refreshBin() {
+    const binned = await getBinnedBundles();
+    binCount.textContent      = binned.length > 0 ? `(${binned.length})` : '';
+    emptyBinBtn.style.display = binned.length > 0 ? '' : 'none';
+    binEl.classList.toggle('has-items', binned.length > 0);
+
+    // Collapse if now empty
+    if (binned.length === 0) binEl.classList.remove('expanded');
+
+    // Rebuild inner wrapper (required for grid-template-rows trick)
+    binList.innerHTML = '';
+    const inner = document.createElement('div');
+    inner.className = 'bundle-bin-inner';
+
+    binned.forEach(bundle => {
+        const el      = document.createElement('div');
+        el.className  = 'bundle-entry binned';
+        el.dataset.id = bundle.id;
+
+        const nameEl       = document.createElement('span');
+        nameEl.className   = 'bundle-name';
+        nameEl.textContent = bundle.name;
+        el.appendChild(nameEl);
+
+        const recoverBtn = makeIconBtn('recover', async () => {
+            await restoreBundle(bundle.id);
+            await refreshBundleList();
+        });
+        const deleteBtn  = makeIconBtn('delete', async () => {
+            await deleteBundle(bundle.id);
+            await refreshBin();
+        });
+        el.append(recoverBtn, deleteBtn);
+        inner.appendChild(el);
+    });
+
+    binList.appendChild(inner);
+}
+
+let binLeaveTimer = null;
+
+binEl.addEventListener('dragover', e => {
+    if (draggedBundleId === null) return;
+    e.preventDefault();
+    clearTimeout(binLeaveTimer);
+    binEl.classList.add('drag-over');
+});
+
+binEl.addEventListener('dragleave', () => {
+    binLeaveTimer = setTimeout(() => binEl.classList.remove('drag-over'), 80);
+});
+
+binEl.addEventListener('drop', async e => {
+    e.preventDefault();
+    binEl.classList.remove('drag-over');
+    if (draggedBundleId === null) return;
+    if (draggedBundleId === currentBundleId) clearTrack();
+    await binBundle(draggedBundleId);
+    draggedBundleId = null;
+    await refreshBundleList();
+});
+
+document.querySelector('.bundle-bin-header').addEventListener('click', () => {
+    if (binEl.classList.contains('has-items')) {
+        binEl.classList.toggle('expanded');
+    }
+});
+
+emptyBinBtn?.addEventListener('click', async e => {
+    e.stopPropagation();
+    if (!confirm('Permanently delete all binned bundles?')) return;
+    await emptyBin();
+    await refreshBin();
+});
+
+
+// ── Sidebar panel ─────────────────────────────────────────────
 
 function initSidebarPanel() {
     const importInput  = document.getElementById('import-input');
-    const importBtn    = document.getElementById('import-btn');
-    const exportAllBtn = document.getElementById('export-all-btn');
-    const deleteAllBtn = document.getElementById('delete-all-btn');
+    const restoreInput = document.getElementById('restore-input');
 
-    importBtn?.addEventListener('click', () => importInput.click());
+    document.getElementById('import-btn')?.addEventListener('click', () => importInput.click());
     importInput?.addEventListener('change', async e => {
         const file = e.target.files[0];
         if (!file) return;
         try {
-            await importBundleJSON(file);
+            await importBundleJSON(file, true);
             await refreshBundleList();
-        } catch (err) {
-            alert(`Import failed: ${err.message}`);
-        }
+        } catch (err) { alert(`Import failed: ${err.message}`); }
         importInput.value = '';
     });
 
-    exportAllBtn?.addEventListener('click', () => exportAllBundles());
+    document.getElementById('restore-btn')?.addEventListener('click', () => restoreInput.click());
+    restoreInput?.addEventListener('change', async e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+            await importBundleJSON(file, false);
+            await refreshBundleList();
+        } catch (err) { alert(`Restore failed: ${err.message}`); }
+        restoreInput.value = '';
+    });
 
-    deleteAllBtn?.addEventListener('click', async () => {
-        if (!confirm('Delete all bundles? This cannot be undone.')) return;
-        await deleteAllBundles();
-        clearTrack();
+    document.getElementById('backup-btn')?.addEventListener('click', () => exportAllBundles());
+
+    document.getElementById('bin-all-btn')?.addEventListener('click', async () => {
+        const all = await getAllBundles();
+        if (!all.length) return;
+        if (!confirm(`Move all ${all.length} bundle(s) to bin?`)) return;
+        for (const b of all) {
+            if (b.id === currentBundleId) clearTrack();
+            await binBundle(b.id);
+        }
         await refreshBundleList();
     });
 }
