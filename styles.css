@@ -316,7 +316,8 @@ button:disabled {
 .output {
     display: flex;
     flex-direction: column;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: visible;
     padding-right: 0.8rem;
     padding-left: 0.8rem;
 }
@@ -714,19 +715,26 @@ button:disabled {
     width: 100%;
     max-width: calc(30vh - 2.2rem);
     margin: 0 auto;
+    pointer-events: all;
     /* height set by JS */
 }
 
 .card-item {
     position: absolute;
     width: 100%;
-    pointer-events: none; /* body never intercepts mouse events */
-    transition: z-index 0s;
+    pointer-events: none;
 }
 
 .card-item.hovered {
     z-index: 999 !important;
 }
+
+/* Rarity glows on hovered strip */
+.card-item.hovered.rarity-Common    { filter: drop-shadow(0 0 4px  #ffffff50); }
+.card-item.hovered.rarity-Uncommon  { filter: drop-shadow(0 0 8px  #1eff0070); }
+.card-item.hovered.rarity-Rare      { filter: drop-shadow(0 0 16px #0070dd90); }
+.card-item.hovered.rarity-Epic      { filter: drop-shadow(0 0 32px #a335eebb); }
+.card-item.hovered.rarity-Legendary { filter: drop-shadow(0 0 64px #ff8000dd); }
 
 .card-img-full {
     width: 100%;

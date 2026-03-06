@@ -117,8 +117,6 @@ function renderCardContents(id, cards, set) {
 // ── renderCardList ────────────────────────────────────────────
 // Renders a visual stack of cards — each card offset by STRIP_VH,
 // showing only its top portion (name area) until hovered.
-// Pointer events are restricted to the strip so cards beneath
-// remain hoverable even when a card above them is fully shown.
 
 const CARD_VH  = 36;   // full card height in vh
 const STRIP_VH = 3.6;  // visible strip per card (~10%)
@@ -136,15 +134,15 @@ function renderCardList(output, cards, set) {
 
     cards.forEach((card, index) => {
         const item = document.createElement('div');
-        item.className    = 'card-item';
+        item.className    = `card-item rarity-${card.rarity}`;
         item.style.top    = `${index * STRIP_VH}vh`;
         item.style.height = `${CARD_VH}vh`;
         item.style.zIndex = index + 1;
 
-        const img       = document.createElement('img');
-        img.className   = 'card-img-full';
-        img.src         = `./data/cardImg/${card.set}/${card.setNumber}.jpg`;
-        img.draggable   = false;
+        const img     = document.createElement('img');
+        img.className = 'card-img-full';
+        img.src       = `./data/cardImg/${card.set}/${card.setNumber}.jpg`;
+        img.draggable = false;
 
         const strip     = document.createElement('div');
         strip.className = 'card-strip';
@@ -159,6 +157,10 @@ function renderCardList(output, cards, set) {
         item.appendChild(strip);
         stack.appendChild(item);
     });
+
+    // Last card: full height is interactive
+    const lastStrip = stack.lastElementChild?.querySelector('.card-strip');
+    if (lastStrip) lastStrip.style.height = '100%';
 
     output.appendChild(stack);
 }
