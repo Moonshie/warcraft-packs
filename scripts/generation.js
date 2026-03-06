@@ -159,6 +159,7 @@ function generateBox(set, definition) {
             } else if (entry.type === 'pack') {
                 console.log(`[generateBox] Generating pack ${i + 1}/${count}...`);
                 const pack = generatePack(set, entry.definition);
+                pack._definition = entry.definition; // used by ui.js for art resolution
                 if (display === 'spawned') box.containedItems.push(pack);
                 else box.cards.push(...pack.cards); // flatten inline pack cards
 

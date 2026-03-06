@@ -486,10 +486,18 @@ button:disabled {
     padding: 0.35rem 0.4rem;
     border-bottom: 1px solid #8d693430;
     transition: background 0.15s ease;
+    white-space: nowrap;
 }
 .bundle-entry:hover {
     background: #ffffff08;
     cursor: default;
+}
+.bundle-entry.active {
+    background: #8d693420;
+    border-bottom-color: #8d693470;
+}
+.bundle-entry.active .bundle-name {
+    color: #e6cc80;
 }
 
 .bundle-name {
@@ -526,7 +534,9 @@ button:disabled {
 .bundle-btn--export::before    { content: '↓'; }
 .bundle-btn--duplicate::before { content: '⧉'; }
 .bundle-btn--delete::before    { content: '✕'; }
+.bundle-btn--unload::before    { content: '■'; }
 .bundle-btn--delete:hover      { background: #5a1a1a; border-color: #cc4444 !important; }
+.bundle-btn--unload:hover      { background: #5a3a1a; border-color: #e6cc80 !important; }
 
 /* ── Extras container (dynamic class/faction selectors) ─────── */
 
@@ -569,9 +579,68 @@ button:disabled {
     visibility: hidden;
 }
 
-/* ── Item locked state ──────────────────────────────────────── */
+.bundle-name-input {
+    font-family: Geologica;
+    font-size: 0.8rem;
+    color: #e6e6e6;
+    background: #2a2a2a;
+    border: 1px solid #8d6934;
+    border-radius: 3px;
+    padding: 0 0.2rem;
+    flex: 1;
+    width: 0; /* flex will size it */
+    outline: none;
+}
 
 .pack.locked .output,
 .box.locked .output {
     opacity: 0.6;
+}
+
+/* ── Visual card stack ──────────────────────────────────────── */
+
+.card-stack {
+    position: relative;
+    width: 100%;
+    max-width: calc(30vh - 2.2rem);
+    margin: 0 auto;
+    /* height set by JS */
+}
+
+.card-item {
+    position: absolute;
+    width: 100%;
+    pointer-events: none; /* body never intercepts mouse events */
+    transition: z-index 0s;
+}
+
+.card-item.hovered {
+    z-index: 999 !important;
+}
+
+.card-img-full {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    display: block;
+    border-radius: 4px;
+    pointer-events: none;
+    user-select: none;
+}
+
+.card-strip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3.6vh; /* matches STRIP_VH in render.js */
+    pointer-events: all;
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+}
+
+.card-item:last-child .card-strip {
+    height: 100%;
+    border-radius: 4px;
 }

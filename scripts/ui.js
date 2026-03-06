@@ -15,7 +15,6 @@
 const root           = document.querySelector(':root');
 const track          = document.querySelector('.item-track');
 const genButton      = document.getElementById('generate');
-const bundleButton   = document.getElementById('bundle');
 const left           = document.querySelector('.sidebar#left');
 const center         = document.querySelector('.menu-wrapper');
 const right          = document.querySelector('.sidebar#right');
@@ -193,10 +192,14 @@ genButton.addEventListener('click', () => {
         box.definitionName  = typeName;
         box.set             = setId;
         box.artID           = resolveArtID(set, typeConfig, extraFilterValue);
-        // Stamp set and artID onto any spawned contained items too
-        box.containedItems.forEach((item, i) => {
-            item.set   = item.set   ?? setId;
-            item.artID = item.artID ?? resolveArtID(set, typeConfig, {});
+        // Stamp set and artID onto any spawned contained items,
+        // resolving art from their own definition's typeConfig
+        box.containedItems.forEach(item => {
+            item.set = item.set ?? setId;
+            if (!item.artID) {
+                const itemTypeConfig = GameConfig.itemTypes.find(t => t.definition === item._definition);
+                item.artID = resolveArtID(set, itemTypeConfig ?? { artCategory: 'booster' }, {});
+            }
         });
         items.push(box);
     }
@@ -262,14 +265,6 @@ function resolveArtID(set, typeConfig, extra) {
 }
 
 
-// ── Bundle button ─────────────────────────────────────────────
-
-bundleButton.addEventListener('click', async () => {
-    const id = await bundleCurrentSession();
-    if (id !== null) await refreshBundleList();
-});
-
-
 // ── Bundle sidebar ────────────────────────────────────────────
 
 async function refreshBundleList() {
@@ -285,29 +280,69 @@ async function refreshBundleList() {
     }
 
     bundles.forEach(bundle => {
+        const isActive = bundle.id === currentBundleId;
+
         const el          = document.createElement('div');
-        el.className      = 'bundle-entry';
+        el.className      = `bundle-entry${isActive ? ' active' : ''}`;
         el.dataset.id     = bundle.id;
 
         const nameEl      = document.createElement('span');
         nameEl.className  = 'bundle-name';
         nameEl.textContent = bundle.name;
+        nameEl.title      = 'Double-click to rename';
         el.title          = buildBundleSummary(bundle.items);
 
-        const loadBtn  = makeIconBtn('load',      () => hydrateBundle(bundle.id));
-        const exportBtn= makeIconBtn('export',    () => exportBundleJSON(bundle.id));
-        const dupBtn   = makeIconBtn('duplicate', async () => {
-            await duplicateBundle(bundle.id);
-            await refreshBundleList();
-        });
-        const delBtn   = makeIconBtn('delete', async () => {
-            if (confirm(`Delete bundle "${bundle.name}"?`)) {
-                await deleteBundle(bundle.id);
+        nameEl.addEventListener('dblclick', () => {
+            const input = document.createElement('input');
+            input.className   = 'bundle-name-input';
+            input.value       = bundle.name;
+            input.spellcheck  = false;
+            nameEl.replaceWith(input);
+            input.focus();
+            input.select();
+
+            const commit = async () => {
+                const newName = input.value.trim() || bundle.name;
+                const full    = await loadBundle(bundle.id);
+                if (full) await saveBundle(full.items, bundle.id, newName, full.createdAt);
                 await refreshBundleList();
-            }
+            };
+
+            input.addEventListener('keydown', e => {
+                if (e.key === 'Enter') { e.preventDefault(); commit(); }
+                if (e.key === 'Escape') refreshBundleList();
+            });
+            input.addEventListener('blur', commit);
         });
 
-        el.append(nameEl, loadBtn, exportBtn, dupBtn, delBtn);
+        el.appendChild(nameEl);
+
+        if (isActive) {
+            const unloadBtn = makeIconBtn('unload', () => {
+                clearTrack(true);
+                refreshBundleList();
+            });
+            unloadBtn.title = 'Unload';
+            el.appendChild(unloadBtn);
+        } else {
+            const loadBtn   = makeIconBtn('load', async () => {
+                await hydrateBundle(bundle.id);
+                await refreshBundleList();
+            });
+            const exportBtn = makeIconBtn('export',    () => exportBundleJSON(bundle.id));
+            const dupBtn    = makeIconBtn('duplicate', async () => {
+                await duplicateBundle(bundle.id);
+                await refreshBundleList();
+            });
+            const delBtn    = makeIconBtn('delete', async () => {
+                if (confirm(`Delete bundle "${bundle.name}"?`)) {
+                    await deleteBundle(bundle.id);
+                    await refreshBundleList();
+                }
+            });
+            el.append(loadBtn, exportBtn, dupBtn, delBtn);
+        }
+
         bundleList.appendChild(el);
     });
 }
@@ -323,7 +358,9 @@ function makeIconBtn(action, onClick) {
 function buildBundleSummary(items) {
     const counts = {};
     items.forEach(item => {
-        counts[item.definitionName] = (counts[item.definitionName] ?? 0) + 1;
+        const setName = GameConfig.sets[item.set]?.name ?? item.set;
+        const key = `${setName} ${item.definitionName}`;
+        counts[key] = (counts[key] ?? 0) + 1;
     });
     return Object.entries(counts).map(([n, c]) => `${c}x ${n}`).join(', ');
 }
@@ -437,6 +474,7 @@ async function initUI() {
     populateSelectors();
     await refreshBundleList();
     initImportButton();
+    track.scrollLeft = 0;
 
     document.querySelectorAll('hover-tilt').forEach(el => {
         el.style.touchAction = 'pan-x';

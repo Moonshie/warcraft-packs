@@ -60,21 +60,24 @@ function initStorage() {
 // items    — array of item snapshots (built by snapshotItems in render.js)
 // id       — optional existing bundle id to overwrite
 
-async function saveBundle(items, id = null) {
+async function saveBundle(items, id = null, nameOverride = null, createdAtOverride = null) {
     const now = new Date();
-    const name = now.toLocaleString('en-GB', {
+    const name = nameOverride ?? now.toLocaleString('en-GB', {
         year:   'numeric', month:  '2-digit', day:    '2-digit',
         hour:   '2-digit', minute: '2-digit',
     }).replace(',', '');
 
     const bundle = {
         name,
-        createdAt: now.getTime(),
+        createdAt: createdAtOverride ?? now.getTime(),
         items,
     };
 
     if (id !== null) {
-        bundle.id = id;
+        const existing = await db.bundles.get(id);
+        bundle.id        = id;
+        bundle.name      = nameOverride ?? existing?.name      ?? bundle.name;
+        bundle.createdAt = createdAtOverride ?? existing?.createdAt ?? bundle.createdAt;
         await db.bundles.put(bundle);
         console.log(`[storage] Bundle #${id} overwritten.`);
         return id;
@@ -180,7 +183,7 @@ async function importBundleJSON(file) {
                 }
 
                 // Always import as a brand new bundle, ignoring original id
-                const newId = await saveBundle(data.items);
+                const newId = await saveBundle(data.items, null, data.name, data.createdAt);
                 console.log(`[storage] Imported bundle as #${newId}.`);
                 resolve(newId);
             } catch (err) {

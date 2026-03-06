@@ -35,6 +35,7 @@ function renderAll(items) {
         renderItem(id, item);
     });
     centerCorrectly();
+    bundleCurrentSession().then(() => refreshBundleList());
 }
 
 
@@ -86,6 +87,7 @@ function openItem(id) {
     if (item.type === 'pack') {
         setTimeout(() => {
             renderCardContents(id, item.cards, item.set);
+            bundleCurrentSession().then(() => refreshBundleList());
         }, 670);
     }
 
@@ -95,49 +97,70 @@ function openItem(id) {
             if (item.containedItems?.length) {
                 renderAll(item.containedItems);
             }
+            bundleCurrentSession().then(() => refreshBundleList());
         }, 700);
     }
 }
 
 
 // ── renderCardContents ────────────────────────────────────────
-// Renders the card list inside an opened item's output div.
+// Renders the card stack inside an opened item's output div.
 
 function renderCardContents(id, cards, set) {
     const output = document.getElementById(`${id}-output`);
     output.innerHTML = '';
     output.classList.remove('hidden');
     renderCardList(output, cards, set);
-    attachPreviewListeners();
 }
 
 
 // ── renderCardList ────────────────────────────────────────────
-// Renders one row per card into a given output element,
-// in the order provided — no sorting or deduplication.
+// Renders a visual stack of cards — each card offset by STRIP_VH,
+// showing only its top portion (name area) until hovered.
+// Pointer events are restricted to the strip so cards beneath
+// remain hoverable even when a card above them is fully shown.
+
+const CARD_VH  = 36;   // full card height in vh
+const STRIP_VH = 3.6;  // visible strip per card (~10%)
 
 function renderCardList(output, cards, set) {
     const slug = wowcardsSlug[set] ?? set.toLowerCase();
 
-    cards.forEach(card => {
-        const line = document.createElement('div');
-        line.className = 'line';
+    const stackHeight = cards.length > 0
+        ? (cards.length - 1) * STRIP_VH + CARD_VH
+        : 0;
 
-        const nameLink = document.createElement('a');
-        nameLink.classList.add('cardLink');
-        nameLink.textContent = card.name;
-        nameLink.setAttribute('href',    `http://www.wowcards.info/card/${slug}/en/${card.setNumber}`);
-        nameLink.setAttribute('dataImg', `./data/cardImg/${card.set}/${card.setNumber}.jpg`);
-        nameLink.setAttribute('target',  '_blank');
+    const stack = document.createElement('div');
+    stack.className    = 'card-stack';
+    stack.style.height = `${stackHeight}vh`;
 
-        const rarityDiv = document.createElement('div');
-        rarityDiv.textContent = card.rarity.charAt(0);
-        rarityDiv.className   = `rarity ${card.rarity}`;
+    cards.forEach((card, index) => {
+        const item = document.createElement('div');
+        item.className    = 'card-item';
+        item.style.top    = `${index * STRIP_VH}vh`;
+        item.style.height = `${CARD_VH}vh`;
+        item.style.zIndex = index + 1;
 
-        line.appendChild(nameLink);
-        line.appendChild(rarityDiv);
-        output.appendChild(line);
+        const img       = document.createElement('img');
+        img.className   = 'card-img-full';
+        img.src         = `./data/cardImg/${card.set}/${card.setNumber}.jpg`;
+        img.draggable   = false;
+
+        const strip     = document.createElement('div');
+        strip.className = 'card-strip';
+
+        strip.addEventListener('mouseenter', () => item.classList.add('hovered'));
+        strip.addEventListener('mouseleave', () => item.classList.remove('hovered'));
+        strip.addEventListener('click', () => {
+            window.open(`http://www.wowcards.info/card/${slug}/en/${card.setNumber}`, '_blank');
+        });
+
+        item.appendChild(img);
+        item.appendChild(strip);
+        stack.appendChild(item);
     });
+
+    output.appendChild(stack);
 }
 
 
@@ -180,13 +203,9 @@ function unlockItem(id) {
 // Prompts the user if there are unbundled items.
 // Returns true if cleared, false if cancelled.
 
-function clearTrack(warn = true) {
-    if (warn && renderedItems.length > 0) {
-        const ok = confirm('This will clear the current session. Any unbundled items will be lost. Continue?');
-        if (!ok) return false;
-    }
-
+function clearTrack() {
     track.innerHTML      = '';
+    track.scrollLeft     = 0;
     renderedItems.length = 0;
     openedIds.clear();
     lockedIds.clear();
@@ -215,7 +234,7 @@ async function hydrateBundle(bundleId) {
     const bundle = await loadBundle(bundleId);
     if (!bundle) return;
 
-    const cleared = clearTrack(true);
+    const cleared = clearTrack();
     if (!cleared) return;
 
     currentBundleId = bundleId;
