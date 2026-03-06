@@ -199,7 +199,7 @@ function packCutAnimation(id) {
 
     animateSlash(itemElement, cutPoints, W, H, () => {
         const output = itemElement.querySelector('.output');
-        output.classList.remove('hidden');
+        if (output) output.classList.remove('hidden');
         flyApart(itemElement, packImg, cutPoints, angle, W, H, () => {});
     });
 }

@@ -1,24 +1,14 @@
 // ─────────────────────────────────────────────────────────────
 //  RENDER
-//  Manages the item track — rendering, opening, and snapshotting
-//  packs, boxes, and singleton cards.
-//
-//  Item types:
-//    pack  — a booster pack, openable to reveal cards
-//    box   — a big box, openable to reveal cards + spawn extra packs
-//    card  — a singleton card (oversize hero, dragged-out card, etc.)
-//
-//  Depends on: animation.js, storage.js, wow-tcg-definitions.js
 // ─────────────────────────────────────────────────────────────
 
 // ── State ─────────────────────────────────────────────────────
 
-const renderedItems   = [];        // All items on the track, indexed by id
-const openedIds       = new Set(); // ids of items whose contents are visible
-const lockedIds       = new Set(); // ids of items locked against card changes
-let   currentBundleId = null;      // id of the loaded bundle, null if unsaved
+const renderedItems   = [];
+const openedIds       = new Set();
+const lockedIds       = new Set();
+let   currentBundleId = null;
 
-// Maps set ids to their wowcards.info URL slug
 const wowcardsSlug = {
     'Azeroth':    'azeroth',
     'DarkPortal': 'dark-portal',
@@ -26,7 +16,6 @@ const wowcardsSlug = {
 
 
 // ── renderAll ─────────────────────────────────────────────────
-// Renders an array of items onto the track.
 
 function renderAll(items) {
     items.forEach(item => {
@@ -40,7 +29,6 @@ function renderAll(items) {
 
 
 // ── renderItem ────────────────────────────────────────────────
-// Renders a single item wrapper onto the track.
 
 function renderItem(id, item) {
     const wrapperClass = `${item.type}-wrapper`;
@@ -73,8 +61,6 @@ function renderItem(id, item) {
 
 
 // ── openItem ──────────────────────────────────────────────────
-// Opens a pack or box — triggers animation, renders card list,
-// and locks the item.
 
 function openItem(id) {
     const item = renderedItems[id];
@@ -86,6 +72,7 @@ function openItem(id) {
 
     if (item.type === 'pack') {
         setTimeout(() => {
+            unwrapHoverTilt(id);
             renderCardContents(id, item.cards, item.set);
             bundleCurrentSession().then(() => refreshBundleList());
         }, 670);
@@ -93,33 +80,107 @@ function openItem(id) {
 
     if (item.type === 'box') {
         setTimeout(() => {
+            unwrapHoverTilt(id);
             renderCardContents(id, item.cards ?? [], item.set);
-            if (item.containedItems?.length) {
-                renderAll(item.containedItems);
-            }
+            if (item.containedItems?.length) renderAll(item.containedItems);
             bundleCurrentSession().then(() => refreshBundleList());
         }, 700);
     }
 }
 
 
+// ── unwrapHoverTilt ───────────────────────────────────────────
+// After opening, removes the hover-tilt wrapper so its spring
+// animation can't interfere with portal positioning or image
+// quality (scale transforms affect GPU rasterization).
+
+function unwrapHoverTilt(id) {
+    const packEl   = document.getElementById(id);
+    if (!packEl) return;
+    const tiltEl   = packEl.closest('hover-tilt');
+    if (!tiltEl) return;
+    const wrapper  = tiltEl.parentElement;
+    // Move pack element directly into the wrapper, removing hover-tilt
+    wrapper.appendChild(packEl);
+    tiltEl.remove();
+}
+
+
 // ── renderCardContents ────────────────────────────────────────
-// Renders the card stack inside an opened item's output div.
 
 function renderCardContents(id, cards, set) {
     const output = document.getElementById(`${id}-output`);
+    if (!output) return;
     output.innerHTML = '';
     output.classList.remove('hidden');
     renderCardList(output, cards, set);
 }
 
 
-// ── renderCardList ────────────────────────────────────────────
-// Renders a visual stack of cards — each card offset by STRIP_VH,
-// showing only its top portion (name area) until hovered.
+// ── Card portal ───────────────────────────────────────────────
 
-const CARD_VH  = 36;   // full card height in vh
-const STRIP_VH = 3.6;  // visible strip per card (~10%)
+const cardPortal = (() => {
+    const el        = document.createElement('div');
+    el.className    = 'card-portal';
+    el.style.display = 'none';
+    const img       = document.createElement('img');
+    img.className   = 'card-portal-img';
+    img.draggable   = false;
+    el.appendChild(img);
+    document.body.appendChild(el);
+    return { el, img };
+})();
+
+let portalSourceItem = null;
+let portalBaseRect   = null; // locked on mouseenter, stable reference
+
+function showPortal(item, src, e) {
+    portalSourceItem = item;
+    item.classList.add('hovered');
+
+    if (cardPortal.img.dataset.src !== src) {
+        cardPortal.img.src         = src;
+        cardPortal.img.dataset.src = src;
+    }
+
+    cardPortal.el.className     = 'card-portal ' + item.className.replace('card-item', '').trim();
+    cardPortal.el.style.display = 'block';
+
+    // Lock size and base position once — translate handles movement
+    portalBaseRect = item.getBoundingClientRect();
+    cardPortal.el.style.width  = `${portalBaseRect.width}px`;
+    cardPortal.el.style.height = `${portalBaseRect.height}px`;
+
+    updatePortal(e);
+}
+
+function updatePortal(e) {
+    if (!portalSourceItem || !portalBaseRect) return;
+
+    // Re-read position each move (no hover-tilt drift anymore) but
+    // use transform instead of left/top to skip layout recalculation
+    const rect = portalSourceItem.getBoundingClientRect();
+    cardPortal.el.style.transform = `translate(${rect.left}px, ${rect.top}px)`;
+
+    const relX    = (e.clientX - rect.left) / rect.width;
+    const tiltDeg = (relX - 0.5) * 12;
+    cardPortal.img.style.transform = `perspective(600px) rotateY(${tiltDeg}deg)`;
+}
+
+function hidePortal(item) {
+    if (portalSourceItem !== item) return;
+    item.classList.remove('hovered');
+    cardPortal.el.style.display = 'none';
+    cardPortal.img.style.transform = '';
+    cardPortal.img.dataset.src = '';
+    portalSourceItem = null;
+}
+
+
+// ── renderCardList ────────────────────────────────────────────
+
+const CARD_VH  = 36;
+const STRIP_VH = 3.6;
 
 function renderCardList(output, cards, set) {
     const slug = wowcardsSlug[set] ?? set.toLowerCase();
@@ -133,6 +194,9 @@ function renderCardList(output, cards, set) {
     stack.style.height = `${stackHeight}vh`;
 
     cards.forEach((card, index) => {
+        const isLast = index === cards.length - 1;
+        const src    = `./data/cardImg/${card.set}/${card.setNumber}.jpg`;
+
         const item = document.createElement('div');
         item.className    = `card-item rarity-${card.rarity}`;
         item.style.top    = `${index * STRIP_VH}vh`;
@@ -141,14 +205,17 @@ function renderCardList(output, cards, set) {
 
         const img     = document.createElement('img');
         img.className = 'card-img-full';
-        img.src       = `./data/cardImg/${card.set}/${card.setNumber}.jpg`;
+        img.src       = src;
         img.draggable = false;
 
+        // Strip covers full card height — no gap for cursor to fall through
         const strip     = document.createElement('div');
         strip.className = 'card-strip';
+        if (isLast) strip.style.height = '100%';
 
-        strip.addEventListener('mouseenter', () => item.classList.add('hovered'));
-        strip.addEventListener('mouseleave', () => item.classList.remove('hovered'));
+        strip.addEventListener('mouseenter', e => showPortal(item, src, e));
+        strip.addEventListener('mousemove',  e => updatePortal(e));
+        strip.addEventListener('mouseleave', () => hidePortal(item));
         strip.addEventListener('click', () => {
             window.open(`http://www.wowcards.info/card/${slug}/en/${card.setNumber}`, '_blank');
         });
@@ -158,16 +225,11 @@ function renderCardList(output, cards, set) {
         stack.appendChild(item);
     });
 
-    // Last card: full height is interactive
-    const lastStrip = stack.lastElementChild?.querySelector('.card-strip');
-    if (lastStrip) lastStrip.style.height = '100%';
-
     output.appendChild(stack);
 }
 
 
 // ── centerCorrectly ───────────────────────────────────────────
-// Adjusts track padding so items are visually centred.
 
 function centerCorrectly() {
     const paddingFor = className => {
@@ -186,8 +248,6 @@ function centerCorrectly() {
 
 
 // ── lockItem / unlockItem ─────────────────────────────────────
-// Locking prevents card changes. Items are locked automatically
-// on open, and can be manually unlocked by the user.
 
 function lockItem(id) {
     lockedIds.add(id);
@@ -201,9 +261,6 @@ function unlockItem(id) {
 
 
 // ── clearTrack ────────────────────────────────────────────────
-// Removes all items from the track.
-// Prompts the user if there are unbundled items.
-// Returns true if cleared, false if cancelled.
 
 function clearTrack() {
     track.innerHTML      = '';
@@ -217,8 +274,6 @@ function clearTrack() {
 
 
 // ── snapshotItems ─────────────────────────────────────────────
-// Builds a storage-ready snapshot of the current track.
-// Items are stored as-is since there's no flattening.
 
 function snapshotItems() {
     return renderedItems.map((item, id) => ({
@@ -230,15 +285,12 @@ function snapshotItems() {
 
 
 // ── hydrateBundle ─────────────────────────────────────────────
-// Loads a bundle back onto the track, restoring open/locked state.
 
 async function hydrateBundle(bundleId) {
     const bundle = await loadBundle(bundleId);
     if (!bundle) return;
 
-    const cleared = clearTrack();
-    if (!cleared) return;
-
+    clearTrack();
     currentBundleId = bundleId;
 
     bundle.items.forEach((item, index) => {
@@ -252,6 +304,7 @@ async function hydrateBundle(bundleId) {
             el?.classList.add('open', 'cutting');
             if (el) disableTilt(el);
             if (packImg) packImg.style.visibility = 'hidden';
+            unwrapHoverTilt(index);
             renderCardContents(index, item.cards ?? [], item.set);
         }
         if (item.locked) {
@@ -266,15 +319,12 @@ async function hydrateBundle(bundleId) {
 
 
 // ── bundleCurrentSession ──────────────────────────────────────
-// Snapshots the current track and saves it as a bundle.
-// Overwrites the current bundle if one is loaded.
 
 async function bundleCurrentSession() {
     if (renderedItems.length === 0) {
         console.warn('[render] Nothing to bundle.');
         return null;
     }
-
     const snapshots = snapshotItems();
     const id = await saveBundle(snapshots, currentBundleId ?? undefined);
     currentBundleId = id;
