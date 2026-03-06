@@ -177,21 +177,43 @@ function hidePortal(item) {
 }
 
 
+// ── CSS var helpers ───────────────────────────────────────────
+// Resolves a CSS custom property to pixels regardless of its unit
+// (vh, vw, calc, etc.) by measuring a temp DOM element.
+
+function cssVarH(varName) {
+    const el = document.createElement('div');
+    el.style.cssText = `position:absolute;visibility:hidden;pointer-events:none;height:var(${varName})`;
+    document.body.appendChild(el);
+    const px = el.offsetHeight;
+    el.remove();
+    return px;
+}
+
+function cssVarW(varName) {
+    const el = document.createElement('div');
+    el.style.cssText = `position:absolute;visibility:hidden;pointer-events:none;width:var(${varName})`;
+    document.body.appendChild(el);
+    const px = el.offsetWidth;
+    el.remove();
+    return px;
+}
+
+
 // ── renderCardList ────────────────────────────────────────────
 
-const CARD_VH  = 36;
-const STRIP_VH = 3.6;
-
 function renderCardList(output, cards, set) {
-    const slug = wowcardsSlug[set] ?? set.toLowerCase();
+    const slug   = wowcardsSlug[set] ?? set.toLowerCase();
+    const cardH  = cssVarH('--card-h');
+    const stripH = cssVarH('--strip-h');
 
     const stackHeight = cards.length > 0
-        ? (cards.length - 1) * STRIP_VH + CARD_VH
+        ? (cards.length - 1) * stripH + cardH
         : 0;
 
     const stack = document.createElement('div');
     stack.className    = 'card-stack';
-    stack.style.height = `${stackHeight}vh`;
+    stack.style.height = `${stackHeight}px`;
 
     cards.forEach((card, index) => {
         const isLast = index === cards.length - 1;
@@ -199,8 +221,8 @@ function renderCardList(output, cards, set) {
 
         const item = document.createElement('div');
         item.className    = `card-item rarity-${card.rarity}`;
-        item.style.top    = `${index * STRIP_VH}vh`;
-        item.style.height = `${CARD_VH}vh`;
+        item.style.top    = `${index * stripH}px`;
+        item.style.height = `${cardH}px`;
         item.style.zIndex = index + 1;
 
         const img     = document.createElement('img');
@@ -208,7 +230,6 @@ function renderCardList(output, cards, set) {
         img.src       = src;
         img.draggable = false;
 
-        // Strip covers full card height — no gap for cursor to fall through
         const strip     = document.createElement('div');
         strip.className = 'card-strip';
         if (isLast) strip.style.height = '100%';
@@ -232,18 +253,22 @@ function renderCardList(output, cards, set) {
 // ── centerCorrectly ───────────────────────────────────────────
 
 function centerCorrectly() {
+    const packW      = cssVarW('--pack-w');
+    const boxW       = cssVarW('--box-w');
+    const singletonW = cssVarW('--singleton-w');
+
     const paddingFor = className => {
-        if (className === 'pack-wrapper') return 15;
-        if (className === 'box-wrapper')  return 21;
-        if (className === 'card-wrapper') return 12.5;
+        if (className === 'pack-wrapper') return packW      / 2;
+        if (className === 'box-wrapper')  return boxW       / 2;
+        if (className === 'card-wrapper') return singletonW / 2;
         return 0;
     };
 
     const first = track.firstElementChild?.className ?? '';
     const last  = track.lastElementChild?.className  ?? '';
 
-    root.style.setProperty('--padding-left',  `${paddingFor(first)}vh`);
-    root.style.setProperty('--padding-right', `${paddingFor(last)}vh`);
+    root.style.setProperty('--padding-left',  `${paddingFor(first)}px`);
+    root.style.setProperty('--padding-right', `${paddingFor(last)}px`);
 }
 
 

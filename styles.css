@@ -7,8 +7,34 @@
 
 :root {
     font-size: clamp(12px, 18px, 18px);
-    --padding-left: 45vh;
-    --padding-right: 15vh;
+
+    /* ── Single source of truth: card height ───────────────────
+       Landscape: card height ≈ half the viewport height
+       Portrait:  card width  ≈ 60vw → height = width × 7/5    */
+    --card-h: clamp(35vh, 48vh, 60vh);
+
+    /* ── All sizes derived from --card-h ───────────────────────
+       WoW TCG card ratio: 2.5" × 3.5" = 5:7 (width:height = 0.714)
+       Pack art ratio: roughly 5:8 (0.625)
+       Box art ratio:  roughly 7:10 (0.7)                       */
+    --card-w:      calc(var(--card-h) * 0.714);   /* actual card width  */
+    --strip-h:     calc(var(--card-h) * 0.1);     /* 10% name strip     */
+    --pack-w:      calc(var(--card-h) * 0.833);   /* 30/36 of card-h    */
+    --pack-h:      calc(var(--card-h) * 1.333);   /* 48/36 of card-h    */
+    --box-w:       calc(var(--card-h) * 1.167);   /* 42/36 of card-h    */
+    --box-h:       calc(var(--card-h) * 1.667);   /* 60/36 of card-h    */
+    --singleton-w: calc(var(--card-h) * 0.694);   /* 25/36 of card-h    */
+    --singleton-h: calc(var(--card-h) * 0.972);   /* 35/36 of card-h    */
+
+    --padding-left:  calc(var(--pack-w) * 0.5);
+    --padding-right: calc(var(--pack-w) * 0.5);
+}
+
+@media (orientation: portrait) {
+    :root {
+        /* Card width ≈ 60vw → height = 60vw × 1.4 = 84vw */
+        --card-h: clamp(56vw, 84vw, 112vw);
+    }
 }
 
 body {
@@ -28,8 +54,8 @@ a:hover {
 
 #preview-box {
     position: fixed;
-    width: 30vh;
-    height: 42vh;
+    width: var(--pack-w);
+    height: calc(var(--pack-w) * 1.4);
     pointer-events: none;
     display: block;
     z-index: 9999;
@@ -287,8 +313,8 @@ button:disabled {
 
 .pack {
     padding: 0 0.3rem 0.6rem 0.3rem;
-    width: 30vh;
-    height: 48vh;
+    width: var(--pack-w);
+    height: var(--pack-h);
     display: grid;
     position: relative;
     overflow: visible;
@@ -304,8 +330,8 @@ button:disabled {
 }
 .box {
     padding: 0 0.3rem 0.6rem 0.3rem;
-    width: 42vh;
-    height: 60vh;
+    width: var(--box-w);
+    height: var(--box-h);
     display: grid;
     position: relative;
     overflow: visible;
@@ -338,8 +364,8 @@ button:disabled {
     z-index: 2;
 }
 .card {
-    width: 25vh;
-    height: 35vh;
+    width: var(--singleton-w);
+    height: var(--singleton-h);
     margin-top: 6.5vh;
     background-size: cover;
     background-position: center;
@@ -468,8 +494,8 @@ button:disabled {
 
 .card-option {
     border-radius: 1vh;
-    width: 30vh;
-    height: 42vh;
+    width: var(--pack-w);
+    height: calc(var(--pack-w) * 1.4);
     transition: all 0.3s ease
 }
 .card-option > img {
@@ -746,7 +772,7 @@ button:disabled {
 .card-stack {
     position: relative;
     width: 100%;
-    max-width: calc(30vh - 2.2rem);
+    max-width: var(--card-w);
     margin: 0 auto;
     /* height set by JS */
 }
@@ -777,7 +803,7 @@ button:disabled {
     top: 0;
     left: 0;
     width: 100%;
-    height: 3.6vh; /* matches STRIP_VH in render.js */
+    height: var(--strip-h); /* matches --strip-h in :root */
     pointer-events: all;
     cursor: pointer;
     border-radius: 4px 4px 0 0;
