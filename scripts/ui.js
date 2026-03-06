@@ -597,17 +597,81 @@ function attachPreviewListeners() {
 
 
 // ── Scroll handler ────────────────────────────────────────────
+// Vertical scroll inside items takes precedence, but once the
+// item reaches its top/bottom limit, overflow accumulates until
+// a threshold is crossed — then horizontal track scroll kicks in
+// with momentum easing.
+
+const SCROLL_HANDOFF_THRESHOLD = 300; // px of overflow before handing off
+const SCROLL_FRICTION          = 0.75; // velocity multiplier per frame (lower = stops faster)
+let   scrollOverflow      = 0;
+let   scrollOverflowTimer = null;
+let   scrollVelocity      = 0;
+let   scrollRafId         = null;
+
+function animateTrackScroll() {
+    if (Math.abs(scrollVelocity) < 0.5) {
+        scrollVelocity = 0;
+        scrollRafId    = null;
+        return;
+    }
+    track.scrollLeft += scrollVelocity;
+    scrollVelocity   *= SCROLL_FRICTION;
+    scrollRafId       = requestAnimationFrame(animateTrackScroll);
+}
+
+function addTrackVelocity(delta) {
+    scrollVelocity += delta * 0.6; // scale down a bit so it doesn't overshoot
+    if (!scrollRafId) scrollRafId = requestAnimationFrame(animateTrackScroll);
+}
 
 track.addEventListener('wheel', e => {
+    // Only intercept vertical wheel events
+    if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+
+    // Find the scrollable element under the cursor
     let el = document.elementFromPoint(e.clientX, e.clientY);
+    let scrollable = null;
     while (el && el !== document.body) {
         const { overflowY } = window.getComputedStyle(el);
-        if ((overflowY === 'auto' || overflowY === 'scroll') && el.scrollHeight > el.clientHeight) return;
+        if ((overflowY === 'auto' || overflowY === 'scroll') && el.scrollHeight > el.clientHeight) {
+            scrollable = el;
+            break;
+        }
         el = el.parentElement;
     }
-    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+
+    if (!scrollable) {
+        // No vertical scrollable — go horizontal with momentum
         e.preventDefault();
-        track.scrollLeft += e.deltaY;
+        addTrackVelocity(e.deltaY);
+        scrollOverflow = 0;
+        return;
+    }
+
+    // Check if we're at a scroll boundary
+    const atTop      = scrollable.scrollTop <= 0;
+    const atBottom   = scrollable.scrollTop >= scrollable.scrollHeight - scrollable.clientHeight - 1;
+    const atBoundary = (e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom);
+
+    if (!atBoundary) {
+        // Not at boundary — let vertical scroll happen, bleed off any momentum
+        scrollOverflow = 0;
+        scrollVelocity = 0;
+        clearTimeout(scrollOverflowTimer);
+        return;
+    }
+
+    // At boundary — accumulate overflow
+    e.preventDefault();
+    scrollOverflow += Math.abs(e.deltaY);
+
+    // Decay overflow if the user pauses
+    clearTimeout(scrollOverflowTimer);
+    scrollOverflowTimer = setTimeout(() => { scrollOverflow = 0; }, 300);
+
+    if (scrollOverflow >= SCROLL_HANDOFF_THRESHOLD) {
+        addTrackVelocity(e.deltaY);
     }
 }, { passive: false });
 
