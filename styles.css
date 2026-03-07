@@ -8,33 +8,24 @@
 :root {
     font-size: clamp(12px, 18px, 18px);
 
-    /* ── Single source of truth: card height ───────────────────
-       Landscape: card height ≈ half the viewport height
-       Portrait:  card width  ≈ 60vw → height = width × 7/5    */
-    --card-h: clamp(35vh, 48vh, 60vh);
+    /* ── Single source of truth: card width ────────────────────
+       WoW TCG card ratio: 2.5" × 3.5" → height = width × 1.4  */
+    --card-w: clamp(15vw, 279px, 75vw);
+    --card-h: calc(var(--card-w) * 1.4);
+    --strip-h: calc(var(--card-h) * 0.1);
 
-    /* ── All sizes derived from --card-h ───────────────────────
-       WoW TCG card ratio: 2.5" × 3.5" = 5:7 (width:height = 0.714)
-       Pack art ratio: roughly 5:8 (0.625)
-       Box art ratio:  roughly 7:10 (0.7)                       */
-    --card-w:      calc(var(--card-h) * 0.714);   /* actual card width  */
-    --strip-h:     calc(var(--card-h) * 0.1);     /* 10% name strip     */
-    --pack-w:      calc(var(--card-h) * 0.833);   /* 30/36 of card-h    */
-    --pack-h:      calc(var(--card-h) * 1.333);   /* 48/36 of card-h    */
-    --box-w:       calc(var(--card-h) * 1.167);   /* 42/36 of card-h    */
-    --box-h:       calc(var(--card-h) * 1.667);   /* 60/36 of card-h    */
-    --singleton-w: calc(var(--card-h) * 0.694);   /* 25/36 of card-h    */
-    --singleton-h: calc(var(--card-h) * 0.972);   /* 35/36 of card-h    */
+    /* Pack and box art dimensions */
+    --pack-w: calc(var(--card-w) * 1.167);
+    --pack-h: calc(var(--card-w) * 1.867);
+    --box-w:  calc(var(--card-w) * 1.633);
+    --box-h:  calc(var(--card-w) * 2.333);
 
-    --padding-left:  calc(var(--pack-w) * 0.5);
-    --padding-right: calc(var(--pack-w) * 0.5);
-}
+    /* Singleton oversize card */
+    --singleton-w: var(--card-w);
+    --singleton-h: var(--card-h);
 
-@media (orientation: portrait) {
-    :root {
-        /* Card width ≈ 60vw → height = 60vw × 1.4 = 84vw */
-        --card-h: clamp(56vw, 84vw, 112vw);
-    }
+    --padding-left:  calc(var(--pack-w) / 2);
+    --padding-right: calc(var(--pack-w) / 2);
 }
 
 body {

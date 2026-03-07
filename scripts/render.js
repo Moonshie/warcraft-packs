@@ -49,7 +49,7 @@ function renderItem(id, item) {
     }
 
     if (item.type === 'card') {
-        clone.style.backgroundImage = `url(./data/cardImg/${item.card.set}/${item.card.setNumber}.jpg)`;
+        clone.style.backgroundImage = `url(./data/cardImg/${item.card.set}/${item.card.setNumber}.webp)`;
     }
 
     track.appendChild(cloneWrapper);
@@ -177,52 +177,27 @@ function hidePortal(item) {
 }
 
 
-// ── CSS var helpers ───────────────────────────────────────────
-// Resolves a CSS custom property to pixels regardless of its unit
-// (vh, vw, calc, etc.) by measuring a temp DOM element.
-
-function cssVarH(varName) {
-    const el = document.createElement('div');
-    el.style.cssText = `position:absolute;visibility:hidden;pointer-events:none;height:var(${varName})`;
-    document.body.appendChild(el);
-    const px = el.offsetHeight;
-    el.remove();
-    return px;
-}
-
-function cssVarW(varName) {
-    const el = document.createElement('div');
-    el.style.cssText = `position:absolute;visibility:hidden;pointer-events:none;width:var(${varName})`;
-    document.body.appendChild(el);
-    const px = el.offsetWidth;
-    el.remove();
-    return px;
-}
-
-
 // ── renderCardList ────────────────────────────────────────────
 
 function renderCardList(output, cards, set) {
-    const slug   = wowcardsSlug[set] ?? set.toLowerCase();
-    const cardH  = cssVarH('--card-h');
-    const stripH = cssVarH('--strip-h');
-
-    const stackHeight = cards.length > 0
-        ? (cards.length - 1) * stripH + cardH
-        : 0;
+    const slug = wowcardsSlug[set] ?? set.toLowerCase();
 
     const stack = document.createElement('div');
-    stack.className    = 'card-stack';
-    stack.style.height = `${stackHeight}px`;
+    stack.className  = 'card-stack';
+    // Height expressed as CSS calc — browser resolves natively, no JS measurement
+    const n = cards.length;
+    stack.style.height = n > 0
+        ? `calc(${n - 1} * var(--strip-h) + var(--card-h))`
+        : '0';
 
     cards.forEach((card, index) => {
-        const isLast = index === cards.length - 1;
-        const src    = `./data/cardImg/${card.set}/${card.setNumber}.jpg`;
+        const isLast = index === n - 1;
+        const src    = `./data/cardImg/${card.set}/${card.setNumber}.webp`;
 
         const item = document.createElement('div');
         item.className    = `card-item rarity-${card.rarity}`;
-        item.style.top    = `${index * stripH}px`;
-        item.style.height = `${cardH}px`;
+        item.style.top    = `calc(${index} * var(--strip-h))`;
+        item.style.height = 'var(--card-h)';
         item.style.zIndex = index + 1;
 
         const img     = document.createElement('img');
@@ -253,22 +228,18 @@ function renderCardList(output, cards, set) {
 // ── centerCorrectly ───────────────────────────────────────────
 
 function centerCorrectly() {
-    const packW      = cssVarW('--pack-w');
-    const boxW       = cssVarW('--box-w');
-    const singletonW = cssVarW('--singleton-w');
-
     const paddingFor = className => {
-        if (className === 'pack-wrapper') return packW      / 2;
-        if (className === 'box-wrapper')  return boxW       / 2;
-        if (className === 'card-wrapper') return singletonW / 2;
-        return 0;
+        if (className === 'pack-wrapper') return 'calc(var(--pack-w) / 2)';
+        if (className === 'box-wrapper')  return 'calc(var(--box-w) / 2)';
+        if (className === 'card-wrapper') return 'calc(var(--singleton-w) / 2)';
+        return '0px';
     };
 
     const first = track.firstElementChild?.className ?? '';
     const last  = track.lastElementChild?.className  ?? '';
 
-    root.style.setProperty('--padding-left',  `${paddingFor(first)}px`);
-    root.style.setProperty('--padding-right', `${paddingFor(last)}px`);
+    root.style.setProperty('--padding-left',  paddingFor(first));
+    root.style.setProperty('--padding-right', paddingFor(last));
 }
 
 
